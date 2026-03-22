@@ -227,7 +227,7 @@ public class CoreHtmlNodeRenderer(
         }
     }
 
-    private fun renderCodeBlock(literal: String, node: Node, attributes: Map<String, String>) {
+    private fun renderCodeBlock(literal: String, node: Node, attributes: Map<String, String?>) {
         html.line()
         html.tag("pre", getAttrs(node, "pre"))
         html.tag("code", getAttrs(node, "code", attributes))
@@ -237,7 +237,7 @@ public class CoreHtmlNodeRenderer(
         html.line()
     }
 
-    private fun renderListBlock(listBlock: ListBlock, tagName: String, attributes: Map<String, String>) {
+    private fun renderListBlock(listBlock: ListBlock, tagName: String, attributes: Map<String, String?>) {
         html.line()
         html.tag(tagName, attributes)
         html.line()
@@ -258,11 +258,11 @@ public class CoreHtmlNodeRenderer(
         return false
     }
 
-    private fun getAttrs(node: Node, tagName: String): Map<String, String> {
+    private fun getAttrs(node: Node, tagName: String): Map<String, String?> {
         return getAttrs(node, tagName, emptyMap())
     }
 
-    private fun getAttrs(node: Node, tagName: String, defaultAttributes: Map<String, String>): Map<String, String> {
+    private fun getAttrs(node: Node, tagName: String, defaultAttributes: Map<String, String?>): Map<String, String?> {
         return context.extendAttributes(node, tagName, defaultAttributes)
     }
 

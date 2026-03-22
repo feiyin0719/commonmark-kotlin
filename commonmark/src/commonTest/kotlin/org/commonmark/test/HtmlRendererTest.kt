@@ -208,7 +208,7 @@ class HtmlRendererTest {
         val factory = AttributeProviderFactory { _ ->
             object : AttributeProvider {
                 var i = 0
-                override fun setAttributes(node: Node, tagName: String, attributes: MutableMap<String, String>) {
+                override fun setAttributes(node: Node, tagName: String, attributes: MutableMap<String, String?>) {
                     attributes["key"] = "$i"
                     i++
                 }

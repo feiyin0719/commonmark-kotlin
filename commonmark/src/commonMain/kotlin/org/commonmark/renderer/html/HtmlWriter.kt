@@ -21,20 +21,22 @@ public class HtmlWriter(private val buffer: StringBuilder) {
         tag(name, emptyMap())
     }
 
-    public fun tag(name: String, attrs: Map<String, String>) {
+    public fun tag(name: String, attrs: Map<String, String?>) {
         tag(name, attrs, false)
     }
 
-    public fun tag(name: String, attrs: Map<String, String>, voidElement: Boolean) {
+    public fun tag(name: String, attrs: Map<String, String?>, voidElement: Boolean) {
         append("<")
         append(name)
         if (attrs.isNotEmpty()) {
             for ((key, value) in attrs) {
                 append(" ")
                 append(Escaping.escapeHtml(key))
-                append("=\"")
-                append(Escaping.escapeHtml(value))
-                append("\"")
+                if (value != null) {
+                    append("=\"")
+                    append(Escaping.escapeHtml(value))
+                    append("\"")
+                }
             }
         }
         if (voidElement) {

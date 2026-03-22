@@ -94,7 +94,7 @@ class UsageExampleTest {
     }
 
     inner class ImageAttributeProvider : AttributeProvider {
-        override fun setAttributes(node: Node, tagName: String, attributes: MutableMap<String, String>) {
+        override fun setAttributes(node: Node, tagName: String, attributes: MutableMap<String, String?>) {
             if (node is Image) {
                 attributes["class"] = "border"
             }
