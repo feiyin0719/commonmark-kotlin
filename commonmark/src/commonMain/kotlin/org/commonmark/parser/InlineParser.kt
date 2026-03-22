@@ -1,0 +1,14 @@
+package org.commonmark.parser
+
+import org.commonmark.node.Node
+
+/**
+ * Parser for inline content (text, links, emphasized text, etc).
+ */
+public interface InlineParser {
+    /**
+     * @param lines the source content to parse as inline
+     * @param node the node to append resulting nodes to (as children)
+     */
+    public fun parse(lines: SourceLines, node: Node)
+}
