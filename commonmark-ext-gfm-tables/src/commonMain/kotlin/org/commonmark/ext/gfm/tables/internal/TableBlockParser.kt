@@ -19,9 +19,8 @@ import org.commonmark.text.Characters
 
 internal class TableBlockParser private constructor(
     private val columns: List<TableCellInfo>,
-    headerLine: SourceLine
+    headerLine: SourceLine,
 ) : AbstractBlockParser() {
-
     override val block: Block = TableBlock()
     private val rowLines: MutableList<SourceLine> = mutableListOf(headerLine)
 
@@ -103,7 +102,11 @@ internal class TableBlockParser private constructor(
         }
     }
 
-    private fun parseCell(cell: SourceLine, column: Int, inlineParser: InlineParser): TableCell {
+    private fun parseCell(
+        cell: SourceLine,
+        column: Int,
+        inlineParser: InlineParser,
+    ): TableCell {
         val tableCell = TableCell()
         val sourceSpan = cell.sourceSpan
         if (sourceSpan != null) {
@@ -125,8 +128,10 @@ internal class TableBlockParser private constructor(
     }
 
     class Factory : AbstractBlockParserFactory() {
-
-        override fun tryStart(state: ParserState, matchedBlockParser: MatchedBlockParser): BlockStart? {
+        override fun tryStart(
+            state: ParserState,
+            matchedBlockParser: MatchedBlockParser,
+        ): BlockStart? {
             val paragraphLines = matchedBlockParser.paragraphLines.lines
             if (paragraphLines.size >= 1 && Characters.find('|', paragraphLines[paragraphLines.size - 1].content, 0) != -1) {
                 val line = state.line
@@ -136,7 +141,8 @@ internal class TableBlockParser private constructor(
                     val paragraph = paragraphLines[paragraphLines.size - 1]
                     val headerCells = split(paragraph)
                     if (columns.size >= headerCells.size) {
-                        return BlockStart.of(TableBlockParser(columns, paragraph))
+                        return BlockStart
+                            .of(TableBlockParser(columns, paragraph))
                             .atIndex(state.index)
                             .replaceParagraphLines(1)
                     }
@@ -146,10 +152,12 @@ internal class TableBlockParser private constructor(
         }
     }
 
-    private class TableCellInfo(val alignment: TableCell.Alignment?, val width: Int)
+    private class TableCellInfo(
+        val alignment: TableCell.Alignment?,
+        val width: Int,
+    )
 
     companion object {
-
         // Examples of valid separators:
         //
         // |-
@@ -177,6 +185,7 @@ internal class TableBlockParser private constructor(
                         // Need at least one pipe, even for a one column table
                         valid = true
                     }
+
                     '-', ':' -> {
                         if (pipes == 0 && columns.isNotEmpty()) {
                             // Need a pipe after the first column (first column doesn't need to start with one)
@@ -209,10 +218,12 @@ internal class TableBlockParser private constructor(
                         // Next, need another pipe
                         pipes = 0
                     }
+
                     ' ', '\t' -> {
                         // White space is allowed between pipes and columns
                         i++
                     }
+
                     else -> {
                         // Any other character is invalid
                         return null
@@ -225,8 +236,11 @@ internal class TableBlockParser private constructor(
             return columns
         }
 
-        private fun getAlignment(left: Boolean, right: Boolean): TableCell.Alignment? {
-            return if (left && right) {
+        private fun getAlignment(
+            left: Boolean,
+            right: Boolean,
+        ): TableCell.Alignment? =
+            if (left && right) {
                 TableCell.Alignment.CENTER
             } else if (left) {
                 TableCell.Alignment.LEFT
@@ -235,7 +249,6 @@ internal class TableBlockParser private constructor(
             } else {
                 null
             }
-        }
 
         private fun split(line: SourceLine): List<SourceLine> {
             val row = line.content
@@ -267,6 +280,7 @@ internal class TableBlockParser private constructor(
                             sb.append('\\')
                         }
                     }
+
                     '|' -> {
                         val content = sb.toString()
                         cells.add(SourceLine.of(content, line.substring(cellStart, i).sourceSpan))
@@ -274,6 +288,7 @@ internal class TableBlockParser private constructor(
                         // + 1 to skip the pipe itself for the next cell's span
                         cellStart = i + 1
                     }
+
                     else -> {
                         sb.append(c)
                     }

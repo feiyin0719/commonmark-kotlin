@@ -9,10 +9,10 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class DelimitedTest {
-
     @Test
     fun emphasisDelimiters() {
-        val input = "* *emphasis* \n" +
+        val input =
+            "* *emphasis* \n" +
                 "* **strong** \n" +
                 "* _important_ \n" +
                 "* __CRITICAL__ \n"
@@ -21,15 +21,16 @@ class DelimitedTest {
         val document = parser.parse(input)
 
         val list = mutableListOf<Delimited>()
-        val visitor = object : AbstractVisitor() {
-            override fun visit(node: Emphasis) {
-                list.add(node)
-            }
+        val visitor =
+            object : AbstractVisitor() {
+                override fun visit(node: Emphasis) {
+                    list.add(node)
+                }
 
-            override fun visit(node: StrongEmphasis) {
-                list.add(node)
+                override fun visit(node: StrongEmphasis) {
+                    list.add(node)
+                }
             }
-        }
         document.accept(visitor)
 
         assertEquals(4, list.size)

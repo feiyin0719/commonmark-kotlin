@@ -1,7 +1,6 @@
 package org.commonmark.internal.util
 
 internal object Html5Entities {
-
     private val NAMED_CHARACTER_REFERENCES: Map<String, String> = Html5EntitiesData.NAMED_CHARACTER_REFERENCES
 
     fun entityToString(input: String): String {
@@ -35,8 +34,8 @@ internal object Html5Entities {
         }
     }
 
-    private fun codePointToString(codePoint: Int): String {
-        return if (codePoint in 0..0xFFFF) {
+    private fun codePointToString(codePoint: Int): String =
+        if (codePoint in 0..0xFFFF) {
             codePoint.toChar().toString()
         } else if (codePoint in 0x10000..0x10FFFF) {
             // Encode as a surrogate pair
@@ -46,5 +45,4 @@ internal object Html5Entities {
         } else {
             "\uFFFD"
         }
-    }
 }

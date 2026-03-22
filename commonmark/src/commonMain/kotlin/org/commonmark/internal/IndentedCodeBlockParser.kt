@@ -13,19 +13,17 @@ import org.commonmark.parser.block.ParserState
 import org.commonmark.text.Characters
 
 internal class IndentedCodeBlockParser : AbstractBlockParser() {
-
     override val block: IndentedCodeBlock = IndentedCodeBlock()
     private val lines = mutableListOf<CharSequence>()
 
-    override fun tryContinue(parserState: ParserState): BlockContinue? {
-        return if (parserState.indent >= Parsing.CODE_BLOCK_INDENT) {
+    override fun tryContinue(parserState: ParserState): BlockContinue? =
+        if (parserState.indent >= Parsing.CODE_BLOCK_INDENT) {
             BlockContinue.atColumn(parserState.column + Parsing.CODE_BLOCK_INDENT)
         } else if (parserState.isBlank) {
             BlockContinue.atIndex(parserState.nextNonSpaceIndex)
         } else {
             BlockContinue.none()
         }
-    }
 
     override fun addLine(line: SourceLine) {
         lines.add(line.content)
@@ -50,8 +48,10 @@ internal class IndentedCodeBlockParser : AbstractBlockParser() {
     }
 
     class Factory : AbstractBlockParserFactory() {
-
-        override fun tryStart(state: ParserState, matchedBlockParser: MatchedBlockParser): BlockStart? {
+        override fun tryStart(
+            state: ParserState,
+            matchedBlockParser: MatchedBlockParser,
+        ): BlockStart? {
             // An indented code block cannot interrupt a paragraph.
             return if (state.indent >= Parsing.CODE_BLOCK_INDENT && !state.isBlank && state.activeBlockParser.block !is Paragraph) {
                 BlockStart.of(IndentedCodeBlockParser()).atColumn(state.column + Parsing.CODE_BLOCK_INDENT)

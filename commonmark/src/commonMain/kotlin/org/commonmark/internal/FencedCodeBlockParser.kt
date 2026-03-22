@@ -15,9 +15,8 @@ import org.commonmark.text.Characters
 internal class FencedCodeBlockParser(
     private val fenceChar: Char,
     fenceLength: Int,
-    fenceIndent: Int
+    fenceIndent: Int,
 ) : AbstractBlockParser() {
-
     override val block: FencedCodeBlock = FencedCodeBlock()
     private val openingFenceLength: Int = fenceLength
 
@@ -65,8 +64,10 @@ internal class FencedCodeBlockParser(
     }
 
     class Factory : AbstractBlockParserFactory() {
-
-        override fun tryStart(state: ParserState, matchedBlockParser: MatchedBlockParser): BlockStart? {
+        override fun tryStart(
+            state: ParserState,
+            matchedBlockParser: MatchedBlockParser,
+        ): BlockStart? {
             val indent = state.indent
             if (indent >= Parsing.CODE_BLOCK_INDENT) {
                 return BlockStart.none()
@@ -85,7 +86,11 @@ internal class FencedCodeBlockParser(
     companion object {
         // spec: A code fence is a sequence of at least three consecutive backtick characters (`) or tildes (~). (Tildes and
         // backticks cannot be mixed.)
-        private fun checkOpener(line: CharSequence, index: Int, indent: Int): FencedCodeBlockParser? {
+        private fun checkOpener(
+            line: CharSequence,
+            index: Int,
+            indent: Int,
+        ): FencedCodeBlockParser? {
             var backticks = 0
             var tildes = 0
             val length = line.length
@@ -114,7 +119,10 @@ internal class FencedCodeBlockParser(
     // spec: The content of the code block consists of all subsequent lines, until a closing code fence of the same type
     // as the code block began with (backticks or tildes), and with at least as many backticks or tildes as the opening
     // code fence.
-    private fun tryClosing(line: CharSequence, index: Int): Boolean {
+    private fun tryClosing(
+        line: CharSequence,
+        index: Int,
+    ): Boolean {
         val fences = Characters.skip(fenceChar, line, index, line.length) - index
         if (fences < openingFenceLength) {
             return false

@@ -8,8 +8,10 @@ import org.commonmark.parser.block.AbstractBlockParser
 import org.commonmark.parser.block.BlockContinue
 import org.commonmark.parser.block.ParserState
 
-internal class ListItemParser(markerIndent: Int, private val contentIndent: Int) : AbstractBlockParser() {
-
+internal class ListItemParser(
+    markerIndent: Int,
+    private val contentIndent: Int,
+) : AbstractBlockParser() {
     override val block: ListItem = ListItem()
 
     /**

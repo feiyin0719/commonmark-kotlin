@@ -6,8 +6,10 @@ import org.commonmark.node.Delimited
 /**
  * A strikethrough node containing text and other inline nodes as children.
  */
-public class Strikethrough(private val delimiter: String) : CustomNode(), Delimited {
-
+public class Strikethrough(
+    private val delimiter: String,
+) : CustomNode(),
+    Delimited {
     override val openingDelimiter: String get() = delimiter
 
     override val closingDelimiter: String get() = delimiter

@@ -8,7 +8,7 @@ import org.commonmark.ext.autolink.AutolinkType
 internal enum class LinkType {
     URL,
     EMAIL,
-    WWW
+    WWW,
 }
 
 /**
@@ -16,7 +16,7 @@ internal enum class LinkType {
  */
 internal open class Span(
     val beginIndex: Int,
-    val endIndex: Int
+    val endIndex: Int,
 )
 
 /**
@@ -25,7 +25,7 @@ internal open class Span(
 internal class LinkSpan(
     beginIndex: Int,
     endIndex: Int,
-    val type: LinkType
+    val type: LinkType,
 ) : Span(beginIndex, endIndex)
 
 /**
@@ -36,8 +36,9 @@ internal class LinkSpan(
  * The extractor returns a list of [Span] objects that cover the entire input string. Each span is
  * either a plain [Span] (for non-link text) or a [LinkSpan] (for detected links).
  */
-internal class LinkExtractor(private val linkTypes: Set<AutolinkType>) {
-
+internal class LinkExtractor(
+    private val linkTypes: Set<AutolinkType>,
+) {
     companion object {
         // Matches URLs starting with http:// or https://
         // Captures the scheme and everything after it that looks like a URL (non-whitespace,
@@ -51,12 +52,25 @@ internal class LinkExtractor(private val linkTypes: Set<AutolinkType>) {
         // Local part: alphanumeric plus . _ % + -
         // Domain: labels separated by dots, TLD at least 2 chars
         private val EMAIL_REGEX =
-            Regex("""[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)+""")
+            Regex(
+                """[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)+""",
+            )
 
         // Characters that should be stripped from the end of a matched link.
-        private val TRAILING_PUNCTUATION = charArrayOf(
-            '.', ',', ':', ';', '!', '?', '"', '\'', '*', '_', '~'
-        )
+        private val TRAILING_PUNCTUATION =
+            charArrayOf(
+                '.',
+                ',',
+                ':',
+                ';',
+                '!',
+                '?',
+                '"',
+                '\'',
+                '*',
+                '_',
+                '~',
+            )
     }
 
     /**
@@ -126,7 +140,7 @@ internal class LinkExtractor(private val linkTypes: Set<AutolinkType>) {
         input: String,
         regex: Regex,
         type: LinkType,
-        results: MutableList<LinkSpan>
+        results: MutableList<LinkSpan>,
     ) {
         for (match in regex.findAll(input)) {
             val start = match.range.first
@@ -153,7 +167,11 @@ internal class LinkExtractor(private val linkTypes: Set<AutolinkType>) {
      *
      * @return the adjusted end index after trimming
      */
-    private fun trimTrailingPunctuation(input: String, start: Int, end: Int): Int {
+    private fun trimTrailingPunctuation(
+        input: String,
+        start: Int,
+        end: Int,
+    ): Int {
         var e = end
         while (e > start) {
             val c = input[e - 1]
@@ -190,7 +208,9 @@ internal class LinkExtractor(private val linkTypes: Set<AutolinkType>) {
                     }
                 }
 
-                else -> break
+                else -> {
+                    break
+                }
             }
         }
         return e

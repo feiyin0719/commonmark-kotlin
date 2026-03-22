@@ -6,5 +6,5 @@ import org.commonmark.parser.beta.Position
 
 internal class ParsedInlineImpl(
     val node: Node,
-    val position: Position
+    val position: Position,
 ) : ParsedInline

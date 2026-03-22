@@ -8,22 +8,25 @@ import org.commonmark.node.Node
  * Useful for testing that source span tracking is working correctly.
  */
 object SourceSpanRenderer {
-
     /**
      * Render source spans in the document using source position's line and column index.
      */
-    fun renderWithLineColumn(document: Node, source: String): String {
+    fun renderWithLineColumn(
+        document: Node,
+        source: String,
+    ): String {
         val visitor = SourceSpanMarkersVisitor()
         document.accept(visitor)
         val lineColumnMarkers = visitor.lineColumnMarkers
 
         val sb = StringBuilder()
-        val lines = source.split("\n").let {
-            // Match Java's String.split behavior: drop trailing empty strings
-            var end = it.size
-            while (end > 0 && it[end - 1].isEmpty()) end--
-            it.subList(0, end)
-        }
+        val lines =
+            source.split("\n").let {
+                // Match Java's String.split behavior: drop trailing empty strings
+                var end = it.size
+                while (end > 0 && it[end - 1].isEmpty()) end--
+                it.subList(0, end)
+            }
 
         for (lineIndex in lines.indices) {
             val line = lines[lineIndex]
@@ -42,7 +45,10 @@ object SourceSpanRenderer {
     /**
      * Render source spans in the document using source position's input index.
      */
-    fun renderWithInputIndex(document: Node, source: String): String {
+    fun renderWithInputIndex(
+        document: Node,
+        source: String,
+    ): String {
         val visitor = SourceSpanMarkersVisitor()
         document.accept(visitor)
         val markers = visitor.inputIndexMarkers
@@ -55,7 +61,11 @@ object SourceSpanRenderer {
         return sb.toString()
     }
 
-    private fun appendMarkers(lineMarkers: MutableMap<Int, MutableList<String>>?, columnIndex: Int, sb: StringBuilder) {
+    private fun appendMarkers(
+        lineMarkers: MutableMap<Int, MutableList<String>>?,
+        columnIndex: Int,
+        sb: StringBuilder,
+    ) {
         if (lineMarkers != null) {
             val columnMarkers = lineMarkers[columnIndex]
             if (columnMarkers != null) {
@@ -67,7 +77,6 @@ object SourceSpanRenderer {
     }
 
     private class SourceSpanMarkersVisitor : AbstractVisitor() {
-
         val lineColumnMarkers = mutableMapOf<Int, MutableMap<Int, MutableList<String>>>()
         val inputIndexMarkers = mutableMapOf<Int, MutableList<String>>()
 
@@ -96,7 +105,10 @@ object SourceSpanRenderer {
             super.visitChildren(parent)
         }
 
-        private fun getMarkers(lineIndex: Int, columnIndex: Int): MutableList<String> {
+        private fun getMarkers(
+            lineIndex: Int,
+            columnIndex: Int,
+        ): MutableList<String> {
             val columnMap = lineColumnMarkers.getOrPut(lineIndex) { mutableMapOf() }
             return columnMap.getOrPut(columnIndex) { mutableListOf() }
         }

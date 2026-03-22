@@ -14,7 +14,6 @@ import org.commonmark.parser.beta.Scanner
  * @see [Link reference definitions](https://spec.commonmark.org/0.31.2/#link-reference-definitions)
  */
 internal class LinkReferenceDefinitionParser {
-
     private var state = State.START_DEFINITION
 
     private val _paragraphLines = mutableListOf<SourceLine>()
@@ -37,14 +36,15 @@ internal class LinkReferenceDefinitionParser {
 
         val scanner = Scanner.of(SourceLines.of(line))
         while (scanner.hasNext()) {
-            val success = when (state) {
-                State.START_DEFINITION -> startDefinition(scanner)
-                State.LABEL -> label(scanner)
-                State.DESTINATION -> destination(scanner)
-                State.START_TITLE -> startTitle(scanner)
-                State.TITLE -> title(scanner)
-                else -> throw IllegalStateException("Unknown parsing state: $state")
-            }
+            val success =
+                when (state) {
+                    State.START_DEFINITION -> startDefinition(scanner)
+                    State.LABEL -> label(scanner)
+                    State.DESTINATION -> destination(scanner)
+                    State.START_TITLE -> startTitle(scanner)
+                    State.TITLE -> title(scanner)
+                    else -> throw IllegalStateException("Unknown parsing state: $state")
+                }
             // Parsing failed, which means we fall back to treating text as a paragraph.
             if (!success) {
                 state = State.PARAGRAPH
@@ -78,9 +78,10 @@ internal class LinkReferenceDefinitionParser {
         get() = state
 
     fun removeLines(lines: Int): List<SourceSpan> {
-        val removedSpans = ArrayList(
-            _sourceSpans.subList(maxOf(_sourceSpans.size - lines, 0), _sourceSpans.size)
-        ).toList()
+        val removedSpans =
+            ArrayList(
+                _sourceSpans.subList(maxOf(_sourceSpans.size - lines, 0), _sourceSpans.size),
+            ).toList()
         removeLast(lines, _paragraphLines)
         removeLast(lines, _sourceSpans)
         return removedSpans
@@ -150,11 +151,12 @@ internal class LinkReferenceDefinitionParser {
         }
 
         val rawDestination = scanner.getSource(start, scanner.position()).getContent()
-        destination = if (rawDestination.startsWith("<")) {
-            rawDestination.substring(1, rawDestination.length - 1)
-        } else {
-            rawDestination
-        }
+        destination =
+            if (rawDestination.startsWith("<")) {
+                rawDestination.substring(1, rawDestination.length - 1)
+            } else {
+                rawDestination
+            }
 
         val whitespace = scanner.whitespace()
         if (!scanner.hasNext()) {
@@ -253,21 +255,28 @@ internal class LinkReferenceDefinitionParser {
     internal enum class State {
         // Looking for the start of a definition, i.e. `[`
         START_DEFINITION,
+
         // Parsing the label, i.e. `foo` within `[foo]`
         LABEL,
+
         // Parsing the destination, i.e. `/url` in `[foo]: /url`
         DESTINATION,
+
         // Looking for the start of a title, i.e. the first `"` in `[foo]: /url "title"`
         START_TITLE,
+
         // Parsing the content of the title, i.e. `title` in `[foo]: /url "title"`
         TITLE,
 
         // End state, no matter what kind of lines we add, they won't be references
-        PARAGRAPH
+        PARAGRAPH,
     }
 
     companion object {
-        private fun <T> removeLast(n: Int, list: MutableList<T>) {
+        private fun <T> removeLast(
+            n: Int,
+            list: MutableList<T>,
+        ) {
             if (n >= list.size) {
                 list.clear()
             } else {

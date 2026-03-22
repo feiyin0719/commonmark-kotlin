@@ -12,7 +12,6 @@ import org.commonmark.text.Characters
  * Attempt to parse backticks, returning either a backtick code span or a literal sequence of backticks.
  */
 internal class BackticksInlineParser : InlineContentParser {
-
     override fun tryParse(inlineParserState: InlineParserState): ParsedInline? {
         val scanner = inlineParserState.scanner()
         val start = scanner.position()

@@ -33,11 +33,11 @@ import org.commonmark.renderer.markdown.MarkdownRenderer
  *
  * @see [GitHub docs for footnotes](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#footnotes)
  */
-public class FootnotesExtension private constructor(builder: Builder) :
-    Parser.ParserExtension,
+public class FootnotesExtension private constructor(
+    builder: Builder,
+) : Parser.ParserExtension,
     HtmlRenderer.HtmlRendererExtension,
     MarkdownRenderer.MarkdownRendererExtension {
-
     private val inlineFootnotes: Boolean = builder.inlineFootnotes
 
     public companion object {
@@ -63,12 +63,13 @@ public class FootnotesExtension private constructor(builder: Builder) :
     }
 
     override fun extend(rendererBuilder: MarkdownRenderer.Builder) {
-        rendererBuilder.nodeRendererFactory(object : MarkdownNodeRendererFactory {
-            override fun create(context: MarkdownNodeRendererContext): NodeRenderer =
-                FootnoteMarkdownNodeRenderer(context)
+        rendererBuilder.nodeRendererFactory(
+            object : MarkdownNodeRendererFactory {
+                override fun create(context: MarkdownNodeRendererContext): NodeRenderer = FootnoteMarkdownNodeRenderer(context)
 
-            override fun getSpecialCharacters(): Set<Char> = emptySet()
-        })
+                override fun getSpecialCharacters(): Set<Char> = emptySet()
+            },
+        )
     }
 
     public class Builder {

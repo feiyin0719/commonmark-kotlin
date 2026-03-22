@@ -17,16 +17,15 @@ import org.commonmark.renderer.html.HtmlRenderer
 public class TaskListItemsExtension private constructor() :
     Parser.ParserExtension,
     HtmlRenderer.HtmlRendererExtension {
+        public companion object {
+            public fun create(): Extension = TaskListItemsExtension()
+        }
 
-    public companion object {
-        public fun create(): Extension = TaskListItemsExtension()
-    }
+        override fun extend(parserBuilder: Parser.Builder) {
+            parserBuilder.postProcessor(TaskListItemPostProcessor())
+        }
 
-    override fun extend(parserBuilder: Parser.Builder) {
-        parserBuilder.postProcessor(TaskListItemPostProcessor())
+        override fun extend(rendererBuilder: HtmlRenderer.Builder) {
+            rendererBuilder.nodeRendererFactory { context -> TaskListItemHtmlNodeRenderer(context) }
+        }
     }
-
-    override fun extend(rendererBuilder: HtmlRenderer.Builder) {
-        rendererBuilder.nodeRendererFactory { context -> TaskListItemHtmlNodeRenderer(context) }
-    }
-}

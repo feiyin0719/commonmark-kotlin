@@ -9,7 +9,6 @@ import org.commonmark.node.Text
 import org.commonmark.parser.PostProcessor
 
 internal class TaskListItemPostProcessor : PostProcessor {
-
     override fun process(node: Node): Node {
         val visitor = TaskListItemVisitor()
         node.accept(visitor)
@@ -17,7 +16,6 @@ internal class TaskListItemPostProcessor : PostProcessor {
     }
 
     private class TaskListItemVisitor : AbstractVisitor() {
-
         override fun visit(listItem: ListItem) {
             val child = listItem.firstChild
             if (child is Paragraph) {

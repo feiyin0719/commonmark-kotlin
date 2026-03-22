@@ -7,29 +7,38 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class HeadingAnchorConfigurationTest {
-
     private val parser: Parser = Parser.builder().build()
 
-    private fun buildRenderer(defaultId: String, prefix: String, suffix: String): HtmlRenderer {
-        val ext: Extension = HeadingAnchorExtension.builder()
-            .defaultId(defaultId)
-            .idPrefix(prefix)
-            .idSuffix(suffix)
-            .build()
-        return HtmlRenderer.builder()
+    private fun buildRenderer(
+        defaultId: String,
+        prefix: String,
+        suffix: String,
+    ): HtmlRenderer {
+        val ext: Extension =
+            HeadingAnchorExtension
+                .builder()
+                .defaultId(defaultId)
+                .idPrefix(prefix)
+                .idSuffix(suffix)
+                .build()
+        return HtmlRenderer
+            .builder()
             .extensions(listOf(ext))
             .build()
     }
 
-    private fun doRender(renderer: HtmlRenderer, text: String): String {
-        return renderer.render(parser.parse(text))
-    }
+    private fun doRender(
+        renderer: HtmlRenderer,
+        text: String,
+    ): String = renderer.render(parser.parse(text))
 
     @Test
     fun testDefaultConfigurationHasNoAdditions() {
-        val renderer = HtmlRenderer.builder()
-            .extensions(listOf(HeadingAnchorExtension.create()))
-            .build()
+        val renderer =
+            HtmlRenderer
+                .builder()
+                .extensions(listOf(HeadingAnchorExtension.create()))
+                .build()
         assertEquals("<h1 id=\"id\"></h1>\n", doRender(renderer, "# "))
     }
 

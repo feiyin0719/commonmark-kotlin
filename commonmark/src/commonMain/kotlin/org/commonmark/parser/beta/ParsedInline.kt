@@ -10,8 +10,9 @@ public interface ParsedInline {
     public companion object {
         public fun none(): ParsedInline? = null
 
-        public fun of(node: Node, position: Position): ParsedInline {
-            return ParsedInlineImpl(node, position)
-        }
+        public fun of(
+            node: Node,
+            position: Position,
+        ): ParsedInline = ParsedInlineImpl(node, position)
     }
 }

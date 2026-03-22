@@ -9,7 +9,6 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 class FootnotesTest {
-
     private val extensions = setOf(FootnotesExtension.create())
     private val parser = Parser.builder().extensions(extensions).build()
 
@@ -320,8 +319,12 @@ class FootnotesTest {
 
     @Test
     fun testSourcePositions() {
-        val parser = Parser.builder().extensions(extensions)
-            .includeSourceSpans(IncludeSourceSpans.BLOCKS_AND_INLINES).build()
+        val parser =
+            Parser
+                .builder()
+                .extensions(extensions)
+                .includeSourceSpans(IncludeSourceSpans.BLOCKS_AND_INLINES)
+                .build()
 
         val doc = parser.parse("Test [^foo]\n\n[^foo]: /url\n")
         val ref = find<FootnoteReference>(doc)
@@ -337,13 +340,9 @@ class FootnotesTest {
         assertNull(tryFind<T>(parent), "Node $parent should not contain ${T::class.simpleName}")
     }
 
-    private inline fun <reified T : Node> find(parent: Node): T {
-        return assertNotNull(tryFind<T>(parent), "Could not find a ${T::class.simpleName} node in $parent")
-    }
+    private inline fun <reified T : Node> find(parent: Node): T = assertNotNull(tryFind<T>(parent), "Could not find a ${T::class.simpleName} node in $parent")
 
-    private inline fun <reified T : Node> tryFind(parent: Node): T? {
-        return findAll<T>(parent).firstOrNull()
-    }
+    private inline fun <reified T : Node> tryFind(parent: Node): T? = findAll<T>(parent).firstOrNull()
 
     private inline fun <reified T : Node> findAll(parent: Node): List<T> {
         val nodes = mutableListOf<T>()
@@ -352,7 +351,11 @@ class FootnotesTest {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T : Node> findAllRecursive(parent: Node, type: kotlin.reflect.KClass<T>, nodes: MutableList<T>) {
+    private fun <T : Node> findAllRecursive(
+        parent: Node,
+        type: kotlin.reflect.KClass<T>,
+        nodes: MutableList<T>,
+    ) {
         var node = parent.firstChild
         while (node != null) {
             if (type.isInstance(node)) {
@@ -363,7 +366,10 @@ class FootnotesTest {
         }
     }
 
-    private fun assertText(expected: String, node: Node) {
+    private fun assertText(
+        expected: String,
+        node: Node,
+    ) {
         val text = node as Text
         assertEquals(expected, text.literal)
     }

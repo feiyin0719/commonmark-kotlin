@@ -12,4 +12,6 @@ import org.commonmark.node.CustomBlock
  *
  * Footnote definitions are parsed even if there's no corresponding [FootnoteReference].
  */
-public class FootnoteDefinition(public val label: String) : CustomBlock()
+public class FootnoteDefinition(
+    public val label: String,
+) : CustomBlock()

@@ -11,7 +11,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class UsageExampleTest {
-
     @Test
     fun parseAndRender() {
         val parser = Parser.builder().build()
@@ -59,9 +58,11 @@ class UsageExampleTest {
     @Test
     fun addAttributes() {
         val parser = Parser.builder().build()
-        val renderer = HtmlRenderer.builder()
-            .attributeProviderFactory { ImageAttributeProvider() }
-            .build()
+        val renderer =
+            HtmlRenderer
+                .builder()
+                .attributeProviderFactory { ImageAttributeProvider() }
+                .build()
 
         val document = parser.parse("![text](/url.png)")
         assertEquals("<p><img src=\"/url.png\" alt=\"text\" class=\"border\" /></p>\n", renderer.render(document))
@@ -70,16 +71,17 @@ class UsageExampleTest {
     @Test
     fun customizeRendering() {
         val parser = Parser.builder().build()
-        val renderer = HtmlRenderer.builder()
-            .nodeRendererFactory { context -> IndentedCodeBlockNodeRenderer(context) }
-            .build()
+        val renderer =
+            HtmlRenderer
+                .builder()
+                .nodeRendererFactory { context -> IndentedCodeBlockNodeRenderer(context) }
+                .build()
 
         val document = parser.parse("Example:\n\n    code")
         assertEquals("<p>Example:</p>\n<pre>code\n</pre>\n", renderer.render(document))
     }
 
     inner class WordCountVisitor : AbstractVisitor() {
-
         var wordCount = 0
 
         override fun visit(text: Text) {
@@ -94,15 +96,20 @@ class UsageExampleTest {
     }
 
     inner class ImageAttributeProvider : AttributeProvider {
-        override fun setAttributes(node: Node, tagName: String, attributes: MutableMap<String, String?>) {
+        override fun setAttributes(
+            node: Node,
+            tagName: String,
+            attributes: MutableMap<String, String?>,
+        ) {
             if (node is Image) {
                 attributes["class"] = "border"
             }
         }
     }
 
-    inner class IndentedCodeBlockNodeRenderer(context: HtmlNodeRendererContext) : NodeRenderer {
-
+    inner class IndentedCodeBlockNodeRenderer(
+        context: HtmlNodeRendererContext,
+    ) : NodeRenderer {
         private val html = context.getWriter()
 
         override fun getNodeTypes(): Set<KClass<out Node>> {

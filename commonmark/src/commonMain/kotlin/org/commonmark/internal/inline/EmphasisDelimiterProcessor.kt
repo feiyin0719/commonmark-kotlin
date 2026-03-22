@@ -9,13 +9,17 @@ import org.commonmark.node.Text
 import org.commonmark.parser.delimiter.DelimiterProcessor
 import org.commonmark.parser.delimiter.DelimiterRun
 
-internal abstract class EmphasisDelimiterProcessor(private val delimiterChar: Char) : DelimiterProcessor {
-
+internal abstract class EmphasisDelimiterProcessor(
+    private val delimiterChar: Char,
+) : DelimiterProcessor {
     override val openingCharacter: Char get() = delimiterChar
     override val closingCharacter: Char get() = delimiterChar
     override val minLength: Int get() = 1
 
-    override fun process(openingRun: DelimiterRun, closingRun: DelimiterRun): Int {
+    override fun process(
+        openingRun: DelimiterRun,
+        closingRun: DelimiterRun,
+    ): Int {
         // "multiple of 3" rule for internal delimiter runs
         if ((openingRun.canClose || closingRun.canOpen) &&
             closingRun.originalLength % 3 != 0 &&
@@ -29,14 +33,16 @@ internal abstract class EmphasisDelimiterProcessor(private val delimiterChar: Ch
         // calculate actual number of delimiters used from this closer
         if (openingRun.length >= 2 && closingRun.length >= 2) {
             usedDelimiters = 2
-            emphasis = StrongEmphasis().apply {
-                delimiter = "$delimiterChar$delimiterChar"
-            }
+            emphasis =
+                StrongEmphasis().apply {
+                    delimiter = "$delimiterChar$delimiterChar"
+                }
         } else {
             usedDelimiters = 1
-            emphasis = Emphasis().apply {
-                delimiter = delimiterChar.toString()
-            }
+            emphasis =
+                Emphasis().apply {
+                    delimiter = delimiterChar.toString()
+                }
         }
 
         val sourceSpans = SourceSpans.empty()

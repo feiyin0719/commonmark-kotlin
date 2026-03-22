@@ -49,8 +49,9 @@ import kotlin.reflect.KClass
  * This means we only render definitions whose references are actually rendered, and in a meaningful order (all main
  * text footnotes first, then any nested ones).
  */
-internal class FootnoteHtmlNodeRenderer(context: HtmlNodeRendererContext) : NodeRenderer {
-
+internal class FootnoteHtmlNodeRenderer(
+    context: HtmlNodeRendererContext,
+) : NodeRenderer {
     private val html: HtmlWriter = context.getWriter()
     private val context: HtmlNodeRendererContext = context
 
@@ -70,8 +71,7 @@ internal class FootnoteHtmlNodeRenderer(context: HtmlNodeRendererContext) : Node
      */
     private val references: HashMap<Node, ReferenceInfo> = HashMap()
 
-    override fun getNodeTypes(): Set<KClass<out Node>> =
-        setOf(FootnoteReference::class, InlineFootnote::class, FootnoteDefinition::class)
+    override fun getNodeTypes(): Set<KClass<out Node>> = setOf(FootnoteReference::class, InlineFootnote::class, FootnoteDefinition::class)
 
     override fun beforeRoot(rootNode: Node) {
         // Collect all definitions first, so we can look them up when encountering a reference later.
@@ -121,20 +121,22 @@ internal class FootnoteHtmlNodeRenderer(context: HtmlNodeRendererContext) : Node
         val check = ArrayDeque(referencedDefinitions.keys)
         while (check.isNotEmpty()) {
             val def = check.removeFirst()
-            def.accept(ShallowReferenceVisitor(def) { visitedNode ->
-                if (visitedNode is FootnoteReference) {
-                    val d = definitionMap[visitedNode.label]
-                    if (d != null) {
-                        if (!referencedDefinitions.containsKey(d)) {
-                            check.addLast(d)
+            def.accept(
+                ShallowReferenceVisitor(def) { visitedNode ->
+                    if (visitedNode is FootnoteReference) {
+                        val d = definitionMap[visitedNode.label]
+                        if (d != null) {
+                            if (!referencedDefinitions.containsKey(d)) {
+                                check.addLast(d)
+                            }
+                            references[visitedNode] = registerReference(d, d.label)
                         }
-                        references[visitedNode] = registerReference(d, d.label)
+                    } else if (visitedNode is InlineFootnote) {
+                        check.addLast(visitedNode)
+                        references[visitedNode] = registerReference(visitedNode, null)
                     }
-                } else if (visitedNode is InlineFootnote) {
-                    check.addLast(visitedNode)
-                    references[visitedNode] = registerReference(visitedNode, null)
-                }
-            })
+                },
+            )
         }
 
         for ((def, referencedDefinition) in referencedDefinitions) {
@@ -153,13 +155,17 @@ internal class FootnoteHtmlNodeRenderer(context: HtmlNodeRendererContext) : Node
         return registerReference(def, def.label)
     }
 
-    private fun registerReference(node: Node, label: String?): ReferenceInfo {
+    private fun registerReference(
+        node: Node,
+        label: String?,
+    ): ReferenceInfo {
         // The first referenced definition gets number 1, second one 2, etc.
-        val referencedDef = referencedDefinitions.getOrPut(node) {
-            val num = referencedDefinitions.size + 1
-            val key = definitionKey(label, num)
-            ReferencedDefinition(num, key)
-        }
+        val referencedDef =
+            referencedDefinitions.getOrPut(node) {
+                val num = referencedDefinitions.size + 1
+                val key = definitionKey(label, num)
+                ReferencedDefinition(num, key)
+            }
         val definitionNumber = referencedDef.definitionNumber
         // The reference number for that particular definition. E.g. if there's two references for the same definition,
         // the first one is 1, the second one 2, etc. This is needed to give each reference a unique ID so that each
@@ -172,7 +178,10 @@ internal class FootnoteHtmlNodeRenderer(context: HtmlNodeRendererContext) : Node
         return ReferenceInfo(id, definitionId(definitionKey), definitionNumber)
     }
 
-    private fun renderReference(node: Node, referenceInfo: ReferenceInfo) {
+    private fun renderReference(
+        node: Node,
+        referenceInfo: ReferenceInfo,
+    ) {
         html.tag("sup", context.extendAttributes(node, "sup", mapOf("class" to "footnote-ref")))
 
         val href = "#" + referenceInfo.definitionId
@@ -186,7 +195,10 @@ internal class FootnoteHtmlNodeRenderer(context: HtmlNodeRendererContext) : Node
         html.tag("/sup")
     }
 
-    private fun renderDefinition(def: Node, referencedDefinition: ReferencedDefinition) {
+    private fun renderDefinition(
+        def: Node,
+        referencedDefinition: ReferencedDefinition,
+    ) {
         val attrs = linkedMapOf<String, String>()
         attrs["id"] = definitionId(referencedDefinition.definitionKey)
         html.tag("li", context.extendAttributes(def, "li", attrs))
@@ -233,7 +245,10 @@ internal class FootnoteHtmlNodeRenderer(context: HtmlNodeRendererContext) : Node
         html.line()
     }
 
-    private fun renderBackrefs(def: Node, referencedDefinition: ReferencedDefinition) {
+    private fun renderBackrefs(
+        def: Node,
+        referencedDefinition: ReferencedDefinition,
+    ) {
         val refs = referencedDefinition.references
         for (i in refs.indices) {
             val ref = refs[i]
@@ -261,11 +276,15 @@ internal class FootnoteHtmlNodeRenderer(context: HtmlNodeRendererContext) : Node
         }
     }
 
-    private fun referenceId(definitionKey: String, number: Int): String {
-        return "fnref$definitionKey" + if (number == 1) "" else "-$number"
-    }
+    private fun referenceId(
+        definitionKey: String,
+        number: Int,
+    ): String = "fnref$definitionKey" + if (number == 1) "" else "-$number"
 
-    private fun definitionKey(label: String?, number: Int): String {
+    private fun definitionKey(
+        label: String?,
+        number: Int,
+    ): String {
         // Named definitions use the pattern "fn-{name}" and inline definitions use "fn{number}" so as not to conflict.
         // "fn{number}" is also what pandoc uses (for all types), starting with number 1.
         return if (label != null) {
@@ -275,9 +294,7 @@ internal class FootnoteHtmlNodeRenderer(context: HtmlNodeRendererContext) : Node
         }
     }
 
-    private fun definitionId(definitionKey: String): String {
-        return "fn$definitionKey"
-    }
+    private fun definitionId(definitionKey: String): String = "fn$definitionKey"
 
     private fun renderChildren(parent: Node) {
         var node = parent.firstChild
@@ -289,7 +306,6 @@ internal class FootnoteHtmlNodeRenderer(context: HtmlNodeRendererContext) : Node
     }
 
     private class DefinitionVisitor : AbstractVisitor() {
-
         val definitions = DefinitionMap(FootnoteDefinition::class)
 
         override fun visit(customBlock: CustomBlock) {
@@ -307,9 +323,8 @@ internal class FootnoteHtmlNodeRenderer(context: HtmlNodeRendererContext) : Node
      */
     private class ShallowReferenceVisitor(
         private val parent: Node,
-        private val consumer: (Node) -> Unit
+        private val consumer: (Node) -> Unit,
     ) : AbstractVisitor() {
-
         override fun visit(customNode: CustomNode) {
             if (customNode is FootnoteReference) {
                 consumer(customNode)
@@ -335,7 +350,7 @@ internal class FootnoteHtmlNodeRenderer(context: HtmlNodeRendererContext) : Node
         /**
          * The unique key of the definition. Together with a static prefix it forms the ID used in the HTML.
          */
-        val definitionKey: String
+        val definitionKey: String,
     ) {
         /**
          * The IDs of references for this definition, for backrefs.
@@ -355,6 +370,6 @@ internal class FootnoteHtmlNodeRenderer(context: HtmlNodeRendererContext) : Node
         /**
          * The definition number, rendered in superscript.
          */
-        val definitionNumber: Int
+        val definitionNumber: Int,
     )
 }

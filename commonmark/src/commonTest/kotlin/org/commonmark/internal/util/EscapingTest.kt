@@ -4,7 +4,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class EscapingTest {
-
     @Test
     fun testEscapeHtml() {
         assertEquals("nothing to escape", Escaping.escapeHtml("nothing to escape"))

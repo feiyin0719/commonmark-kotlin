@@ -16,8 +16,9 @@ import org.commonmark.renderer.Renderer
  * renderer.render(node)
  * ```
  */
-public class HtmlRenderer private constructor(builder: Builder) : Renderer {
-
+public class HtmlRenderer private constructor(
+    builder: Builder,
+) : Renderer {
     private val softbreak: String = builder.softbreak
     private val escapeHtml: Boolean = builder.escapeHtml
     private val percentEncodeUrls: Boolean = builder.percentEncodeUrls
@@ -35,7 +36,10 @@ public class HtmlRenderer private constructor(builder: Builder) : Renderer {
         this.nodeRendererFactories = factories
     }
 
-    override fun render(node: Node, output: StringBuilder) {
+    override fun render(
+        node: Node,
+        output: StringBuilder,
+    ) {
         val context = RendererContext(HtmlWriter(output))
         context.beforeRoot(node)
         context.render(node)
@@ -52,7 +56,6 @@ public class HtmlRenderer private constructor(builder: Builder) : Renderer {
      * Builder for configuring an [HtmlRenderer]. See methods for default configuration.
      */
     public class Builder {
-
         internal var softbreak: String = "\n"
         internal var escapeHtml: Boolean = false
         internal var sanitizeUrls: Boolean = false
@@ -65,9 +68,7 @@ public class HtmlRenderer private constructor(builder: Builder) : Renderer {
         /**
          * @return the configured [HtmlRenderer]
          */
-        public fun build(): HtmlRenderer {
-            return HtmlRenderer(this)
-        }
+        public fun build(): HtmlRenderer = HtmlRenderer(this)
 
         /**
          * The HTML to use for rendering a softbreak, defaults to `"\n"` (meaning the rendered result doesn't have
@@ -197,9 +198,9 @@ public class HtmlRenderer private constructor(builder: Builder) : Renderer {
     }
 
     private inner class RendererContext(
-        private val htmlWriter: HtmlWriter
-    ) : HtmlNodeRendererContext, AttributeProviderContext {
-
+        private val htmlWriter: HtmlWriter,
+    ) : HtmlNodeRendererContext,
+        AttributeProviderContext {
         private val attributeProviders: List<AttributeProvider>
         private val nodeRendererMap = NodeRendererMap()
 
@@ -212,43 +213,34 @@ public class HtmlRenderer private constructor(builder: Builder) : Renderer {
             }
         }
 
-        override fun shouldEscapeHtml(): Boolean {
-            return escapeHtml
-        }
+        override fun shouldEscapeHtml(): Boolean = escapeHtml
 
-        override fun shouldOmitSingleParagraphP(): Boolean {
-            return omitSingleParagraphP
-        }
+        override fun shouldOmitSingleParagraphP(): Boolean = omitSingleParagraphP
 
-        override fun shouldSanitizeUrls(): Boolean {
-            return sanitizeUrls
-        }
+        override fun shouldSanitizeUrls(): Boolean = sanitizeUrls
 
-        override fun urlSanitizer(): UrlSanitizer {
-            return urlSanitizer
-        }
+        override fun urlSanitizer(): UrlSanitizer = urlSanitizer
 
-        override fun encodeUrl(url: String): String {
-            return if (percentEncodeUrls) {
+        override fun encodeUrl(url: String): String =
+            if (percentEncodeUrls) {
                 Escaping.percentEncodeUrl(url)
             } else {
                 url
             }
-        }
 
-        override fun extendAttributes(node: Node, tagName: String, attributes: Map<String, String?>): Map<String, String?> {
+        override fun extendAttributes(
+            node: Node,
+            tagName: String,
+            attributes: Map<String, String?>,
+        ): Map<String, String?> {
             val attrs = LinkedHashMap(attributes)
             setCustomAttributes(node, tagName, attrs)
             return attrs
         }
 
-        override fun getWriter(): HtmlWriter {
-            return htmlWriter
-        }
+        override fun getWriter(): HtmlWriter = htmlWriter
 
-        override fun getSoftbreak(): String {
-            return softbreak
-        }
+        override fun getSoftbreak(): String = softbreak
 
         override fun render(node: Node) {
             nodeRendererMap.render(node)
@@ -262,7 +254,11 @@ public class HtmlRenderer private constructor(builder: Builder) : Renderer {
             nodeRendererMap.afterRoot(node)
         }
 
-        private fun setCustomAttributes(node: Node, tagName: String, attrs: MutableMap<String, String?>) {
+        private fun setCustomAttributes(
+            node: Node,
+            tagName: String,
+            attrs: MutableMap<String, String?>,
+        ) {
             for (attributeProvider in attributeProviders) {
                 attributeProvider.setAttributes(node, tagName, attrs)
             }
@@ -275,8 +271,6 @@ public class HtmlRenderer private constructor(builder: Builder) : Renderer {
          *
          * @return a builder
          */
-        public fun builder(): Builder {
-            return Builder()
-        }
+        public fun builder(): Builder = Builder()
     }
 }

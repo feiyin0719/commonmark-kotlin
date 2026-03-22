@@ -5,5 +5,5 @@ package org.commonmark.parser.beta
  */
 public class Position internal constructor(
     internal val lineIndex: Int,
-    internal val index: Int
+    internal val index: Int,
 )

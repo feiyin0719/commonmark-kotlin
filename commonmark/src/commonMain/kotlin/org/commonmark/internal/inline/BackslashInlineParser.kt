@@ -13,7 +13,6 @@ import org.commonmark.parser.beta.ParsedInline
  * (if the backslash is followed by a newline), or a literal backslash to the block's children.
  */
 internal class BackslashInlineParser : InlineContentParser {
-
     override fun tryParse(inlineParserState: InlineParserState): ParsedInline? {
         val scanner = inlineParserState.scanner()
         // Backslash

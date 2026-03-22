@@ -8,14 +8,14 @@ import kotlin.reflect.KClass
  * The node renderer that renders all the core nodes (comes last in the order of node renderers).
  */
 public class CoreTextContentNodeRenderer(
-    protected val context: TextContentNodeRendererContext
-) : AbstractVisitor(), NodeRenderer {
-
+    protected val context: TextContentNodeRendererContext,
+) : AbstractVisitor(),
+    NodeRenderer {
     private val textContent: TextContentWriter = context.getWriter()
     private var listHolder: ListHolder? = null
 
-    override fun getNodeTypes(): Set<KClass<out Node>> {
-        return setOf(
+    override fun getNodeTypes(): Set<KClass<out Node>> =
+        setOf(
             Document::class,
             Heading::class,
             Paragraph::class,
@@ -35,9 +35,8 @@ public class CoreTextContentNodeRenderer(
             Code::class,
             HtmlInline::class,
             SoftLineBreak::class,
-            HardLineBreak::class
+            HardLineBreak::class,
         )
-    }
 
     override fun render(node: Node) {
         node.accept(this)
@@ -205,7 +204,11 @@ public class CoreTextContentNodeRenderer(
         }
     }
 
-    private fun writeLink(node: Node, title: String?, destination: String?) {
+    private fun writeLink(
+        node: Node,
+        title: String?,
+        destination: String?,
+    ) {
         val hasChild = node.firstChild != null
         val hasTitle = title != null && title != destination
         val hasDestination = destination != null && destination != ""
@@ -237,17 +240,23 @@ public class CoreTextContentNodeRenderer(
         }
     }
 
-    private fun stripNewlines(): Boolean {
-        return context.lineBreakRendering() == LineBreakRendering.STRIP
-    }
+    private fun stripNewlines(): Boolean = context.lineBreakRendering() == LineBreakRendering.STRIP
 
-    private abstract class ListHolder(val parent: ListHolder?)
+    private abstract class ListHolder(
+        val parent: ListHolder?,
+    )
 
-    private class BulletListHolder(parent: ListHolder?, list: BulletList) : ListHolder(parent) {
+    private class BulletListHolder(
+        parent: ListHolder?,
+        list: BulletList,
+    ) : ListHolder(parent) {
         val marker: String = list.marker ?: "-"
     }
 
-    private class OrderedListHolder(parent: ListHolder?, list: OrderedList) : ListHolder(parent) {
+    private class OrderedListHolder(
+        parent: ListHolder?,
+        list: OrderedList,
+    ) : ListHolder(parent) {
         val delimiter: String = list.markerDelimiter ?: "."
         var counter: Int = list.markerStartNumber ?: 1
 
@@ -257,12 +266,11 @@ public class CoreTextContentNodeRenderer(
     }
 
     private companion object {
-        fun stripTrailingNewline(s: String): String {
-            return if (s.endsWith("\n")) {
+        fun stripTrailingNewline(s: String): String =
+            if (s.endsWith("\n")) {
                 s.substring(0, s.length - 1)
             } else {
                 s
             }
-        }
     }
 }

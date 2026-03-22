@@ -9,8 +9,9 @@ import org.commonmark.node.Node
 import org.commonmark.renderer.html.HtmlNodeRendererContext
 import org.commonmark.renderer.html.HtmlWriter
 
-internal class TableHtmlNodeRenderer(private val context: HtmlNodeRendererContext) : TableNodeRenderer() {
-
+internal class TableHtmlNodeRenderer(
+    private val context: HtmlNodeRendererContext,
+) : TableNodeRenderer() {
     private val htmlWriter: HtmlWriter = context.getWriter()
 
     override fun renderBlock(node: TableBlock) {
@@ -54,17 +55,20 @@ internal class TableHtmlNodeRenderer(private val context: HtmlNodeRendererContex
         htmlWriter.line()
     }
 
-    private fun getAttributes(node: Node, tagName: String): Map<String, String?> {
-        return context.extendAttributes(node, tagName, emptyMap())
-    }
+    private fun getAttributes(
+        node: Node,
+        tagName: String,
+    ): Map<String, String?> = context.extendAttributes(node, tagName, emptyMap())
 
-    private fun getCellAttributes(tableCell: TableCell, tagName: String): Map<String, String?> {
-        return if (tableCell.alignment != null) {
+    private fun getCellAttributes(
+        tableCell: TableCell,
+        tagName: String,
+    ): Map<String, String?> =
+        if (tableCell.alignment != null) {
             context.extendAttributes(tableCell, tagName, mapOf("align" to getAlignValue(tableCell.alignment!!)))
         } else {
             context.extendAttributes(tableCell, tagName, emptyMap())
         }
-    }
 
     private fun renderChildren(parent: Node) {
         var node = parent.firstChild
@@ -76,12 +80,11 @@ internal class TableHtmlNodeRenderer(private val context: HtmlNodeRendererContex
     }
 
     companion object {
-        private fun getAlignValue(alignment: TableCell.Alignment): String {
-            return when (alignment) {
+        private fun getAlignValue(alignment: TableCell.Alignment): String =
+            when (alignment) {
                 TableCell.Alignment.LEFT -> "left"
                 TableCell.Alignment.CENTER -> "center"
                 TableCell.Alignment.RIGHT -> "right"
             }
-        }
     }
 }

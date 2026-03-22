@@ -15,7 +15,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class InlineParserContextTest {
-
     @Test
     fun labelShouldBeOriginalNotNormalized() {
         val inlineParserFactory = CapturingInlineParserFactory()
@@ -33,33 +32,34 @@ class InlineParserContextTest {
     }
 
     class CapturingInlineParserFactory : InlineParserFactory {
-
         val lookups = mutableListOf<String>()
 
         override fun create(inlineParserContext: InlineParserContext): InlineParser {
-            val wrappedContext = object : InlineParserContext {
-                override val customInlineContentParserFactories: List<InlineContentParserFactory>
-                    get() = inlineParserContext.customInlineContentParserFactories
+            val wrappedContext =
+                object : InlineParserContext {
+                    override val customInlineContentParserFactories: List<InlineContentParserFactory>
+                        get() = inlineParserContext.customInlineContentParserFactories
 
-                override val customDelimiterProcessors: List<DelimiterProcessor>
-                    get() = inlineParserContext.customDelimiterProcessors
+                    override val customDelimiterProcessors: List<DelimiterProcessor>
+                        get() = inlineParserContext.customDelimiterProcessors
 
-                override val customLinkProcessors: List<LinkProcessor>
-                    get() = inlineParserContext.customLinkProcessors
+                    override val customLinkProcessors: List<LinkProcessor>
+                        get() = inlineParserContext.customLinkProcessors
 
-                override val customLinkMarkers: Set<Char>
-                    get() = inlineParserContext.customLinkMarkers
+                    override val customLinkMarkers: Set<Char>
+                        get() = inlineParserContext.customLinkMarkers
 
-                @Suppress("DEPRECATION")
-                override fun getLinkReferenceDefinition(label: String): LinkReferenceDefinition? {
-                    return getDefinition(LinkReferenceDefinition::class, label)
+                    @Suppress("DEPRECATION")
+                    override fun getLinkReferenceDefinition(label: String): LinkReferenceDefinition? = getDefinition(LinkReferenceDefinition::class, label)
+
+                    override fun <D : Any> getDefinition(
+                        type: KClass<D>,
+                        label: String,
+                    ): D? {
+                        lookups.add(label)
+                        return inlineParserContext.getDefinition(type, label)
+                    }
                 }
-
-                override fun <D : Any> getDefinition(type: KClass<D>, label: String): D? {
-                    lookups.add(label)
-                    return inlineParserContext.getDefinition(type, label)
-                }
-            }
 
             return InlineParserImpl(wrappedContext)
         }

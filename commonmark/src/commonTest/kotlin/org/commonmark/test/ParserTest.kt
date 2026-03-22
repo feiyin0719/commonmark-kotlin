@@ -3,13 +3,13 @@ package org.commonmark.test
 import org.commonmark.node.Block
 import org.commonmark.node.BulletList
 import org.commonmark.node.Heading
+import org.commonmark.node.Node
 import org.commonmark.node.Text
 import org.commonmark.node.ThematicBreak
 import org.commonmark.parser.InlineParser
 import org.commonmark.parser.InlineParserFactory
 import org.commonmark.parser.Parser
 import org.commonmark.parser.SourceLines
-import org.commonmark.node.Node
 import kotlin.reflect.KClass
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -19,7 +19,6 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class ParserTest {
-
     @Test
     fun enabledBlockTypes() {
         val given = "# heading 1\n\nnot a heading"
@@ -70,11 +69,15 @@ class ParserTest {
 
     @Test
     fun inlineParser() {
-        val fakeInlineParser = object : InlineParser {
-            override fun parse(lines: SourceLines, node: Node) {
-                node.appendChild(ThematicBreak())
+        val fakeInlineParser =
+            object : InlineParser {
+                override fun parse(
+                    lines: SourceLines,
+                    node: Node,
+                ) {
+                    node.appendChild(ThematicBreak())
+                }
             }
-        }
 
         val fakeInlineParserFactory = InlineParserFactory { fakeInlineParser }
 

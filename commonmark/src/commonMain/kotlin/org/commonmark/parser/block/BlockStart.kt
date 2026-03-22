@@ -6,7 +6,6 @@ import org.commonmark.internal.BlockStartImpl
  * Result object for starting parsing of a block, see static methods for constructors.
  */
 public abstract class BlockStart {
-
     /** Continue parsing at the specified index. */
     public abstract fun atIndex(newIndex: Int): BlockStart
 
@@ -24,8 +23,6 @@ public abstract class BlockStart {
     public companion object {
         public fun none(): BlockStart? = null
 
-        public fun of(vararg blockParsers: BlockParser): BlockStart {
-            return BlockStartImpl(blockParsers.toList())
-        }
+        public fun of(vararg blockParsers: BlockParser): BlockStart = BlockStartImpl(blockParsers.toList())
     }
 }

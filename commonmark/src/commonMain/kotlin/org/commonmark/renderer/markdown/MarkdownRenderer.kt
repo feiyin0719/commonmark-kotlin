@@ -18,27 +18,29 @@ import org.commonmark.renderer.Renderer
  * However, it should produce Markdown that is semantically equivalent to the input, i.e. if the Markdown was parsed
  * again and compared against the original AST, it should be the same (minus bugs).
  */
-public class MarkdownRenderer private constructor(builder: Builder) : Renderer {
-
+public class MarkdownRenderer private constructor(
+    builder: Builder,
+) : Renderer {
     private val nodeRendererFactories: List<MarkdownNodeRendererFactory>
 
     init {
         val factories = ArrayList<MarkdownNodeRendererFactory>(builder.nodeRendererFactories.size + 1)
         factories.addAll(builder.nodeRendererFactories)
         // Add as last. This means clients can override the rendering of core nodes if they want.
-        factories.add(object : MarkdownNodeRendererFactory {
-            override fun create(context: MarkdownNodeRendererContext): NodeRenderer {
-                return CoreMarkdownNodeRenderer(context)
-            }
+        factories.add(
+            object : MarkdownNodeRendererFactory {
+                override fun create(context: MarkdownNodeRendererContext): NodeRenderer = CoreMarkdownNodeRenderer(context)
 
-            override fun getSpecialCharacters(): Set<Char> {
-                return emptySet()
-            }
-        })
+                override fun getSpecialCharacters(): Set<Char> = emptySet()
+            },
+        )
         this.nodeRendererFactories = factories
     }
 
-    override fun render(node: Node, output: StringBuilder) {
+    override fun render(
+        node: Node,
+        output: StringBuilder,
+    ) {
         val context = RendererContext(MarkdownWriter(output))
         context.render(node)
     }
@@ -53,15 +55,12 @@ public class MarkdownRenderer private constructor(builder: Builder) : Renderer {
      * Builder for configuring a [MarkdownRenderer]. See methods for default configuration.
      */
     public class Builder {
-
         internal val nodeRendererFactories: MutableList<MarkdownNodeRendererFactory> = mutableListOf()
 
         /**
          * @return the configured [MarkdownRenderer]
          */
-        public fun build(): MarkdownRenderer {
-            return MarkdownRenderer(this)
-        }
+        public fun build(): MarkdownRenderer = MarkdownRenderer(this)
 
         /**
          * Add a factory for instantiating a node renderer (done when rendering). This allows to override the rendering
@@ -96,7 +95,6 @@ public class MarkdownRenderer private constructor(builder: Builder) : Renderer {
      * Extension for [MarkdownRenderer] for rendering custom nodes.
      */
     public interface MarkdownRendererExtension : Extension {
-
         /**
          * Extend Markdown rendering, usually by registering custom node renderers using [Builder.nodeRendererFactory].
          *
@@ -106,9 +104,8 @@ public class MarkdownRenderer private constructor(builder: Builder) : Renderer {
     }
 
     private inner class RendererContext(
-        private val writer: MarkdownWriter
+        private val writer: MarkdownWriter,
     ) : MarkdownNodeRendererContext {
-
         private val nodeRendererMap = NodeRendererMap()
         private val additionalTextEscapes: Set<Char>
 
@@ -126,17 +123,13 @@ public class MarkdownRenderer private constructor(builder: Builder) : Renderer {
             }
         }
 
-        override fun getWriter(): MarkdownWriter {
-            return writer
-        }
+        override fun getWriter(): MarkdownWriter = writer
 
         override fun render(node: Node) {
             nodeRendererMap.render(node)
         }
 
-        override fun getSpecialCharacters(): Set<Char> {
-            return additionalTextEscapes
-        }
+        override fun getSpecialCharacters(): Set<Char> = additionalTextEscapes
     }
 
     public companion object {
@@ -145,8 +138,6 @@ public class MarkdownRenderer private constructor(builder: Builder) : Renderer {
          *
          * @return a builder
          */
-        public fun builder(): Builder {
-            return Builder()
-        }
+        public fun builder(): Builder = Builder()
     }
 }

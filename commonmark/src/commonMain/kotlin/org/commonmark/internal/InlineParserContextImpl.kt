@@ -12,15 +12,13 @@ internal class InlineParserContextImpl(
     override val customDelimiterProcessors: List<DelimiterProcessor>,
     override val customLinkProcessors: List<LinkProcessor>,
     override val customLinkMarkers: Set<Char>,
-    private val definitions: Definitions
+    private val definitions: Definitions,
 ) : InlineParserContext {
-
     @Deprecated("use getDefinition with LinkReferenceDefinition instead")
-    override fun getLinkReferenceDefinition(label: String): LinkReferenceDefinition? {
-        return definitions.getDefinition(LinkReferenceDefinition::class, label)
-    }
+    override fun getLinkReferenceDefinition(label: String): LinkReferenceDefinition? = definitions.getDefinition(LinkReferenceDefinition::class, label)
 
-    override fun <D : Any> getDefinition(type: KClass<D>, label: String): D? {
-        return definitions.getDefinition(type, label)
-    }
+    override fun <D : Any> getDefinition(
+        type: KClass<D>,
+        label: String,
+    ): D? = definitions.getDefinition(type, label)
 }

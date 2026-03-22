@@ -6,7 +6,6 @@ import org.commonmark.node.Node
  * The context for rendering HTML, passed to [HtmlNodeRendererFactory.create] and used by node renderers.
  */
 public interface HtmlNodeRendererContext {
-
     /**
      * @param url to be encoded
      * @return an encoded URL (depending on the configuration)
@@ -21,7 +20,11 @@ public interface HtmlNodeRendererContext {
      * @param attributes the attributes that were calculated by the renderer
      * @return the extended attributes with added/updated/removed entries
      */
-    public fun extendAttributes(node: Node, tagName: String, attributes: Map<String, String?>): Map<String, String?>
+    public fun extendAttributes(
+        node: Node,
+        tagName: String,
+        attributes: Map<String, String?>,
+    ): Map<String, String?>
 
     /**
      * @return the HTML writer to use

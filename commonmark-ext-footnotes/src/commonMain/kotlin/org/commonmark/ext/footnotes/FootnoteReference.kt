@@ -8,4 +8,6 @@ import org.commonmark.node.CustomNode
  * The [label] is the text within brackets after `^`, so `foo` in the example. It needs to
  * match the label of a corresponding [FootnoteDefinition] for the footnote to be parsed.
  */
-public class FootnoteReference(public val label: String) : CustomNode()
+public class FootnoteReference(
+    public val label: String,
+) : CustomNode()

@@ -26,30 +26,29 @@ public class InsExtension private constructor() :
     HtmlRenderer.HtmlRendererExtension,
     TextContentRenderer.TextContentRendererExtension,
     MarkdownRenderer.MarkdownRendererExtension {
+        public companion object {
+            public fun create(): Extension = InsExtension()
+        }
 
-    public companion object {
-        @JvmStatic
-        public fun create(): Extension = InsExtension()
+        override fun extend(parserBuilder: Parser.Builder) {
+            parserBuilder.customDelimiterProcessor(InsDelimiterProcessor())
+        }
+
+        override fun extend(rendererBuilder: HtmlRenderer.Builder) {
+            rendererBuilder.nodeRendererFactory { context -> InsHtmlNodeRenderer(context) }
+        }
+
+        override fun extend(rendererBuilder: TextContentRenderer.Builder) {
+            rendererBuilder.nodeRendererFactory { context -> InsTextContentNodeRenderer(context) }
+        }
+
+        override fun extend(rendererBuilder: MarkdownRenderer.Builder) {
+            rendererBuilder.nodeRendererFactory(
+                object : MarkdownNodeRendererFactory {
+                    override fun create(context: MarkdownNodeRendererContext): NodeRenderer = InsMarkdownNodeRenderer(context)
+
+                    override fun getSpecialCharacters(): Set<Char> = setOf('+')
+                },
+            )
+        }
     }
-
-    override fun extend(parserBuilder: Parser.Builder) {
-        parserBuilder.customDelimiterProcessor(InsDelimiterProcessor())
-    }
-
-    override fun extend(rendererBuilder: HtmlRenderer.Builder) {
-        rendererBuilder.nodeRendererFactory { context -> InsHtmlNodeRenderer(context) }
-    }
-
-    override fun extend(rendererBuilder: TextContentRenderer.Builder) {
-        rendererBuilder.nodeRendererFactory { context -> InsTextContentNodeRenderer(context) }
-    }
-
-    override fun extend(rendererBuilder: MarkdownRenderer.Builder) {
-        rendererBuilder.nodeRendererFactory(object : MarkdownNodeRendererFactory {
-            override fun create(context: MarkdownNodeRendererContext): NodeRenderer =
-                InsMarkdownNodeRenderer(context)
-
-            override fun getSpecialCharacters(): Set<Char> = setOf('+')
-        })
-    }
-}

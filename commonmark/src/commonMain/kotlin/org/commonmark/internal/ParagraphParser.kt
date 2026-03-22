@@ -12,19 +12,17 @@ import org.commonmark.parser.block.BlockContinue
 import org.commonmark.parser.block.ParserState
 
 internal class ParagraphParser : AbstractBlockParser() {
-
     override val block: Paragraph = Paragraph()
     private val linkReferenceDefinitionParser = LinkReferenceDefinitionParser()
 
     override val canHaveLazyContinuationLines: Boolean get() = true
 
-    override fun tryContinue(parserState: ParserState): BlockContinue? {
-        return if (!parserState.isBlank) {
+    override fun tryContinue(parserState: ParserState): BlockContinue? =
+        if (!parserState.isBlank) {
             BlockContinue.atIndex(parserState.index)
         } else {
             BlockContinue.none()
         }
-    }
 
     override fun addLine(line: SourceLine) {
         linkReferenceDefinitionParser.parse(line)
@@ -66,7 +64,5 @@ internal class ParagraphParser : AbstractBlockParser() {
     val paragraphLines: SourceLines
         get() = linkReferenceDefinitionParser.paragraphLines
 
-    fun removeLines(lines: Int): List<SourceSpan> {
-        return linkReferenceDefinitionParser.removeLines(lines)
-    }
+    fun removeLines(lines: Int): List<SourceSpan> = linkReferenceDefinitionParser.removeLines(lines)
 }

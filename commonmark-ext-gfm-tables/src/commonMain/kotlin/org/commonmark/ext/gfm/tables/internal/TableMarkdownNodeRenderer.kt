@@ -13,8 +13,9 @@ import org.commonmark.text.AsciiMatcher
 /**
  * The Table node renderer that is needed for rendering GFM tables (GitHub Flavored Markdown) to Markdown.
  */
-internal class TableMarkdownNodeRenderer(private val context: MarkdownNodeRendererContext) : TableNodeRenderer() {
-
+internal class TableMarkdownNodeRenderer(
+    private val context: MarkdownNodeRendererContext,
+) : TableNodeRenderer() {
     private val writer: MarkdownWriter = context.getWriter()
 
     private val pipe: AsciiMatcher = AsciiMatcher.builder().c('|').build()

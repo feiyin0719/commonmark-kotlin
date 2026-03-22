@@ -7,7 +7,6 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertSame
 
 class SourceSpanTest {
-
     @Test
     fun testSubSpan() {
         val span = SourceSpan.of(1, 2, 3, 5)

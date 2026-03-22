@@ -28,29 +28,29 @@ public class TablesExtension private constructor() :
     HtmlRenderer.HtmlRendererExtension,
     TextContentRenderer.TextContentRendererExtension,
     MarkdownRenderer.MarkdownRendererExtension {
+        public companion object {
+            public fun create(): Extension = TablesExtension()
+        }
 
-    public companion object {
-        public fun create(): Extension = TablesExtension()
+        override fun extend(parserBuilder: Parser.Builder) {
+            parserBuilder.customBlockParserFactory(TableBlockParser.Factory())
+        }
+
+        override fun extend(rendererBuilder: HtmlRenderer.Builder) {
+            rendererBuilder.nodeRendererFactory { context -> TableHtmlNodeRenderer(context) }
+        }
+
+        override fun extend(rendererBuilder: TextContentRenderer.Builder) {
+            rendererBuilder.nodeRendererFactory { context -> TableTextContentNodeRenderer(context) }
+        }
+
+        override fun extend(rendererBuilder: MarkdownRenderer.Builder) {
+            rendererBuilder.nodeRendererFactory(
+                object : MarkdownNodeRendererFactory {
+                    override fun create(context: MarkdownNodeRendererContext): NodeRenderer = TableMarkdownNodeRenderer(context)
+
+                    override fun getSpecialCharacters(): Set<Char> = setOf('|')
+                },
+            )
+        }
     }
-
-    override fun extend(parserBuilder: Parser.Builder) {
-        parserBuilder.customBlockParserFactory(TableBlockParser.Factory())
-    }
-
-    override fun extend(rendererBuilder: HtmlRenderer.Builder) {
-        rendererBuilder.nodeRendererFactory { context -> TableHtmlNodeRenderer(context) }
-    }
-
-    override fun extend(rendererBuilder: TextContentRenderer.Builder) {
-        rendererBuilder.nodeRendererFactory { context -> TableTextContentNodeRenderer(context) }
-    }
-
-    override fun extend(rendererBuilder: MarkdownRenderer.Builder) {
-        rendererBuilder.nodeRendererFactory(object : MarkdownNodeRendererFactory {
-            override fun create(context: MarkdownNodeRendererContext): NodeRenderer =
-                TableMarkdownNodeRenderer(context)
-
-            override fun getSpecialCharacters(): Set<Char> = setOf('|')
-        })
-    }
-}

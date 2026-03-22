@@ -6,7 +6,6 @@ import kotlin.test.Test
  * Pathological input cases (from commonmark.js).
  */
 class PathologicalTest : CoreRenderingTestCase() {
-
     private var x = 100_000
 
     @Test
@@ -16,7 +15,7 @@ class PathologicalTest : CoreRenderingTestCase() {
         assertRendering(
             "*a **a ".repeat(x) + "b" + " a** a*".repeat(x),
             "<p>" + "<em>a <strong>a ".repeat(x) + "b" +
-                    " a</strong> a</em>".repeat(x) + "</p>\n"
+                " a</strong> a</em>".repeat(x) + "</p>\n",
         )
     }
 
@@ -24,7 +23,7 @@ class PathologicalTest : CoreRenderingTestCase() {
     fun emphasisClosersWithNoOpeners() {
         assertRendering(
             "a_ ".repeat(x),
-            "<p>" + "a_ ".repeat(x - 1) + "a_</p>\n"
+            "<p>" + "a_ ".repeat(x - 1) + "a_</p>\n",
         )
     }
 
@@ -32,7 +31,7 @@ class PathologicalTest : CoreRenderingTestCase() {
     fun emphasisOpenersWithNoClosers() {
         assertRendering(
             "_a ".repeat(x),
-            "<p>" + "_a ".repeat(x - 1) + "_a</p>\n"
+            "<p>" + "_a ".repeat(x - 1) + "_a</p>\n",
         )
     }
 
@@ -40,7 +39,7 @@ class PathologicalTest : CoreRenderingTestCase() {
     fun linkClosersWithNoOpeners() {
         assertRendering(
             "a] ".repeat(x),
-            "<p>" + "a] ".repeat(x - 1) + "a]</p>\n"
+            "<p>" + "a] ".repeat(x - 1) + "a]</p>\n",
         )
     }
 
@@ -48,7 +47,7 @@ class PathologicalTest : CoreRenderingTestCase() {
     fun linkOpenersWithNoClosers() {
         assertRendering(
             "[a ".repeat(x),
-            "<p>" + "[a ".repeat(x - 1) + "[a</p>\n"
+            "<p>" + "[a ".repeat(x - 1) + "[a</p>\n",
         )
     }
 
@@ -56,7 +55,7 @@ class PathologicalTest : CoreRenderingTestCase() {
     fun linkOpenersAndEmphasisClosers() {
         assertRendering(
             "[ a_ ".repeat(x),
-            "<p>" + "[ a_ ".repeat(x - 1) + "[ a_</p>\n"
+            "<p>" + "[ a_ ".repeat(x - 1) + "[ a_</p>\n",
         )
     }
 
@@ -64,7 +63,7 @@ class PathologicalTest : CoreRenderingTestCase() {
     fun mismatchedOpenersAndClosers() {
         assertRendering(
             "*a_ ".repeat(x),
-            "<p>" + "*a_ ".repeat(x - 1) + "*a_</p>\n"
+            "<p>" + "*a_ ".repeat(x - 1) + "*a_</p>\n",
         )
     }
 
@@ -72,7 +71,7 @@ class PathologicalTest : CoreRenderingTestCase() {
     fun nestedBrackets() {
         assertRendering(
             "[".repeat(x) + "a" + "]".repeat(x),
-            "<p>" + "[".repeat(x) + "a" + "]".repeat(x) + "</p>\n"
+            "<p>" + "[".repeat(x) + "a" + "]".repeat(x) + "</p>\n",
         )
     }
 
@@ -83,7 +82,7 @@ class PathologicalTest : CoreRenderingTestCase() {
         assertRendering(
             "> ".repeat(x) + "a\n",
             "<blockquote>\n".repeat(x) + "<p>a</p>\n" +
-                    "</blockquote>\n".repeat(x)
+                "</blockquote>\n".repeat(x),
         )
     }
 
@@ -91,7 +90,7 @@ class PathologicalTest : CoreRenderingTestCase() {
     fun hugeHorizontalRule() {
         assertRendering(
             "*".repeat(10000) + "\n",
-            "<hr />\n"
+            "<hr />\n",
         )
     }
 
@@ -100,7 +99,7 @@ class PathologicalTest : CoreRenderingTestCase() {
         // See https://github.com/commonmark/commonmark.js/issues/157
         assertRendering(
             "[" + "\\".repeat(x) + "\n",
-            "<p>" + "[" + "\\".repeat(x / 2) + "</p>\n"
+            "<p>" + "[" + "\\".repeat(x / 2) + "</p>\n",
         )
     }
 
@@ -109,7 +108,7 @@ class PathologicalTest : CoreRenderingTestCase() {
         // See https://github.com/commonmark/commonmark.js/issues/129
         assertRendering(
             "[](".repeat(x) + "\n",
-            "<p>" + "[](".repeat(x) + "</p>\n"
+            "<p>" + "[](".repeat(x) + "</p>\n",
         )
     }
 }

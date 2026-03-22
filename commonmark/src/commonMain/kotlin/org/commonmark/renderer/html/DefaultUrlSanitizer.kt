@@ -6,7 +6,6 @@ package org.commonmark.renderer.html
  * Implementation based on https://github.com/OWASP/java-html-sanitizer
  */
 public class DefaultUrlSanitizer : UrlSanitizer {
-
     private val protocols: Set<String>
 
     public constructor() : this(listOf("http", "https", "mailto", "data"))
@@ -23,6 +22,7 @@ public class DefaultUrlSanitizer : UrlSanitizer {
                     // No protocol.
                     return stripped
                 }
+
                 ':' -> {
                     val protocol = stripped.substring(0, i).lowercase()
                     return if (!protocols.contains(protocol)) {
@@ -36,9 +36,7 @@ public class DefaultUrlSanitizer : UrlSanitizer {
         return stripped
     }
 
-    override fun sanitizeImageUrl(url: String): String {
-        return sanitizeLinkUrl(url)
-    }
+    override fun sanitizeImageUrl(url: String): String = sanitizeLinkUrl(url)
 
     private fun stripHtmlSpaces(s: String): String {
         var n = s.length
@@ -62,10 +60,9 @@ public class DefaultUrlSanitizer : UrlSanitizer {
         }
     }
 
-    private fun isHtmlSpace(ch: Char): Boolean {
-        return when (ch) {
+    private fun isHtmlSpace(ch: Char): Boolean =
+        when (ch) {
             ' ', '\t', '\n', '\u000c', '\r' -> true
             else -> false
         }
-    }
 }

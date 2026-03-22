@@ -11,9 +11,8 @@ internal class Delimiter(
     val delimiterChar: Char,
     override val canOpen: Boolean,
     override val canClose: Boolean,
-    var previous: Delimiter?
+    var previous: Delimiter?,
 ) : DelimiterRun {
-
     var next: Delimiter? = null
 
     override val originalLength: Int = characters.size

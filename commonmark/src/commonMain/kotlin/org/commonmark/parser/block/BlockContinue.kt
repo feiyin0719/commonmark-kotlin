@@ -6,7 +6,6 @@ import org.commonmark.internal.BlockContinueImpl
  * Result object for continuing parsing of a block, see static methods for constructors.
  */
 public open class BlockContinue {
-
     public companion object {
         public fun none(): BlockContinue? = null
 

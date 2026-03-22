@@ -12,16 +12,17 @@ import kotlin.test.fail
  * and checks the rendered HTML output.
  */
 class RegressionTest {
-
     private val parser = Parser.builder().build()
+
     // The spec says URL-escaping is optional, but the examples assume that it's enabled.
     private val renderer = HtmlRenderer.builder().percentEncodeUrls(true).build()
 
-    private fun render(source: String): String {
-        return renderer.render(parser.parse(source))
-    }
+    private fun render(source: String): String = renderer.render(parser.parse(source))
 
-    private fun assertRendering(source: String, expectedHtml: String) {
+    private fun assertRendering(
+        source: String,
+        expectedHtml: String,
+    ) {
         val actual = render(source)
         val expected = showTabs("$expectedHtml\n\n$source")
         val actualFormatted = showTabs("$actual\n\n$source")
@@ -35,9 +36,11 @@ class RegressionTest {
         val missingResources = mutableListOf<String>()
 
         for (resourcePath in regressionResources) {
-            val content = this::class.java.getResourceAsStream(resourcePath)
-                ?.bufferedReader()
-                ?.readText()
+            val content =
+                this::class.java
+                    .getResourceAsStream(resourcePath)
+                    ?.bufferedReader()
+                    ?.readText()
 
             if (content == null) {
                 missingResources.add(resourcePath)
@@ -60,9 +63,9 @@ class RegressionTest {
             if (actual != expectedHtml) {
                 failures.add(
                     "Example ${example.exampleNumber} (${example.section}):\n" +
-                            "  Source:   ${example.source.trimEnd().replace("\n", "\\n")}\n" +
-                            "  Expected: ${expectedHtml.trimEnd().replace("\n", "\\n")}\n" +
-                            "  Actual:   ${actual.trimEnd().replace("\n", "\\n")}"
+                        "  Source:   ${example.source.trimEnd().replace("\n", "\\n")}\n" +
+                        "  Expected: ${expectedHtml.trimEnd().replace("\n", "\\n")}\n" +
+                        "  Actual:   ${actual.trimEnd().replace("\n", "\\n")}",
                 )
             }
         }
@@ -70,25 +73,24 @@ class RegressionTest {
         if (failures.isNotEmpty()) {
             val total = allExamples.size
             val passed = total - failures.size
-            val message = buildString {
-                appendLine("$passed/$total regression examples passed. ${failures.size} failures:")
-                appendLine()
-                for (failure in failures.take(50)) {
-                    appendLine(failure)
+            val message =
+                buildString {
+                    appendLine("$passed/$total regression examples passed. ${failures.size} failures:")
                     appendLine()
+                    for (failure in failures.take(50)) {
+                        appendLine(failure)
+                        appendLine()
+                    }
+                    if (failures.size > 50) {
+                        appendLine("... and ${failures.size - 50} more failures")
+                    }
                 }
-                if (failures.size > 50) {
-                    appendLine("... and ${failures.size - 50} more failures")
-                }
-            }
             fail(message)
         }
     }
 
     companion object {
-        private fun showTabs(s: String): String {
-            return s.replace("\t", "\u2192")
-        }
+        private fun showTabs(s: String): String = s.replace("\t", "\u2192")
 
         private fun getOverriddenExamples(): Map<String, String> {
             val m = mutableMapOf<String, String>()

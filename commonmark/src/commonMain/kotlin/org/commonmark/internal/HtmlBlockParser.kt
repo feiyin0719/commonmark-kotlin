@@ -11,9 +11,8 @@ import org.commonmark.parser.block.MatchedBlockParser
 import org.commonmark.parser.block.ParserState
 
 internal class HtmlBlockParser private constructor(
-    private val closingPattern: Regex?
+    private val closingPattern: Regex?,
 ) : AbstractBlockParser() {
-
     override val block: HtmlBlock = HtmlBlock()
 
     private var finished = false
@@ -46,8 +45,10 @@ internal class HtmlBlockParser private constructor(
     }
 
     class Factory : AbstractBlockParserFactory() {
-
-        override fun tryStart(state: ParserState, matchedBlockParser: MatchedBlockParser): BlockStart? {
+        override fun tryStart(
+            state: ParserState,
+            matchedBlockParser: MatchedBlockParser,
+        ): BlockStart? {
             val nextNonSpace = state.nextNonSpaceIndex
             val line = state.line.content
 
@@ -55,8 +56,10 @@ internal class HtmlBlockParser private constructor(
                 for (blockType in 1..7) {
                     // Type 7 can not interrupt a paragraph (not even a lazy one)
                     if (blockType == 7 && (
-                                matchedBlockParser.matchedBlockParser.block is Paragraph ||
-                                        state.activeBlockParser.canHaveLazyContinuationLines)) {
+                            matchedBlockParser.matchedBlockParser.block is Paragraph ||
+                                state.activeBlockParser.canHaveLazyContinuationLines
+                        )
+                    ) {
                         continue
                     }
                     val opener = BLOCK_PATTERNS[blockType][0]
@@ -84,31 +87,32 @@ internal class HtmlBlockParser private constructor(
         private const val OPENTAG = "<$TAGNAME$ATTRIBUTE*\\s*/?>"
         private const val CLOSETAG = "</$TAGNAME\\s*[>]"
 
-        private val BLOCK_PATTERNS: Array<Array<Regex?>> = arrayOf(
-            arrayOf(null, null), // not used (no type 0)
+        private val BLOCK_PATTERNS: Array<Array<Regex?>> =
             arrayOf(
-                Regex("^<(?:script|pre|style|textarea)(?:\\s|>|$)", RegexOption.IGNORE_CASE),
-                Regex("</(?:script|pre|style|textarea)>", RegexOption.IGNORE_CASE)
-            ),
-            arrayOf(
-                Regex("^<!--"),
-                Regex("-->")
-            ),
-            arrayOf(
-                Regex("^<[?]"),
-                Regex("\\?>")
-            ),
-            arrayOf(
-                Regex("^<![A-Z]"),
-                Regex(">")
-            ),
-            arrayOf(
-                Regex("^<!\\[CDATA\\["),
-                Regex("\\]\\]>")
-            ),
-            arrayOf(
-                Regex(
-                    "^</?(?:" +
+                arrayOf(null, null), // not used (no type 0)
+                arrayOf(
+                    Regex("^<(?:script|pre|style|textarea)(?:\\s|>|$)", RegexOption.IGNORE_CASE),
+                    Regex("</(?:script|pre|style|textarea)>", RegexOption.IGNORE_CASE),
+                ),
+                arrayOf(
+                    Regex("^<!--"),
+                    Regex("-->"),
+                ),
+                arrayOf(
+                    Regex("^<[?]"),
+                    Regex("\\?>"),
+                ),
+                arrayOf(
+                    Regex("^<![A-Z]"),
+                    Regex(">"),
+                ),
+                arrayOf(
+                    Regex("^<!\\[CDATA\\["),
+                    Regex("\\]\\]>"),
+                ),
+                arrayOf(
+                    Regex(
+                        "^</?(?:" +
                             "address|article|aside|" +
                             "base|basefont|blockquote|body|" +
                             "caption|center|col|colgroup|" +
@@ -124,14 +128,15 @@ internal class HtmlBlockParser private constructor(
                             "search|section|summary|" +
                             "table|tbody|td|tfoot|th|thead|title|tr|track|" +
                             "ul" +
-                            ")(?:\\s|[/]?[>]|$)", RegexOption.IGNORE_CASE
+                            ")(?:\\s|[/]?[>]|$)",
+                        RegexOption.IGNORE_CASE,
+                    ),
+                    null, // terminated by blank line
                 ),
-                null // terminated by blank line
-            ),
-            arrayOf(
-                Regex("^(?:$OPENTAG|$CLOSETAG)\\s*$", RegexOption.IGNORE_CASE),
-                null // terminated by blank line
+                arrayOf(
+                    Regex("^(?:$OPENTAG|$CLOSETAG)\\s*$", RegexOption.IGNORE_CASE),
+                    null, // terminated by blank line
+                ),
             )
-        )
     }
 }

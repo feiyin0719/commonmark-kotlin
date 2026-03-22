@@ -8,7 +8,7 @@ import org.commonmark.text.CharMatcher
 public class Scanner internal constructor(
     private val lines: List<SourceLine>,
     private var lineIndex: Int,
-    private var index: Int
+    private var index: Int,
 ) {
     private var line: SourceLine = SourceLine.of("", null)
     private var lineLength: Int = 0
@@ -126,7 +126,10 @@ public class Scanner internal constructor(
                     count++
                     next()
                 }
-                else -> return count
+
+                else -> {
+                    return count
+                }
             }
         }
     }
@@ -162,7 +165,10 @@ public class Scanner internal constructor(
         setLine(lines[this.lineIndex])
     }
 
-    public fun getSource(begin: Position, end: Position): SourceLines {
+    public fun getSource(
+        begin: Position,
+        end: Position,
+    ): SourceLines {
         if (begin.lineIndex == end.lineIndex) {
             val sourceLine = lines[begin.lineIndex]
             val newContent = sourceLine.content.subSequence(begin.index, end.index)
@@ -190,7 +196,10 @@ public class Scanner internal constructor(
         this.lineLength = line.content.length
     }
 
-    private fun checkPosition(lineIndex: Int, index: Int) {
+    private fun checkPosition(
+        lineIndex: Int,
+        index: Int,
+    ) {
         require(lineIndex in lines.indices) {
             "Line index $lineIndex out of range, number of lines: ${lines.size}"
         }
@@ -200,9 +209,10 @@ public class Scanner internal constructor(
         }
     }
 
-    private fun toCodePoint(high: Char, low: Char): Int {
-        return ((high.code - 0xD800) shl 10) + (low.code - 0xDC00) + 0x10000
-    }
+    private fun toCodePoint(
+        high: Char,
+        low: Char,
+    ): Int = ((high.code - 0xD800) shl 10) + (low.code - 0xDC00) + 0x10000
 
     public companion object {
         public const val END: Char = '\u0000'

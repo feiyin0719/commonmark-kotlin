@@ -12,8 +12,9 @@ import org.commonmark.renderer.text.TextContentWriter
 /**
  * The Table node renderer that is needed for rendering GFM tables (GitHub Flavored Markdown) to text content.
  */
-internal class TableTextContentNodeRenderer(private val context: TextContentNodeRendererContext) : TableNodeRenderer() {
-
+internal class TableTextContentNodeRenderer(
+    private val context: TextContentNodeRendererContext,
+) : TableNodeRenderer() {
     private val textContentWriter: TextContentWriter = context.getWriter()
 
     override fun renderBlock(node: TableBlock) {

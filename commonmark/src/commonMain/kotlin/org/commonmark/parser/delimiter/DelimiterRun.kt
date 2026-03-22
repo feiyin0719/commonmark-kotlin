@@ -12,6 +12,8 @@ public interface DelimiterRun {
     public val originalLength: Int
     public val opener: Text
     public val closer: Text
+
     public fun getOpeners(length: Int): Iterable<Text>
+
     public fun getClosers(length: Int): Iterable<Text>
 }

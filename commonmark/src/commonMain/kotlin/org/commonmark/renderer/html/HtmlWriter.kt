@@ -5,8 +5,9 @@ import org.commonmark.internal.util.Escaping
 /**
  * Writes HTML to a [StringBuilder].
  */
-public class HtmlWriter(private val buffer: StringBuilder) {
-
+public class HtmlWriter(
+    private val buffer: StringBuilder,
+) {
     private var lastChar: Char = '\u0000'
 
     public fun raw(s: String) {
@@ -21,11 +22,18 @@ public class HtmlWriter(private val buffer: StringBuilder) {
         tag(name, emptyMap())
     }
 
-    public fun tag(name: String, attrs: Map<String, String?>) {
+    public fun tag(
+        name: String,
+        attrs: Map<String, String?>,
+    ) {
         tag(name, attrs, false)
     }
 
-    public fun tag(name: String, attrs: Map<String, String?>, voidElement: Boolean) {
+    public fun tag(
+        name: String,
+        attrs: Map<String, String?>,
+        voidElement: Boolean,
+    ) {
         append("<")
         append(name)
         if (attrs.isNotEmpty()) {

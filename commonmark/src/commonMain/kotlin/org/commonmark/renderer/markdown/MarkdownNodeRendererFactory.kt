@@ -6,7 +6,6 @@ import org.commonmark.renderer.NodeRenderer
  * Factory for instantiating new node renderers for rendering custom nodes.
  */
 public interface MarkdownNodeRendererFactory {
-
     /**
      * Create a new node renderer for the specified rendering context.
      *

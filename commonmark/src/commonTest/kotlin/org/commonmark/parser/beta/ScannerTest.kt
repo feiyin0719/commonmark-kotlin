@@ -9,13 +9,14 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class ScannerTest {
-
     @Test
     fun testNext() {
-        val scanner = Scanner(
-            listOf(SourceLine.of("foo bar", null)),
-            0, 4
-        )
+        val scanner =
+            Scanner(
+                listOf(SourceLine.of("foo bar", null)),
+                0,
+                4,
+            )
         assertEquals('b', scanner.peek())
         scanner.next()
         assertEquals('a', scanner.peek())
@@ -27,13 +28,15 @@ class ScannerTest {
 
     @Test
     fun testMultipleLines() {
-        val scanner = Scanner(
-            listOf(
-                SourceLine.of("ab", null),
-                SourceLine.of("cde", null)
-            ),
-            0, 0
-        )
+        val scanner =
+            Scanner(
+                listOf(
+                    SourceLine.of("ab", null),
+                    SourceLine.of("cde", null),
+                ),
+                0,
+                0,
+            )
         assertTrue(scanner.hasNext())
         assertEquals('\u0000'.code, scanner.peekPreviousCodePoint())
         assertEquals('a', scanner.peek())
@@ -87,13 +90,15 @@ class ScannerTest {
 
     @Test
     fun testTextBetween() {
-        val scanner = Scanner(
-            listOf(
-                SourceLine.of("ab", SourceSpan.of(10, 3, 13, 2)),
-                SourceLine.of("cde", SourceSpan.of(11, 4, 20, 3))
-            ),
-            0, 0
-        )
+        val scanner =
+            Scanner(
+                listOf(
+                    SourceLine.of("ab", SourceSpan.of(10, 3, 13, 2)),
+                    SourceLine.of("cde", SourceSpan.of(11, 4, 20, 3)),
+                ),
+                0,
+                0,
+            )
 
         val start = scanner.position()
 
@@ -101,7 +106,7 @@ class ScannerTest {
         assertSourceLines(
             scanner.getSource(start, scanner.position()),
             "a",
-            SourceSpan.of(10, 3, 13, 1)
+            SourceSpan.of(10, 3, 13, 1),
         )
 
         val afterA = scanner.position()
@@ -110,7 +115,7 @@ class ScannerTest {
         assertSourceLines(
             scanner.getSource(start, scanner.position()),
             "ab",
-            SourceSpan.of(10, 3, 13, 2)
+            SourceSpan.of(10, 3, 13, 2),
         )
 
         val afterB = scanner.position()
@@ -119,7 +124,7 @@ class ScannerTest {
         assertSourceLines(
             scanner.getSource(start, scanner.position()),
             "ab\n",
-            SourceSpan.of(10, 3, 13, 2)
+            SourceSpan.of(10, 3, 13, 2),
         )
 
         scanner.next()
@@ -127,7 +132,7 @@ class ScannerTest {
             scanner.getSource(start, scanner.position()),
             "ab\nc",
             SourceSpan.of(10, 3, 13, 2),
-            SourceSpan.of(11, 4, 20, 1)
+            SourceSpan.of(11, 4, 20, 1),
         )
 
         scanner.next()
@@ -135,7 +140,7 @@ class ScannerTest {
             scanner.getSource(start, scanner.position()),
             "ab\ncd",
             SourceSpan.of(10, 3, 13, 2),
-            SourceSpan.of(11, 4, 20, 2)
+            SourceSpan.of(11, 4, 20, 2),
         )
 
         scanner.next()
@@ -143,38 +148,43 @@ class ScannerTest {
             scanner.getSource(start, scanner.position()),
             "ab\ncde",
             SourceSpan.of(10, 3, 13, 2),
-            SourceSpan.of(11, 4, 20, 3)
+            SourceSpan.of(11, 4, 20, 3),
         )
 
         assertSourceLines(
             scanner.getSource(afterA, scanner.position()),
             "b\ncde",
             SourceSpan.of(10, 4, 14, 1),
-            SourceSpan.of(11, 4, 20, 3)
+            SourceSpan.of(11, 4, 20, 3),
         )
 
         assertSourceLines(
             scanner.getSource(afterB, scanner.position()),
             "\ncde",
-            SourceSpan.of(11, 4, 20, 3)
+            SourceSpan.of(11, 4, 20, 3),
         )
     }
 
-    private fun assertSourceLines(sourceLines: SourceLines, expectedContent: String, vararg expectedSourceSpans: SourceSpan) {
+    private fun assertSourceLines(
+        sourceLines: SourceLines,
+        expectedContent: String,
+        vararg expectedSourceSpans: SourceSpan,
+    ) {
         assertEquals(expectedContent, sourceLines.getContent())
         assertEquals(listOf(*expectedSourceSpans), sourceLines.getSourceSpans())
     }
 
     @Test
     fun nextString() {
-        val scanner = Scanner.of(
-            SourceLines.of(
-                listOf(
-                    SourceLine.of("hey ya", null),
-                    SourceLine.of("hi", null)
-                )
+        val scanner =
+            Scanner.of(
+                SourceLines.of(
+                    listOf(
+                        SourceLine.of("hey ya", null),
+                        SourceLine.of("hi", null),
+                    ),
+                ),
             )
-        )
         assertFalse(scanner.next("hoy"))
         assertTrue(scanner.next("hey"))
         assertTrue(scanner.next(' '))

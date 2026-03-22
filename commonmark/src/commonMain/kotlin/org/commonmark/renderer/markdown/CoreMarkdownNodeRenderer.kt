@@ -15,17 +15,37 @@ import kotlin.reflect.KClass
  * [Node] instances instead. So in order to support that, it sometimes needs to do a bit more work.
  */
 public class CoreMarkdownNodeRenderer(
-    protected val context: MarkdownNodeRendererContext
-) : AbstractVisitor(), NodeRenderer {
-
+    protected val context: MarkdownNodeRendererContext,
+) : AbstractVisitor(),
+    NodeRenderer {
     private val textEscape: AsciiMatcher
     private val textEscapeInHeading: CharMatcher
     private val linkDestinationNeedsAngleBrackets: CharMatcher =
-        AsciiMatcher.builder().c(' ').c('(').c(')').c('<').c('>').c('\n').c('\\').build()
+        AsciiMatcher
+            .builder()
+            .c(' ')
+            .c('(')
+            .c(')')
+            .c('<')
+            .c('>')
+            .c('\n')
+            .c('\\')
+            .build()
     private val linkDestinationEscapeInAngleBrackets: CharMatcher =
-        AsciiMatcher.builder().c('<').c('>').c('\n').c('\\').build()
+        AsciiMatcher
+            .builder()
+            .c('<')
+            .c('>')
+            .c('\n')
+            .c('\\')
+            .build()
     private val linkTitleEscapeInQuotes: CharMatcher =
-        AsciiMatcher.builder().c('"').c('\n').c('\\').build()
+        AsciiMatcher
+            .builder()
+            .c('"')
+            .c('\n')
+            .c('\\')
+            .build()
 
     private val orderedListMarkerPattern = Regex("^([0-9]{1,9})([.)])")
 
@@ -38,12 +58,17 @@ public class CoreMarkdownNodeRenderer(
     private var listHolder: ListHolder? = null
 
     init {
-        textEscape = AsciiMatcher.builder().anyOf("[]<>`*_&\n\\").anyOf(context.getSpecialCharacters()).build()
+        textEscape =
+            AsciiMatcher
+                .builder()
+                .anyOf("[]<>`*_&\n\\")
+                .anyOf(context.getSpecialCharacters())
+                .build()
         textEscapeInHeading = AsciiMatcher.builder(textEscape).anyOf("#").build()
     }
 
-    override fun getNodeTypes(): Set<KClass<out Node>> {
-        return setOf(
+    override fun getNodeTypes(): Set<KClass<out Node>> =
+        setOf(
             BlockQuote::class,
             BulletList::class,
             Code::class,
@@ -63,9 +88,8 @@ public class CoreMarkdownNodeRenderer(
             SoftLineBreak::class,
             StrongEmphasis::class,
             Text::class,
-            ThematicBreak::class
+            ThematicBreak::class,
         )
-    }
 
     override fun render(node: Node) {
         node.accept(this)
@@ -233,10 +257,12 @@ public class CoreMarkdownNodeRenderer(
             is BulletListHolder -> {
                 marker = " ".repeat(markerIndent) + holder.marker
             }
+
             is OrderedListHolder -> {
                 marker = " ".repeat(markerIndent) + holder.number + holder.delimiter
                 holder.number++
             }
+
             else -> {
                 throw IllegalStateException("Unknown list holder type: $listHolder")
             }
@@ -267,7 +293,8 @@ public class CoreMarkdownNodeRenderer(
         // If the literal starts or ends with a backtick, surround it with a single space.
         // If it starts and ends with a space (but is not only spaces), add an additional space (otherwise they would
         // get removed on parsing).
-        val addSpace = literal.startsWith("`") || literal.endsWith("`") ||
+        val addSpace =
+            literal.startsWith("`") || literal.endsWith("`") ||
                 (literal.startsWith(" ") && literal.endsWith(" ") && Characters.hasNonSpace(literal))
         if (addSpace) {
             writer.raw(' ')
@@ -334,11 +361,13 @@ public class CoreMarkdownNodeRenderer(
                     writer.raw("\\-")
                     literal = literal.substring(1)
                 }
+
                 '#' -> {
                     // Would be ambiguous with an ATX heading, escape
                     writer.raw("\\#")
                     literal = literal.substring(1)
                 }
+
                 '=' -> {
                     // Would be ambiguous with a Setext heading, escape unless it's the first line in the block
                     if (text.previous != null) {
@@ -346,6 +375,7 @@ public class CoreMarkdownNodeRenderer(
                         literal = literal.substring(1)
                     }
                 }
+
                 '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> {
                     // Check for ordered list marker
                     val m = orderedListMarkerPattern.find(literal)
@@ -355,10 +385,12 @@ public class CoreMarkdownNodeRenderer(
                         literal = literal.substring(m.range.last + 1)
                     }
                 }
+
                 '\t' -> {
                     writer.raw("&#9;")
                     literal = literal.substring(1)
                 }
+
                 ' ' -> {
                     writer.raw("&#32;")
                     literal = literal.substring(1)
@@ -386,7 +418,12 @@ public class CoreMarkdownNodeRenderer(
         }
     }
 
-    private fun writeLinkLike(title: String?, destination: String, node: Node, opener: String) {
+    private fun writeLinkLike(
+        title: String?,
+        destination: String,
+        node: Node,
+        opener: String,
+    ) {
         writer.raw(opener)
         visitChildren(node)
         writer.raw(']')
@@ -407,13 +444,21 @@ public class CoreMarkdownNodeRenderer(
         writer.raw(')')
     }
 
-    private open class ListHolder(val parent: ListHolder?)
+    private open class ListHolder(
+        val parent: ListHolder?,
+    )
 
-    private class BulletListHolder(parent: ListHolder?, bulletList: BulletList) : ListHolder(parent) {
+    private class BulletListHolder(
+        parent: ListHolder?,
+        bulletList: BulletList,
+    ) : ListHolder(parent) {
         val marker: String = bulletList.marker ?: "-"
     }
 
-    private class OrderedListHolder(parent: ListHolder?, orderedList: OrderedList) : ListHolder(parent) {
+    private class OrderedListHolder(
+        parent: ListHolder?,
+        orderedList: OrderedList,
+    ) : ListHolder(parent) {
         val delimiter: String = orderedList.markerDelimiter ?: "."
         var number: Int = orderedList.markerStartNumber ?: 1
     }
@@ -424,9 +469,7 @@ public class CoreMarkdownNodeRenderer(
     private class LineBreakVisitor : AbstractVisitor() {
         private var lineBreak = false
 
-        fun hasLineBreak(): Boolean {
-            return lineBreak
-        }
+        fun hasLineBreak(): Boolean = lineBreak
 
         override fun visit(softLineBreak: SoftLineBreak) {
             super.visit(softLineBreak)
@@ -440,7 +483,10 @@ public class CoreMarkdownNodeRenderer(
     }
 
     private companion object {
-        fun findMaxRunLength(needle: String, s: String): Int {
+        fun findMaxRunLength(
+            needle: String,
+            s: String,
+        ): Int {
             var maxRunLength = 0
             var pos = 0
             while (pos < s.length) {
@@ -458,7 +504,10 @@ public class CoreMarkdownNodeRenderer(
             return maxRunLength
         }
 
-        fun contains(s: String, charMatcher: CharMatcher): Boolean {
+        fun contains(
+            s: String,
+            charMatcher: CharMatcher,
+        ): Boolean {
             for (i in s.indices) {
                 if (charMatcher.matches(s[i])) {
                     return true

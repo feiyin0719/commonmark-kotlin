@@ -6,7 +6,6 @@ import org.commonmark.node.CustomNode
  * Table cell of a [TableRow] containing inline nodes.
  */
 public class TableCell : CustomNode() {
-
     /**
      * Whether the cell is a header or not.
      */
@@ -26,6 +25,8 @@ public class TableCell : CustomNode() {
      * How the cell is aligned horizontally.
      */
     public enum class Alignment {
-        LEFT, CENTER, RIGHT
+        LEFT,
+        CENTER,
+        RIGHT,
     }
 }

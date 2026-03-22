@@ -12,8 +12,9 @@ import org.commonmark.parser.Parser
  *
  * The parsed links are turned into normal [org.commonmark.node.Link] nodes.
  */
-public class AutolinkExtension private constructor(builder: Builder) : Parser.ParserExtension {
-
+public class AutolinkExtension private constructor(
+    builder: Builder,
+) : Parser.ParserExtension {
     private val linkTypes: Set<AutolinkType> = builder.linkTypes.toSet()
 
     override fun extend(parserBuilder: Parser.Builder) {
@@ -33,7 +34,6 @@ public class AutolinkExtension private constructor(builder: Builder) : Parser.Pa
     }
 
     public class Builder {
-
         internal var linkTypes: Set<AutolinkType> = AutolinkType.entries.toSet()
 
         /**
@@ -43,9 +43,7 @@ public class AutolinkExtension private constructor(builder: Builder) : Parser.Pa
          * @param linkTypes the link types to enable
          * @return this builder
          */
-        public fun linkTypes(vararg linkTypes: AutolinkType): Builder {
-            return this.linkTypes(linkTypes.toSet())
-        }
+        public fun linkTypes(vararg linkTypes: AutolinkType): Builder = this.linkTypes(linkTypes.toSet())
 
         /**
          * Configure the link types that should be autolinked. By default, all [AutolinkType] values

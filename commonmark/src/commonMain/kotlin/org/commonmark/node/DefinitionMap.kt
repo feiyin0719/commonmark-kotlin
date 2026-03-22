@@ -2,7 +2,9 @@ package org.commonmark.node
 
 import kotlin.reflect.KClass
 
-public class DefinitionMap<D : Any>(public val type: KClass<D>) {
+public class DefinitionMap<D : Any>(
+    public val type: KClass<D>,
+) {
     private val definitions = linkedMapOf<String, D>()
 
     public fun addAll(that: DefinitionMap<D>) {
@@ -11,7 +13,10 @@ public class DefinitionMap<D : Any>(public val type: KClass<D>) {
         }
     }
 
-    public fun putIfAbsent(label: String, definition: D): D? {
+    public fun putIfAbsent(
+        label: String,
+        definition: D,
+    ): D? {
         val normalizedLabel = normalizeLabel(label)
         return definitions.putIfAbsent(normalizedLabel, definition)
     }
@@ -36,7 +41,10 @@ public class DefinitionMap<D : Any>(public val type: KClass<D>) {
     }
 }
 
-private fun <K, V> MutableMap<K, V>.putIfAbsent(key: K, value: V): V? {
+private fun <K, V> MutableMap<K, V>.putIfAbsent(
+    key: K,
+    value: V,
+): V? {
     val existing = this[key]
     if (existing != null) return existing
     this[key] = value

@@ -9,7 +9,6 @@ import kotlin.test.assertEquals
  * Basic smoke test to verify parsing and rendering works.
  */
 class BasicParserTest {
-
     private val parser = Parser.builder().build()
     private val renderer = HtmlRenderer.builder().build()
 

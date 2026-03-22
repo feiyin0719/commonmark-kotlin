@@ -5,8 +5,9 @@ import org.commonmark.text.CharMatcher
 /**
  * Writer for Markdown (CommonMark) text.
  */
-public class MarkdownWriter(private val buffer: StringBuilder) {
-
+public class MarkdownWriter(
+    private val buffer: StringBuilder,
+) {
     private var blockSeparator: Int = 0
     private var lastChar: Char = '\u0000'
     private var atLineStart: Boolean = true
@@ -39,7 +40,10 @@ public class MarkdownWriter(private val buffer: StringBuilder) {
      * @param s      the string to write
      * @param escape which characters to escape
      */
-    public fun text(s: String, escape: CharMatcher) {
+    public fun text(
+        s: String,
+        escape: CharMatcher,
+    ) {
         if (s.isEmpty()) {
             return
         }
@@ -138,18 +142,17 @@ public class MarkdownWriter(private val buffer: StringBuilder) {
     /**
      * @return the last character that was written
      */
-    public fun getLastChar(): Char {
-        return lastChar
-    }
+    public fun getLastChar(): Char = lastChar
 
     /**
      * @return whether we're at the line start (not counting any prefixes), i.e. after a [line] or [block].
      */
-    public fun isAtLineStart(): Boolean {
-        return atLineStart
-    }
+    public fun isAtLineStart(): Boolean = atLineStart
 
-    private fun write(s: String, escape: CharMatcher?) {
+    private fun write(
+        s: String,
+        escape: CharMatcher?,
+    ) {
         if (rawEscapes.isEmpty() && escape == null) {
             // Normal fast path
             buffer.append(s)
@@ -195,7 +198,10 @@ public class MarkdownWriter(private val buffer: StringBuilder) {
         }
     }
 
-    private fun append(c: Char, escape: CharMatcher?) {
+    private fun append(
+        c: Char,
+        escape: CharMatcher?,
+    ) {
         if (needsEscaping(c, escape)) {
             if (c == '\n') {
                 // Can't escape this with \, use numeric character reference
@@ -209,13 +215,12 @@ public class MarkdownWriter(private val buffer: StringBuilder) {
         }
     }
 
-    private fun isTight(): Boolean {
-        return tight.isNotEmpty() && tight.last()
-    }
+    private fun isTight(): Boolean = tight.isNotEmpty() && tight.last()
 
-    private fun needsEscaping(c: Char, escape: CharMatcher?): Boolean {
-        return (escape != null && escape.matches(c)) || rawNeedsEscaping(c)
-    }
+    private fun needsEscaping(
+        c: Char,
+        escape: CharMatcher?,
+    ): Boolean = (escape != null && escape.matches(c)) || rawNeedsEscaping(c)
 
     private fun rawNeedsEscaping(c: Char): Boolean {
         for (rawEscape in rawEscapes) {

@@ -15,8 +15,10 @@ import org.commonmark.parser.block.MatchedBlockParser
 import org.commonmark.parser.block.ParserState
 import org.commonmark.text.Characters
 
-internal class HeadingParser(level: Int, private val content: SourceLines) : AbstractBlockParser() {
-
+internal class HeadingParser(
+    level: Int,
+    private val content: SourceLines,
+) : AbstractBlockParser() {
     override val block: Heading = Heading().apply { this.level = level }
 
     override fun tryContinue(parserState: ParserState): BlockContinue? {
@@ -29,8 +31,10 @@ internal class HeadingParser(level: Int, private val content: SourceLines) : Abs
     }
 
     class Factory : AbstractBlockParserFactory() {
-
-        override fun tryStart(state: ParserState, matchedBlockParser: MatchedBlockParser): BlockStart? {
+        override fun tryStart(
+            state: ParserState,
+            matchedBlockParser: MatchedBlockParser,
+        ): BlockStart? {
             if (state.indent >= Parsing.CODE_BLOCK_INDENT) {
                 return BlockStart.none()
             }
@@ -48,7 +52,8 @@ internal class HeadingParser(level: Int, private val content: SourceLines) : Abs
             if (setextHeadingLevel > 0) {
                 val paragraph = matchedBlockParser.paragraphLines
                 if (!paragraph.isEmpty()) {
-                    return BlockStart.of(HeadingParser(setextHeadingLevel, paragraph))
+                    return BlockStart
+                        .of(HeadingParser(setextHeadingLevel, paragraph))
                         .atIndex(line.content.length)
                         .replaceParagraphLines(paragraph.lines.size)
                 }
@@ -103,10 +108,12 @@ internal class HeadingParser(level: Int, private val content: SourceLines) : Abs
                             end = scanner.position()
                         }
                     }
+
                     ' ', '\t' -> {
                         hashCanEnd = true
                         scanner.next()
                     }
+
                     else -> {
                         hashCanEnd = false
                         scanner.next()
@@ -125,13 +132,17 @@ internal class HeadingParser(level: Int, private val content: SourceLines) : Abs
 
         // spec: A setext heading underline is a sequence of = characters or a sequence of - characters, with no more than
         // 3 spaces indentation and any number of trailing spaces.
-        private fun getSetextHeadingLevel(line: CharSequence, index: Int): Int {
+        private fun getSetextHeadingLevel(
+            line: CharSequence,
+            index: Int,
+        ): Int {
             when (line[index]) {
                 '=' -> {
                     if (isSetextHeadingRest(line, index + 1, '=')) {
                         return 1
                     }
                 }
+
                 '-' -> {
                     if (isSetextHeadingRest(line, index + 1, '-')) {
                         return 2
@@ -141,7 +152,11 @@ internal class HeadingParser(level: Int, private val content: SourceLines) : Abs
             return 0
         }
 
-        private fun isSetextHeadingRest(line: CharSequence, index: Int, marker: Char): Boolean {
+        private fun isSetextHeadingRest(
+            line: CharSequence,
+            index: Int,
+            marker: Char,
+        ): Boolean {
             val afterMarker = Characters.skip(marker, line, index, line.length)
             val afterSpace = Characters.skipSpaceTab(line, afterMarker, line.length)
             return afterSpace >= line.length

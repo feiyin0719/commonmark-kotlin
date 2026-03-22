@@ -8,14 +8,16 @@ import org.commonmark.parser.delimiter.DelimiterProcessor
 import org.commonmark.parser.delimiter.DelimiterRun
 
 internal class InsDelimiterProcessor : DelimiterProcessor {
-
     override val openingCharacter: Char get() = '+'
 
     override val closingCharacter: Char get() = '+'
 
     override val minLength: Int get() = 2
 
-    override fun process(openingRun: DelimiterRun, closingRun: DelimiterRun): Int {
+    override fun process(
+        openingRun: DelimiterRun,
+        closingRun: DelimiterRun,
+    ): Int {
         if (openingRun.length >= 2 && closingRun.length >= 2) {
             // Use exactly two delimiters even if we have more, and don't care about internal openers/closers.
             val opener = openingRun.opener

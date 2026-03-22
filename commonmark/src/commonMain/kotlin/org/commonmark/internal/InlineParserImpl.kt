@@ -12,8 +12,10 @@ import org.commonmark.parser.delimiter.DelimiterProcessor
 import org.commonmark.text.AsciiMatcher
 import org.commonmark.text.Characters
 
-internal class InlineParserImpl(private val context: InlineParserContext) : InlineParser, InlineParserState {
-
+internal class InlineParserImpl(
+    private val context: InlineParserContext,
+) : InlineParser,
+    InlineParserState {
     private val inlineContentParserFactories: List<InlineContentParserFactory> =
         calculateInlineContentParserFactories(context.customInlineContentParserFactories)
     private val delimiterProcessors: Map<Char, DelimiterProcessor> =
@@ -41,9 +43,7 @@ internal class InlineParserImpl(private val context: InlineParserContext) : Inli
      */
     private var lastBracket: Bracket? = null
 
-    private fun calculateInlineContentParserFactories(
-        customFactories: List<InlineContentParserFactory>
-    ): List<InlineContentParserFactory> {
+    private fun calculateInlineContentParserFactories(customFactories: List<InlineContentParserFactory>): List<InlineContentParserFactory> {
         // Custom parsers can override built-in parsers if they want, so make sure they are tried first
         val list = ArrayList(customFactories)
         list.add(BackslashInlineParser.Factory())
@@ -77,7 +77,10 @@ internal class InlineParserImpl(private val context: InlineParserContext) : Inli
     /**
      * Parse content in block into inline children, appending them to the block node.
      */
-    override fun parse(lines: SourceLines, node: Node) {
+    override fun parse(
+        lines: SourceLines,
+        node: Node,
+    ) {
         reset(lines)
 
         while (true) {
@@ -170,7 +173,10 @@ internal class InlineParserImpl(private val context: InlineParserContext) : Inli
     /**
      * Attempt to parse delimiters like emphasis, strong emphasis or custom delimiters.
      */
-    private fun parseDelimiters(delimiterProcessor: DelimiterProcessor, delimiterChar: Char): List<Text>? {
+    private fun parseDelimiters(
+        delimiterProcessor: DelimiterProcessor,
+        delimiterChar: Char,
+    ): List<Text>? {
         val res = scanDelimiters(delimiterProcessor, delimiterChar) ?: return null
 
         val characters = res.characters
@@ -216,9 +222,14 @@ internal class InlineParserImpl(private val context: InlineParserContext) : Inli
             // Add entry to stack for this opener
             addBracket(
                 Bracket.withMarker(
-                    bangNode, markerPosition, bracketNode, bracketPosition,
-                    contentPosition, lastBracket, lastDelimiter
-                )
+                    bangNode,
+                    markerPosition,
+                    bracketNode,
+                    bracketPosition,
+                    contentPosition,
+                    lastBracket,
+                    lastDelimiter,
+                ),
             )
             return listOf(bangNode, bracketNode)
         } else {
@@ -259,7 +270,10 @@ internal class InlineParserImpl(private val context: InlineParserContext) : Inli
         return text(scanner.getSource(beforeClose, afterClose))
     }
 
-    private fun parseLinkOrImage(opener: Bracket, beforeClose: Position): Node? {
+    private fun parseLinkOrImage(
+        opener: Bracket,
+        beforeClose: Position,
+    ): Node? {
         val linkInfo = parseLinkInfo(opener, beforeClose) ?: return null
         val processorStartPosition = scanner.position()
 
@@ -273,13 +287,14 @@ internal class InlineParserImpl(private val context: InlineParserContext) : Inli
 
             val node = linkResult.node
             val position = linkResult.position
-            val includeMarker = linkResult.includeMarker
+            val includeMarker = linkResult.markerIncluded
 
             when (linkResult.type) {
                 LinkResultImpl.Type.WRAP -> {
                     scanner.setPosition(position)
                     return wrapBracket(opener, node, includeMarker)
                 }
+
                 LinkResultImpl.Type.REPLACE -> {
                     scanner.setPosition(position)
                     return replaceBracket(opener, node, includeMarker)
@@ -290,7 +305,10 @@ internal class InlineParserImpl(private val context: InlineParserContext) : Inli
         return null
     }
 
-    private fun parseLinkInfo(opener: Bracket, beforeClose: Position): LinkInfo? {
+    private fun parseLinkInfo(
+        opener: Bracket,
+        beforeClose: Position,
+    ): LinkInfo? {
         // Check to see if we have a link (or image, with a ! in front). The different types:
         // - Inline:       `[foo](/uri)` or with optional title `[foo](/uri "title")`
         // - Reference links
@@ -306,8 +324,13 @@ internal class InlineParserImpl(private val context: InlineParserContext) : Inli
         if (destinationTitle != null) {
             val text = scanner.getSource(opener.contentPosition, beforeClose).getContent()
             return LinkInfoImpl(
-                opener.markerNode, opener.bracketNode, text, null,
-                destinationTitle.destination, destinationTitle.title, afterClose
+                opener.markerNode,
+                opener.bracketNode,
+                text,
+                null,
+                destinationTitle.destination,
+                destinationTitle.title,
+                afterClose,
             )
         }
         // Not an inline link/image, rewind back to after `]`.
@@ -332,12 +355,21 @@ internal class InlineParserImpl(private val context: InlineParserContext) : Inli
 
         val text = scanner.getSource(opener.contentPosition, beforeClose).getContent()
         return LinkInfoImpl(
-            opener.markerNode, opener.bracketNode, text, label,
-            null, null, afterClose
+            opener.markerNode,
+            opener.bracketNode,
+            text,
+            label,
+            null,
+            null,
+            afterClose,
         )
     }
 
-    private fun wrapBracket(opener: Bracket, wrapperNode: Node, includeMarker: Boolean): Node {
+    private fun wrapBracket(
+        opener: Bracket,
+        wrapperNode: Node,
+        includeMarker: Boolean,
+    ): Node {
         // Add all nodes between the opening bracket and now (closing bracket) as child nodes of the link
         var n: Node? = opener.bracketNode.next
         while (n != null) {
@@ -347,11 +379,12 @@ internal class InlineParserImpl(private val context: InlineParserContext) : Inli
         }
 
         if (includeSourceSpans) {
-            val startPosition = if (includeMarker && opener.markerPosition != null) {
-                opener.markerPosition
-            } else {
-                opener.bracketPosition
-            }
+            val startPosition =
+                if (includeMarker && opener.markerPosition != null) {
+                    opener.markerPosition
+                } else {
+                    opener.bracketPosition
+                }
             wrapperNode.setSourceSpans(scanner.getSource(startPosition, scanner.position()).getSourceSpans())
         }
 
@@ -373,18 +406,23 @@ internal class InlineParserImpl(private val context: InlineParserContext) : Inli
         return wrapperNode
     }
 
-    private fun replaceBracket(opener: Bracket, node: Node, includeMarker: Boolean): Node {
+    private fun replaceBracket(
+        opener: Bracket,
+        node: Node,
+        includeMarker: Boolean,
+    ): Node {
         // Remove delimiters (but keep text nodes)
         while (lastDelimiter != null && lastDelimiter != opener.previousDelimiter) {
             removeDelimiterKeepNode(lastDelimiter!!)
         }
 
         if (includeSourceSpans) {
-            val startPosition = if (includeMarker && opener.markerPosition != null) {
-                opener.markerPosition
-            } else {
-                opener.bracketPosition
-            }
+            val startPosition =
+                if (includeMarker && opener.markerPosition != null) {
+                    opener.markerPosition
+                } else {
+                    opener.bracketPosition
+                }
             node.setSourceSpans(scanner.getSource(startPosition, scanner.position()).getSourceSpans())
         }
 
@@ -483,7 +521,10 @@ internal class InlineParserImpl(private val context: InlineParserContext) : Inli
      *
      * @return information about delimiter run, or null
      */
-    private fun scanDelimiters(delimiterProcessor: DelimiterProcessor, delimiterChar: Char): DelimiterData? {
+    private fun scanDelimiters(
+        delimiterProcessor: DelimiterProcessor,
+        delimiterChar: Char,
+    ): DelimiterData? {
         val before = scanner.peekPreviousCodePoint()
         val start = scanner.position()
 
@@ -511,9 +552,11 @@ internal class InlineParserImpl(private val context: InlineParserContext) : Inli
         val afterIsPunctuation = after == Scanner.END.code || Characters.isPunctuationCodePoint(after)
         val afterIsWhitespace = after == Scanner.END.code || Characters.isWhitespaceCodePoint(after)
 
-        val leftFlanking = !afterIsWhitespace &&
+        val leftFlanking =
+            !afterIsWhitespace &&
                 (!afterIsPunctuation || beforeIsWhitespace || beforeIsPunctuation)
-        val rightFlanking = !beforeIsWhitespace &&
+        val rightFlanking =
+            !beforeIsWhitespace &&
                 (!beforeIsPunctuation || afterIsWhitespace || afterIsPunctuation)
         val canOpen: Boolean
         val canClose: Boolean
@@ -615,7 +658,10 @@ internal class InlineParserImpl(private val context: InlineParserContext) : Inli
         }
     }
 
-    private fun removeDelimitersBetween(opener: Delimiter, closer: Delimiter) {
+    private fun removeDelimitersBetween(
+        opener: Delimiter,
+        closer: Delimiter,
+    ) {
         var delimiter = closer.previous
         while (delimiter != null && delimiter != opener) {
             val previousDelimiter = delimiter.previous
@@ -659,7 +705,10 @@ internal class InlineParserImpl(private val context: InlineParserContext) : Inli
         mergeTextNodesInclusive(node.firstChild!!, node.lastChild!!)
     }
 
-    private fun mergeTextNodesInclusive(fromNode: Node, toNode: Node) {
+    private fun mergeTextNodesInclusive(
+        fromNode: Node,
+        toNode: Node,
+    ) {
         var first: Text? = null
         var last: Text? = null
         var length = 0
@@ -689,7 +738,11 @@ internal class InlineParserImpl(private val context: InlineParserContext) : Inli
         mergeIfNeeded(first, last, length)
     }
 
-    private fun mergeIfNeeded(first: Text?, last: Text?, textLength: Int) {
+    private fun mergeIfNeeded(
+        first: Text?,
+        last: Text?,
+        textLength: Int,
+    ) {
         if (first != null && last != null && first !== last) {
             val sb = StringBuilder(textLength)
             sb.append(first.literal)
@@ -719,7 +772,7 @@ internal class InlineParserImpl(private val context: InlineParserContext) : Inli
     private class DelimiterData(
         val characters: MutableList<Text>,
         val canOpen: Boolean,
-        val canClose: Boolean
+        val canClose: Boolean,
     )
 
     /**
@@ -727,7 +780,7 @@ internal class InlineParserImpl(private val context: InlineParserContext) : Inli
      */
     private class DestinationTitle(
         val destination: String,
-        val title: String?
+        val title: String?,
     )
 
     private class LinkInfoImpl(
@@ -737,17 +790,15 @@ internal class InlineParserImpl(private val context: InlineParserContext) : Inli
         override val label: String?,
         override val destination: String?,
         override val title: String?,
-        override val afterTextBracket: Position
+        override val afterTextBracket: Position,
     ) : LinkInfo
 
     companion object {
-        private fun calculateDelimiterProcessors(
-            delimiterProcessors: List<DelimiterProcessor>
-        ): Map<Char, DelimiterProcessor> {
+        private fun calculateDelimiterProcessors(delimiterProcessors: List<DelimiterProcessor>): Map<Char, DelimiterProcessor> {
             val map = mutableMapOf<Char, DelimiterProcessor>()
             addDelimiterProcessors(
                 listOf(AsteriskDelimiterProcessor(), UnderscoreDelimiterProcessor()),
-                map
+                map,
             )
             addDelimiterProcessors(delimiterProcessors, map)
             return map
@@ -755,7 +806,7 @@ internal class InlineParserImpl(private val context: InlineParserContext) : Inli
 
         private fun addDelimiterProcessors(
             delimiterProcessors: Iterable<DelimiterProcessor>,
-            map: MutableMap<Char, DelimiterProcessor>
+            map: MutableMap<Char, DelimiterProcessor>,
         ) {
             for (delimiterProcessor in delimiterProcessors) {
                 val opening = delimiterProcessor.openingCharacter
@@ -785,7 +836,7 @@ internal class InlineParserImpl(private val context: InlineParserContext) : Inli
         private fun addDelimiterProcessorForChar(
             delimiterChar: Char,
             toAdd: DelimiterProcessor,
-            delimiterProcessors: MutableMap<Char, DelimiterProcessor>
+            delimiterProcessors: MutableMap<Char, DelimiterProcessor>,
         ) {
             val existing = delimiterProcessors.put(delimiterChar, toAdd)
             if (existing != null) {
@@ -793,21 +844,28 @@ internal class InlineParserImpl(private val context: InlineParserContext) : Inli
             }
         }
 
-        private fun calculateLinkMarkers(linkMarkers: Set<Char>): AsciiMatcher {
-            return AsciiMatcher.builder().anyOf(linkMarkers).c('!').build()
-        }
+        private fun calculateLinkMarkers(linkMarkers: Set<Char>): AsciiMatcher =
+            AsciiMatcher
+                .builder()
+                .anyOf(linkMarkers)
+                .c('!')
+                .build()
 
         private fun calculateSpecialCharacters(
             linkMarkers: AsciiMatcher,
             delimiterCharacters: Set<Char>,
-            inlineContentParserFactories: List<InlineContentParserFactory>
+            inlineContentParserFactories: List<InlineContentParserFactory>,
         ): AsciiMatcher {
             val builder = linkMarkers.newBuilder()
             builder.anyOf(delimiterCharacters)
             for (factory in inlineContentParserFactories) {
                 builder.anyOf(factory.triggerCharacters)
             }
-            builder.c('[').c(']').c('!').c('\n')
+            builder
+                .c('[')
+                .c(']')
+                .c('!')
+                .c('\n')
             return builder.build()
         }
 

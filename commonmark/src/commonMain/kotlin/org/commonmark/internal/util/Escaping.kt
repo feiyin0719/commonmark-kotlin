@@ -1,7 +1,6 @@
 package org.commonmark.internal.util
 
 internal object Escaping {
-
     const val ESCAPABLE: String = "[!\"#\$%&'()*+,./:;<=>?@\\[\\\\\\]^_`{|}~-]"
 
     const val ENTITY: String = "&(?:#x[a-f0-9]{1,6}|#[0-9]{1,7}|[a-z][a-z0-9]{1,31});"
@@ -20,37 +19,45 @@ internal object Escaping {
 
     private val WHITESPACE = Regex("[ \t\r\n]+")
 
-    private val UNESCAPE_REPLACER: Replacer = object : Replacer {
-        override fun replace(input: String, sb: StringBuilder) {
-            if (input[0] == '\\') {
-                sb.append(input, 1, input.length)
-            } else {
-                sb.append(Html5Entities.entityToString(input))
-            }
-        }
-    }
-
-    private val URI_REPLACER: Replacer = object : Replacer {
-        override fun replace(input: String, sb: StringBuilder) {
-            if (input.startsWith("%")) {
-                if (input.length == 3) {
-                    // Already percent-encoded, preserve
-                    sb.append(input)
-                } else {
-                    // %25 is the percent-encoding for %
-                    sb.append("%25")
+    private val UNESCAPE_REPLACER: Replacer =
+        object : Replacer {
+            override fun replace(
+                input: String,
+                sb: StringBuilder,
+            ) {
+                if (input[0] == '\\') {
                     sb.append(input, 1, input.length)
-                }
-            } else {
-                val bytes = input.encodeToByteArray()
-                for (b in bytes) {
-                    sb.append('%')
-                    sb.append(HEX_DIGITS[(b.toInt() shr 4) and 0xF])
-                    sb.append(HEX_DIGITS[b.toInt() and 0xF])
+                } else {
+                    sb.append(Html5Entities.entityToString(input))
                 }
             }
         }
-    }
+
+    private val URI_REPLACER: Replacer =
+        object : Replacer {
+            override fun replace(
+                input: String,
+                sb: StringBuilder,
+            ) {
+                if (input.startsWith("%")) {
+                    if (input.length == 3) {
+                        // Already percent-encoded, preserve
+                        sb.append(input)
+                    } else {
+                        // %25 is the percent-encoding for %
+                        sb.append("%25")
+                        sb.append(input, 1, input.length)
+                    }
+                } else {
+                    val bytes = input.encodeToByteArray()
+                    for (b in bytes) {
+                        sb.append('%')
+                        sb.append(HEX_DIGITS[(b.toInt() shr 4) and 0xF])
+                        sb.append(HEX_DIGITS[b.toInt() and 0xF])
+                    }
+                }
+            }
+        }
 
     fun escapeHtml(input: String): String {
         // Avoid building a new string in the majority of cases (nothing to escape)
@@ -60,10 +67,22 @@ internal object Escaping {
             val c = input[i]
             val replacement: String
             when (c) {
-                '&' -> replacement = "&amp;"
-                '<' -> replacement = "&lt;"
-                '>' -> replacement = "&gt;"
-                '"' -> replacement = "&quot;"
+                '&' -> {
+                    replacement = "&amp;"
+                }
+
+                '<' -> {
+                    replacement = "&lt;"
+                }
+
+                '>' -> {
+                    replacement = "&gt;"
+                }
+
+                '"' -> {
+                    replacement = "&quot;"
+                }
+
                 else -> {
                     sb?.append(c)
                     continue
@@ -82,17 +101,14 @@ internal object Escaping {
     /**
      * Replace entities and backslash escapes with literal characters.
      */
-    fun unescapeString(s: String): String {
-        return if (BACKSLASH_OR_AMP.containsMatchIn(s)) {
+    fun unescapeString(s: String): String =
+        if (BACKSLASH_OR_AMP.containsMatchIn(s)) {
             replaceAll(ENTITY_OR_ESCAPED_CHAR, s, UNESCAPE_REPLACER)
         } else {
             s
         }
-    }
 
-    fun percentEncodeUrl(s: String): String {
-        return replaceAll(ESCAPE_IN_URI, s, URI_REPLACER)
-    }
+    fun percentEncodeUrl(s: String): String = replaceAll(ESCAPE_IN_URI, s, URI_REPLACER)
 
     fun normalizeLabelContent(input: String): String {
         val trimmed = input.trim()
@@ -107,7 +123,11 @@ internal object Escaping {
         return WHITESPACE.replace(caseFolded, " ")
     }
 
-    private fun replaceAll(p: Regex, s: String, replacer: Replacer): String {
+    private fun replaceAll(
+        p: Regex,
+        s: String,
+        replacer: Replacer,
+    ): String {
         val matchResult = p.find(s) ?: return s
 
         val sb = StringBuilder(s.length + 16)
@@ -127,6 +147,9 @@ internal object Escaping {
     }
 
     private interface Replacer {
-        fun replace(input: String, sb: StringBuilder)
+        fun replace(
+            input: String,
+            sb: StringBuilder,
+        )
     }
 }

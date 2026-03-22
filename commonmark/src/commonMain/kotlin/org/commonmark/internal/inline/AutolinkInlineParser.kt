@@ -11,7 +11,6 @@ import org.commonmark.parser.beta.ParsedInline
  * Attempt to parse an autolink (URL or email in pointy brackets).
  */
 internal class AutolinkInlineParser : InlineContentParser {
-
     override fun tryParse(inlineParserState: InlineParserState): ParsedInline? {
         val scanner = inlineParserState.scanner()
         scanner.next()
@@ -47,6 +46,9 @@ internal class AutolinkInlineParser : InlineContentParser {
 
     companion object {
         private val URI = Regex("^[a-zA-Z][a-zA-Z0-9.+-]{1,31}:[^<>\u0000-\u0020]*$")
-        private val EMAIL = Regex("^([a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)$")
+        private val EMAIL =
+            Regex(
+                "^([a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)$",
+            )
     }
 }

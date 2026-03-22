@@ -13,9 +13,7 @@ import org.commonmark.parser.Parser
  * The parsed metadata is turned into [YamlFrontMatterNode]. You can access the metadata using [YamlFrontMatterVisitor].
  */
 public class YamlFrontMatterExtension private constructor() : Parser.ParserExtension {
-
     public companion object {
-        @JvmStatic
         public fun create(): Extension = YamlFrontMatterExtension()
     }
 

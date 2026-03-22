@@ -14,7 +14,6 @@ import org.commonmark.text.AsciiMatcher
  * Attempts to parse an HTML entity or numeric character reference.
  */
 internal class EntityInlineParser : InlineContentParser {
-
     override fun tryParse(inlineParserState: InlineParserState): ParsedInline? {
         val scanner = inlineParserState.scanner()
         val start = scanner.position()
@@ -46,7 +45,10 @@ internal class EntityInlineParser : InlineContentParser {
         return ParsedInline.none()
     }
 
-    private fun entity(scanner: Scanner, start: Position): ParsedInline {
+    private fun entity(
+        scanner: Scanner,
+        start: Position,
+    ): ParsedInline {
         val text = scanner.getSource(start, scanner.position()).getContent()
         return ParsedInline.of(Text(Html5Entities.entityToString(text)), scanner.position())
     }
@@ -58,9 +60,20 @@ internal class EntityInlineParser : InlineContentParser {
     }
 
     companion object {
-        private val hex: AsciiMatcher = AsciiMatcher.builder().range('0', '9').range('A', 'F').range('a', 'f').build()
+        private val hex: AsciiMatcher =
+            AsciiMatcher
+                .builder()
+                .range('0', '9')
+                .range('A', 'F')
+                .range('a', 'f')
+                .build()
         private val dec: AsciiMatcher = AsciiMatcher.builder().range('0', '9').build()
-        private val entityStart: AsciiMatcher = AsciiMatcher.builder().range('A', 'Z').range('a', 'z').build()
+        private val entityStart: AsciiMatcher =
+            AsciiMatcher
+                .builder()
+                .range('A', 'Z')
+                .range('a', 'z')
+                .build()
         private val entityContinue: AsciiMatcher = entityStart.newBuilder().range('0', '9').build()
     }
 }

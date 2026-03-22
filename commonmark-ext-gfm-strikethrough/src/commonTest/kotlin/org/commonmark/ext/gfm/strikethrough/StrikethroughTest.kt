@@ -14,18 +14,21 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class StrikethroughTest {
-
     private val extensions: Set<Extension> = setOf(StrikethroughExtension.create())
     private val parser: Parser = Parser.builder().extensions(extensions).build()
     private val htmlRenderer: HtmlRenderer = HtmlRenderer.builder().extensions(extensions).build()
-    private val contentRenderer: TextContentRenderer = TextContentRenderer.builder()
-        .extensions(extensions).build()
+    private val contentRenderer: TextContentRenderer =
+        TextContentRenderer
+            .builder()
+            .extensions(extensions)
+            .build()
 
-    private fun render(source: String): String {
-        return htmlRenderer.render(parser.parse(source))
-    }
+    private fun render(source: String): String = htmlRenderer.render(parser.parse(source))
 
-    private fun assertRendering(source: String, expected: String) {
+    private fun assertRendering(
+        source: String,
+        expected: String,
+    ) {
         val actualResult = render(source)
         val expectedFormatted = showTabs("$expected\n\n$source")
         val actualFormatted = showTabs("$actualResult\n\n$source")
@@ -77,7 +80,7 @@ class StrikethroughTest {
     fun strikethroughWholeParagraphWithOtherDelimiters() {
         assertRendering(
             "~~Paragraph with *emphasis* and __strong emphasis__~~",
-            "<p><del>Paragraph with <em>emphasis</em> and <strong>strong emphasis</strong></del></p>\n"
+            "<p><del>Paragraph with <em>emphasis</em> and <strong>strong emphasis</strong></del></p>\n",
         )
     }
 
@@ -85,7 +88,7 @@ class StrikethroughTest {
     fun insideBlockQuote() {
         assertRendering(
             "> strike ~~that~~",
-            "<blockquote>\n<p>strike <del>that</del></p>\n</blockquote>\n"
+            "<blockquote>\n<p>strike <del>that</del></p>\n</blockquote>\n",
         )
     }
 
@@ -105,14 +108,18 @@ class StrikethroughTest {
 
     @Test
     fun requireTwoTildesOption() {
-        val requireTwoTildesParser = Parser.builder()
-            .extensions(setOf(
-                StrikethroughExtension.builder()
-                    .requireTwoTildes(true)
-                    .build()
-            ))
-            .customDelimiterProcessor(SubscriptDelimiterProcessor())
-            .build()
+        val requireTwoTildesParser =
+            Parser
+                .builder()
+                .extensions(
+                    setOf(
+                        StrikethroughExtension
+                            .builder()
+                            .requireTwoTildes(true)
+                            .build(),
+                    ),
+                ).customDelimiterProcessor(SubscriptDelimiterProcessor())
+                .build()
 
         val document = requireTwoTildesParser.parse("~foo~ ~~bar~~")
         assertEquals("(sub)foo(/sub) /bar/", contentRenderer.render(document))
@@ -120,10 +127,12 @@ class StrikethroughTest {
 
     @Test
     fun sourceSpans() {
-        val sourceSpanParser = Parser.builder()
-            .extensions(extensions)
-            .includeSourceSpans(IncludeSourceSpans.BLOCKS_AND_INLINES)
-            .build()
+        val sourceSpanParser =
+            Parser
+                .builder()
+                .extensions(extensions)
+                .includeSourceSpans(IncludeSourceSpans.BLOCKS_AND_INLINES)
+                .build()
 
         val document = sourceSpanParser.parse("hey ~~there~~\n")
         val block = document.firstChild as Paragraph
@@ -136,7 +145,10 @@ class StrikethroughTest {
         override val closingCharacter: Char get() = '~'
         override val minLength: Int get() = 1
 
-        override fun process(openingRun: DelimiterRun, closingRun: DelimiterRun): Int {
+        override fun process(
+            openingRun: DelimiterRun,
+            closingRun: DelimiterRun,
+        ): Int {
             openingRun.opener.insertAfter(Text("(sub)"))
             closingRun.closer.insertBefore(Text("(/sub)"))
             return 1
@@ -144,8 +156,6 @@ class StrikethroughTest {
     }
 
     companion object {
-        private fun showTabs(s: String): String {
-            return s.replace("\t", "\u2192")
-        }
+        private fun showTabs(s: String): String = s.replace("\t", "\u2192")
     }
 }

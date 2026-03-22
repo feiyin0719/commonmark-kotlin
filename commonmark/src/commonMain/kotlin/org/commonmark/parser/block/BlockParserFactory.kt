@@ -6,5 +6,8 @@ package org.commonmark.parser.block
  * Implementations should subclass [AbstractBlockParserFactory] instead of implementing this directly.
  */
 public interface BlockParserFactory {
-    public fun tryStart(state: ParserState, matchedBlockParser: MatchedBlockParser): BlockStart?
+    public fun tryStart(
+        state: ParserState,
+        matchedBlockParser: MatchedBlockParser,
+    ): BlockStart?
 }

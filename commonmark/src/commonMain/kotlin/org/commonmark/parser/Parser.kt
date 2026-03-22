@@ -22,8 +22,9 @@ import kotlin.reflect.KClass
  * val document = parser.parse("input text")
  * ```
  */
-public class Parser private constructor(builder: Builder) {
-
+public class Parser private constructor(
+    builder: Builder,
+) {
     private val blockParserFactories: List<BlockParserFactory>
     private val inlineContentParserFactories: List<InlineContentParserFactory>
     private val delimiterProcessors: List<DelimiterProcessor>
@@ -34,9 +35,11 @@ public class Parser private constructor(builder: Builder) {
     private val includeSourceSpans: IncludeSourceSpans
 
     init {
-        this.blockParserFactories = DocumentParser.calculateBlockParserFactories(
-            builder.blockParserFactories, builder.enabledBlockTypes
-        )
+        this.blockParserFactories =
+            DocumentParser.calculateBlockParserFactories(
+                builder.blockParserFactories,
+                builder.enabledBlockTypes,
+            )
         this.inlineParserFactory = builder.getInlineParserFactory()
         this.postProcessors = builder.postProcessors.toList()
         this.inlineContentParserFactories = builder.inlineContentParserFactories.toList()
@@ -47,9 +50,14 @@ public class Parser private constructor(builder: Builder) {
 
         // Try to construct an inline parser. Invalid configuration might result in an exception, which we want to
         // detect as soon as possible.
-        val context = InlineParserContextImpl(
-            inlineContentParserFactories, delimiterProcessors, linkProcessors, linkMarkers, Definitions()
-        )
+        val context =
+            InlineParserContextImpl(
+                inlineContentParserFactories,
+                delimiterProcessors,
+                linkProcessors,
+                linkMarkers,
+                Definitions(),
+            )
         this.inlineParserFactory.create(context)
     }
 
@@ -67,12 +75,16 @@ public class Parser private constructor(builder: Builder) {
         return postProcess(document)
     }
 
-    private fun createDocumentParser(): DocumentParser {
-        return DocumentParser(
-            blockParserFactories, inlineParserFactory, inlineContentParserFactories,
-            delimiterProcessors, linkProcessors, linkMarkers, includeSourceSpans
+    private fun createDocumentParser(): DocumentParser =
+        DocumentParser(
+            blockParserFactories,
+            inlineParserFactory,
+            inlineContentParserFactories,
+            delimiterProcessors,
+            linkProcessors,
+            linkMarkers,
+            includeSourceSpans,
         )
-    }
 
     private fun postProcess(document: Node): Node {
         var node = document
@@ -88,9 +100,7 @@ public class Parser private constructor(builder: Builder) {
          *
          * @return a builder
          */
-        public fun builder(): Builder {
-            return Builder()
-        }
+        public fun builder(): Builder = Builder()
     }
 
     /**
@@ -110,9 +120,7 @@ public class Parser private constructor(builder: Builder) {
         /**
          * @return the configured [Parser]
          */
-        public fun build(): Parser {
-            return Parser(this)
-        }
+        public fun build(): Parser = Parser(this)
 
         /**
          * @param extensions extensions to use on this parser
@@ -274,9 +282,7 @@ public class Parser private constructor(builder: Builder) {
             return this
         }
 
-        internal fun getInlineParserFactory(): InlineParserFactory {
-            return inlineParserFactory ?: InlineParserFactory { context -> InlineParserImpl(context) }
-        }
+        internal fun getInlineParserFactory(): InlineParserFactory = inlineParserFactory ?: InlineParserFactory { context -> InlineParserImpl(context) }
     }
 
     /**

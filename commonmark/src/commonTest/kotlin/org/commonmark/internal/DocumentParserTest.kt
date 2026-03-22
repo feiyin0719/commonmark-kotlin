@@ -8,26 +8,32 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class DocumentParserTest {
-
     companion object {
-        private val CORE_FACTORIES: List<BlockParserFactory> = listOf(
-            BlockQuoteParser.Factory(),
-            HeadingParser.Factory(),
-            FencedCodeBlockParser.Factory(),
-            HtmlBlockParser.Factory(),
-            ThematicBreakParser.Factory(),
-            ListBlockParser.Factory(),
-            IndentedCodeBlockParser.Factory()
-        )
+        private val CORE_FACTORIES: List<BlockParserFactory> =
+            listOf(
+                BlockQuoteParser.Factory(),
+                HeadingParser.Factory(),
+                FencedCodeBlockParser.Factory(),
+                HtmlBlockParser.Factory(),
+                ThematicBreakParser.Factory(),
+                ListBlockParser.Factory(),
+                IndentedCodeBlockParser.Factory(),
+            )
     }
 
     @Test
     fun calculateBlockParserFactories_givenAFullListOfAllowedNodes_includesAllCoreFactories() {
         val customParserFactories = emptyList<BlockParserFactory>()
-        val enabledBlockTypes: Set<KClass<out Block>> = setOf(
-            BlockQuote::class, Heading::class, FencedCodeBlock::class,
-            HtmlBlock::class, ThematicBreak::class, ListBlock::class, IndentedCodeBlock::class
-        )
+        val enabledBlockTypes: Set<KClass<out Block>> =
+            setOf(
+                BlockQuote::class,
+                Heading::class,
+                FencedCodeBlock::class,
+                HtmlBlock::class,
+                ThematicBreak::class,
+                ListBlock::class,
+                IndentedCodeBlock::class,
+            )
 
         val blockParserFactories = DocumentParser.calculateBlockParserFactories(customParserFactories, enabledBlockTypes)
         assertEquals(CORE_FACTORIES.size, blockParserFactories.size)
@@ -49,7 +55,11 @@ class DocumentParserTest {
         assertTrue(hasInstance(blockParserFactories, IndentedCodeBlockParser.Factory::class))
     }
 
-    private fun hasInstance(blockParserFactories: List<BlockParserFactory>, factoryClass: KClass<out BlockParserFactory>): Boolean {
-        return blockParserFactories.any { it::class == factoryClass }
-    }
+    private fun hasInstance(
+        blockParserFactories: List<BlockParserFactory>,
+        factoryClass: KClass<out BlockParserFactory>,
+    ): Boolean =
+        blockParserFactories.any {
+            it::class == factoryClass
+        }
 }

@@ -13,7 +13,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class TextContentRendererTest {
-
     @Test
     fun textContentText() {
         var s: String
@@ -171,7 +170,8 @@ class TextContentRendererTest {
 
     @Test
     fun textContentHtml() {
-        var html = "<table>\n" +
+        var html =
+            "<table>\n" +
                 "  <tr>\n" +
                 "    <td>\n" +
                 "           foobar\n" +
@@ -187,7 +187,8 @@ class TextContentRendererTest {
 
     @Test
     fun testContentNestedLists() {
-        val s = "List:\n" +
+        val s =
+            "List:\n" +
                 "1. 2) 3. \n" +
                 "end"
         assertCompact(s, s)
@@ -198,50 +199,63 @@ class TextContentRendererTest {
 
     @Test
     fun testOverrideNodeRendering() {
-        val nodeRendererFactory = TextContentNodeRendererFactory { context ->
-            object : NodeRenderer {
-                override fun getNodeTypes(): Set<KClass<out Node>> = setOf(Link::class)
+        val nodeRendererFactory =
+            TextContentNodeRendererFactory { context ->
+                object : NodeRenderer {
+                    override fun getNodeTypes(): Set<KClass<out Node>> = setOf(Link::class)
 
-                override fun render(node: Node) {
-                    context.getWriter().write('"')
-                    renderChildren(node)
-                    context.getWriter().write('"')
-                }
+                    override fun render(node: Node) {
+                        context.getWriter().write('"')
+                        renderChildren(node)
+                        context.getWriter().write('"')
+                    }
 
-                private fun renderChildren(parent: Node) {
-                    var node = parent.firstChild
-                    while (node != null) {
-                        val next = node.next
-                        context.render(node)
-                        node = next
+                    private fun renderChildren(parent: Node) {
+                        var node = parent.firstChild
+                        while (node != null) {
+                            val next = node.next
+                            context.render(node)
+                            node = next
+                        }
                     }
                 }
             }
-        }
         val renderer = TextContentRenderer.builder().nodeRendererFactory(nodeRendererFactory).build()
         val source = "Hi [Example](https://example.com)"
         assertRendering(source, "Hi \"Example\"", renderer.render(PARSER.parse(source)))
     }
 
-    private fun assertCompact(source: String, expected: String) {
+    private fun assertCompact(
+        source: String,
+        expected: String,
+    ) {
         val doc = PARSER.parse(source)
         val actualRendering = COMPACT_RENDERER.render(doc)
         assertRendering(source, expected, actualRendering)
     }
 
-    private fun assertSeparate(source: String, expected: String) {
+    private fun assertSeparate(
+        source: String,
+        expected: String,
+    ) {
         val doc = PARSER.parse(source)
         val actualRendering = SEPARATE_RENDERER.render(doc)
         assertRendering(source, expected, actualRendering)
     }
 
-    private fun assertStripped(source: String, expected: String) {
+    private fun assertStripped(
+        source: String,
+        expected: String,
+    ) {
         val doc = PARSER.parse(source)
         val actualRendering = STRIPPED_RENDERER.render(doc)
         assertRendering(source, expected, actualRendering)
     }
 
-    private fun assertAll(source: String, expected: String) {
+    private fun assertAll(
+        source: String,
+        expected: String,
+    ) {
         assertCompact(source, expected)
         assertSeparate(source, expected)
         assertStripped(source, expected)
@@ -250,14 +264,24 @@ class TextContentRendererTest {
     companion object {
         private val PARSER = Parser.builder().build()
         private val COMPACT_RENDERER = TextContentRenderer.builder().build()
-        private val SEPARATE_RENDERER = TextContentRenderer.builder()
-            .lineBreakRendering(LineBreakRendering.SEPARATE_BLOCKS).build()
-        private val STRIPPED_RENDERER = TextContentRenderer.builder()
-            .lineBreakRendering(LineBreakRendering.STRIP).build()
+        private val SEPARATE_RENDERER =
+            TextContentRenderer
+                .builder()
+                .lineBreakRendering(LineBreakRendering.SEPARATE_BLOCKS)
+                .build()
+        private val STRIPPED_RENDERER =
+            TextContentRenderer
+                .builder()
+                .lineBreakRendering(LineBreakRendering.STRIP)
+                .build()
 
         private fun showTabs(s: String): String = s.replace("\t", "\u2192")
 
-        private fun assertRendering(source: String, expectedRendering: String, actualRendering: String) {
+        private fun assertRendering(
+            source: String,
+            expectedRendering: String,
+            actualRendering: String,
+        ) {
             // include source for better assertion errors
             val expected = showTabs("$expectedRendering\n\n$source")
             val actual = showTabs("$actualRendering\n\n$source")

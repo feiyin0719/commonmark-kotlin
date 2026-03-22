@@ -5,7 +5,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class TextContentWriterTest {
-
     @Test
     fun whitespace() {
         val sb = StringBuilder()

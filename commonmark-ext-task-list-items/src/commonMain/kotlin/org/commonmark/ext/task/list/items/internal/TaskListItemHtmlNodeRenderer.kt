@@ -7,13 +7,12 @@ import org.commonmark.renderer.html.HtmlNodeRendererContext
 import org.commonmark.renderer.html.HtmlWriter
 import kotlin.reflect.KClass
 
-internal class TaskListItemHtmlNodeRenderer(private val context: HtmlNodeRendererContext) : NodeRenderer {
-
+internal class TaskListItemHtmlNodeRenderer(
+    private val context: HtmlNodeRendererContext,
+) : NodeRenderer {
     private val html: HtmlWriter = context.getWriter()
 
-    override fun getNodeTypes(): Set<KClass<out Node>> {
-        return setOf(TaskListItemMarker::class)
-    }
+    override fun getNodeTypes(): Set<KClass<out Node>> = setOf(TaskListItemMarker::class)
 
     override fun render(node: Node) {
         if (node is TaskListItemMarker) {

@@ -4,8 +4,9 @@ import org.commonmark.node.Node
 import org.commonmark.renderer.html.HtmlNodeRendererContext
 import org.commonmark.renderer.html.HtmlWriter
 
-internal class StrikethroughHtmlNodeRenderer(private val context: HtmlNodeRendererContext) : StrikethroughNodeRenderer() {
-
+internal class StrikethroughHtmlNodeRenderer(
+    private val context: HtmlNodeRendererContext,
+) : StrikethroughNodeRenderer() {
     private val html: HtmlWriter = context.getWriter()
 
     override fun render(node: Node) {

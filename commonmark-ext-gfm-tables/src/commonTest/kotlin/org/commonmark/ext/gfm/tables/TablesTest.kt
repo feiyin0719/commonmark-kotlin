@@ -14,25 +14,23 @@ import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
 class TablesTest {
-
     private val extensions: Set<Extension> = setOf(TablesExtension.create())
     private val parser: Parser = Parser.builder().extensions(extensions).build()
     private val renderer: HtmlRenderer = HtmlRenderer.builder().extensions(extensions).build()
 
-    private fun render(source: String): String {
-        return renderer.render(parser.parse(source))
-    }
+    private fun render(source: String): String = renderer.render(parser.parse(source))
 
-    private fun assertRendering(source: String, expected: String) {
+    private fun assertRendering(
+        source: String,
+        expected: String,
+    ) {
         val actual = render(source)
         val expectedWithSource = showTabs("$expected\n\n$source")
         val actualWithSource = showTabs("$actual\n\n$source")
         assertEquals(expectedWithSource, actualWithSource)
     }
 
-    private fun showTabs(s: String): String {
-        return s.replace("\t", "\u2192")
-    }
+    private fun showTabs(s: String): String = s.replace("\t", "\u2192")
 
     @Test
     fun mustHaveHeaderAndSeparator() {
@@ -45,24 +43,24 @@ class TablesTest {
         assertRendering(
             "Abc|Def\n-|-",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th>Abc</th>\n" +
-                    "<th>Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "</table>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th>Abc</th>\n" +
+                "<th>Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "</table>\n",
         )
         assertRendering(
             "Abc|Def\n--|--",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th>Abc</th>\n" +
-                    "<th>Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "</table>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th>Abc</th>\n" +
+                "<th>Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "</table>\n",
         )
     }
 
@@ -78,13 +76,13 @@ class TablesTest {
         assertRendering(
             "Abc|Def\n |---|---",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th>Abc</th>\n" +
-                    "<th>Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "</table>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th>Abc</th>\n" +
+                "<th>Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "</table>\n",
         )
     }
 
@@ -103,19 +101,20 @@ class TablesTest {
         assertRendering(
             "Abc|Def\n---|---",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th>Abc</th>\n" +
-                    "<th>Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "</table>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th>Abc</th>\n" +
+                "<th>Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "</table>\n",
         )
     }
 
     @Test
     fun oneColumnOneHeadNoBody() {
-        val expected = "<table>\n" +
+        val expected =
+            "<table>\n" +
                 "<thead>\n" +
                 "<tr>\n" +
                 "<th>Abc</th>\n" +
@@ -134,7 +133,8 @@ class TablesTest {
 
     @Test
     fun oneColumnOneHeadOneBody() {
-        val expected = "<table>\n" +
+        val expected =
+            "<table>\n" +
                 "<thead>\n" +
                 "<tr>\n" +
                 "<th>Abc</th>\n" +
@@ -159,19 +159,19 @@ class TablesTest {
         assertRendering(
             "Abc|Def\n---|---\n1|2",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th>Abc</th>\n" +
-                    "<th>Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody>\n" +
-                    "<tr>\n" +
-                    "<td>1</td>\n" +
-                    "<td>2</td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th>Abc</th>\n" +
+                "<th>Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<td>1</td>\n" +
+                "<td>2</td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n",
         )
     }
 
@@ -180,19 +180,19 @@ class TablesTest {
         assertRendering(
             "  |Abc|Def|\n  |---|---|\n  |1|2|",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th>Abc</th>\n" +
-                    "<th>Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody>\n" +
-                    "<tr>\n" +
-                    "<td>1</td>\n" +
-                    "<td>2</td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th>Abc</th>\n" +
+                "<th>Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<td>1</td>\n" +
+                "<td>2</td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n",
         )
     }
 
@@ -206,19 +206,19 @@ class TablesTest {
         assertRendering(
             " Abc  | Def \n --- | --- \n 1 | 2 ",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th>Abc</th>\n" +
-                    "<th>Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody>\n" +
-                    "<tr>\n" +
-                    "<td>1</td>\n" +
-                    "<td>2</td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th>Abc</th>\n" +
+                "<th>Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<td>1</td>\n" +
+                "<td>2</td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n",
         )
     }
 
@@ -227,19 +227,19 @@ class TablesTest {
         assertRendering(
             "Abc|Def\n---|---\n    1|2",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th>Abc</th>\n" +
-                    "<th>Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody>\n" +
-                    "<tr>\n" +
-                    "<td>1</td>\n" +
-                    "<td>2</td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th>Abc</th>\n" +
+                "<th>Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<td>1</td>\n" +
+                "<td>2</td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n",
         )
     }
 
@@ -248,19 +248,19 @@ class TablesTest {
         assertRendering(
             "|Abc|Def|\n|---|---|\n|1|2|",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th>Abc</th>\n" +
-                    "<th>Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody>\n" +
-                    "<tr>\n" +
-                    "<td>1</td>\n" +
-                    "<td>2</td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th>Abc</th>\n" +
+                "<th>Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<td>1</td>\n" +
+                "<td>2</td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n",
         )
     }
 
@@ -269,19 +269,19 @@ class TablesTest {
         assertRendering(
             "|Abc|Def| \n|---|---|\n|1|2|",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th>Abc</th>\n" +
-                    "<th>Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody>\n" +
-                    "<tr>\n" +
-                    "<td>1</td>\n" +
-                    "<td>2</td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th>Abc</th>\n" +
+                "<th>Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<td>1</td>\n" +
+                "<td>2</td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n",
         )
     }
 
@@ -289,24 +289,24 @@ class TablesTest {
     fun pipesOnOutsideZeroLengthHeaders() {
         assertRendering(
             "||center header||\n" +
-                    "-|-------------|-\n" +
-                    "1|      2      |3",
+                "-|-------------|-\n" +
+                "1|      2      |3",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th></th>\n" +
-                    "<th>center header</th>\n" +
-                    "<th></th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody>\n" +
-                    "<tr>\n" +
-                    "<td>1</td>\n" +
-                    "<td>2</td>\n" +
-                    "<td>3</td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th></th>\n" +
+                "<th>center header</th>\n" +
+                "<th></th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<td>1</td>\n" +
+                "<td>2</td>\n" +
+                "<td>3</td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n",
         )
     }
 
@@ -315,19 +315,19 @@ class TablesTest {
         assertRendering(
             "*Abc*|Def\n---|---\n1|2",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th><em>Abc</em></th>\n" +
-                    "<th>Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody>\n" +
-                    "<tr>\n" +
-                    "<td>1</td>\n" +
-                    "<td>2</td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th><em>Abc</em></th>\n" +
+                "<th>Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<td>1</td>\n" +
+                "<td>2</td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n",
         )
     }
 
@@ -336,19 +336,19 @@ class TablesTest {
         assertRendering(
             "Abc|Def\n---|---\n1\\|2|20",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th>Abc</th>\n" +
-                    "<th>Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody>\n" +
-                    "<tr>\n" +
-                    "<td>1|2</td>\n" +
-                    "<td>20</td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th>Abc</th>\n" +
+                "<th>Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<td>1|2</td>\n" +
+                "<td>20</td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n",
         )
     }
 
@@ -357,19 +357,19 @@ class TablesTest {
         assertRendering(
             "Abc|Def\n---|---\n1\\\\|2",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th>Abc</th>\n" +
-                    "<th>Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody>\n" +
-                    "<tr>\n" +
-                    "<td>1|2</td>\n" +
-                    "<td></td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th>Abc</th>\n" +
+                "<th>Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<td>1|2</td>\n" +
+                "<td></td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n",
         )
     }
 
@@ -378,19 +378,19 @@ class TablesTest {
         assertRendering(
             "Abc|Def\n---|---\n1|\\`not code`",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th>Abc</th>\n" +
-                    "<th>Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody>\n" +
-                    "<tr>\n" +
-                    "<td>1</td>\n" +
-                    "<td>`not code`</td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th>Abc</th>\n" +
+                "<th>Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<td>1</td>\n" +
+                "<td>`not code`</td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n",
         )
     }
 
@@ -399,25 +399,26 @@ class TablesTest {
         assertRendering(
             "Abc|Def\n---|---\n1|2\\",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th>Abc</th>\n" +
-                    "<th>Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody>\n" +
-                    "<tr>\n" +
-                    "<td>1</td>\n" +
-                    "<td>2\\</td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th>Abc</th>\n" +
+                "<th>Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<td>1</td>\n" +
+                "<td>2\\</td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n",
         )
     }
 
     @Test
     fun alignLeft() {
-        val expected = "<table>\n" +
+        val expected =
+            "<table>\n" +
                 "<thead>\n" +
                 "<tr>\n" +
                 "<th align=\"left\">Abc</th>\n" +
@@ -438,7 +439,8 @@ class TablesTest {
 
     @Test
     fun alignRight() {
-        val expected = "<table>\n" +
+        val expected =
+            "<table>\n" +
                 "<thead>\n" +
                 "<tr>\n" +
                 "<th align=\"right\">Abc</th>\n" +
@@ -459,7 +461,8 @@ class TablesTest {
 
     @Test
     fun alignCenter() {
-        val expected = "<table>\n" +
+        val expected =
+            "<table>\n" +
                 "<thead>\n" +
                 "<tr>\n" +
                 "<th align=\"center\">Abc</th>\n" +
@@ -483,19 +486,19 @@ class TablesTest {
         assertRendering(
             "Abc|Def\n---|:---:\n1|2",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th>Abc</th>\n" +
-                    "<th align=\"center\">Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody>\n" +
-                    "<tr>\n" +
-                    "<td>1</td>\n" +
-                    "<td align=\"center\">2</td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th>Abc</th>\n" +
+                "<th align=\"center\">Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<td>1</td>\n" +
+                "<td align=\"center\">2</td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n",
         )
     }
 
@@ -504,19 +507,19 @@ class TablesTest {
         assertRendering(
             "Abc|Def\n :--- |---\n1|2",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th align=\"left\">Abc</th>\n" +
-                    "<th>Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody>\n" +
-                    "<tr>\n" +
-                    "<td align=\"left\">1</td>\n" +
-                    "<td>2</td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th align=\"left\">Abc</th>\n" +
+                "<th>Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<td align=\"left\">1</td>\n" +
+                "<td>2</td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n",
         )
     }
 
@@ -533,19 +536,19 @@ class TablesTest {
         assertRendering(
             "Abc|Def\n---|---\n1|2|3",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th>Abc</th>\n" +
-                    "<th>Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody>\n" +
-                    "<tr>\n" +
-                    "<td>1</td>\n" +
-                    "<td>2</td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th>Abc</th>\n" +
+                "<th>Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<td>1</td>\n" +
+                "<td>2</td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n",
         )
     }
 
@@ -554,21 +557,21 @@ class TablesTest {
         assertRendering(
             "Abc|Def|Ghi\n---|---|---\n1|2",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th>Abc</th>\n" +
-                    "<th>Def</th>\n" +
-                    "<th>Ghi</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody>\n" +
-                    "<tr>\n" +
-                    "<td>1</td>\n" +
-                    "<td>2</td>\n" +
-                    "<td></td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th>Abc</th>\n" +
+                "<th>Def</th>\n" +
+                "<th>Ghi</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<td>1</td>\n" +
+                "<td>2</td>\n" +
+                "<td></td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n",
         )
     }
 
@@ -577,21 +580,21 @@ class TablesTest {
         assertRendering(
             "> Abc|Def\n> ---|---\n> 1|2",
             "<blockquote>\n" +
-                    "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th>Abc</th>\n" +
-                    "<th>Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody>\n" +
-                    "<tr>\n" +
-                    "<td>1</td>\n" +
-                    "<td>2</td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n" +
-                    "</blockquote>\n"
+                "<table>\n" +
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th>Abc</th>\n" +
+                "<th>Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<td>1</td>\n" +
+                "<td>2</td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n" +
+                "</blockquote>\n",
         )
     }
 
@@ -600,23 +603,23 @@ class TablesTest {
         assertRendering(
             "Abc|Def\n---|---\n1|2\nlazy",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th>Abc</th>\n" +
-                    "<th>Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody>\n" +
-                    "<tr>\n" +
-                    "<td>1</td>\n" +
-                    "<td>2</td>\n" +
-                    "</tr>\n" +
-                    "<tr>\n" +
-                    "<td>lazy</td>\n" +
-                    "<td></td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th>Abc</th>\n" +
+                "<th>Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<td>1</td>\n" +
+                "<td>2</td>\n" +
+                "</tr>\n" +
+                "<tr>\n" +
+                "<td>lazy</td>\n" +
+                "<td></td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n",
         )
     }
 
@@ -624,30 +627,30 @@ class TablesTest {
     fun issue142() {
         assertRendering(
             "||Alveolar|Bilabial\n" +
-                    "|:--|:-:|:-:\n" +
-                    "|**Plosive**|t, d|b\n" +
-                    "|**Tap**|\u0279|",
+                "|:--|:-:|:-:\n" +
+                "|**Plosive**|t, d|b\n" +
+                "|**Tap**|\u0279|",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th align=\"left\"></th>\n" +
-                    "<th align=\"center\">Alveolar</th>\n" +
-                    "<th align=\"center\">Bilabial</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody>\n" +
-                    "<tr>\n" +
-                    "<td align=\"left\"><strong>Plosive</strong></td>\n" +
-                    "<td align=\"center\">t, d</td>\n" +
-                    "<td align=\"center\">b</td>\n" +
-                    "</tr>\n" +
-                    "<tr>\n" +
-                    "<td align=\"left\"><strong>Tap</strong></td>\n" +
-                    "<td align=\"center\">\u0279</td>\n" +
-                    "<td align=\"center\"></td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th align=\"left\"></th>\n" +
+                "<th align=\"center\">Alveolar</th>\n" +
+                "<th align=\"center\">Bilabial</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<td align=\"left\"><strong>Plosive</strong></td>\n" +
+                "<td align=\"center\">t, d</td>\n" +
+                "<td align=\"center\">b</td>\n" +
+                "</tr>\n" +
+                "<tr>\n" +
+                "<td align=\"left\"><strong>Tap</strong></td>\n" +
+                "<td align=\"center\">\u0279</td>\n" +
+                "<td align=\"center\"></td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n",
         )
     }
 
@@ -655,46 +658,46 @@ class TablesTest {
     fun danglingPipe() {
         assertRendering(
             "Abc|Def\n" +
-                    "---|---\n" +
-                    "1|2\n" +
-                    "|",
+                "---|---\n" +
+                "1|2\n" +
+                "|",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th>Abc</th>\n" +
-                    "<th>Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody>\n" +
-                    "<tr>\n" +
-                    "<td>1</td>\n" +
-                    "<td>2</td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n" +
-                    "<p>|</p>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th>Abc</th>\n" +
+                "<th>Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<td>1</td>\n" +
+                "<td>2</td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n" +
+                "<p>|</p>\n",
         )
 
         assertRendering(
             "Abc|Def\n" +
-                    "---|---\n" +
-                    "1|2\n" +
-                    "  |  ",
+                "---|---\n" +
+                "1|2\n" +
+                "  |  ",
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th>Abc</th>\n" +
-                    "<th>Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody>\n" +
-                    "<tr>\n" +
-                    "<td>1</td>\n" +
-                    "<td>2</td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n" +
-                    "<p>|</p>\n"
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th>Abc</th>\n" +
+                "<th>Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<td>1</td>\n" +
+                "<td>2</td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n" +
+                "<p>|</p>\n",
         )
     }
 
@@ -702,22 +705,22 @@ class TablesTest {
     fun interruptsParagraph() {
         assertRendering(
             "text\n" +
-                    "|a  |\n" +
-                    "|---|\n" +
-                    "|b  |",
+                "|a  |\n" +
+                "|---|\n" +
+                "|b  |",
             "<p>text</p>\n" +
-                    "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th>a</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody>\n" +
-                    "<tr>\n" +
-                    "<td>b</td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n"
+                "<table>\n" +
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th>a</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<td>b</td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n",
         )
     }
 
@@ -734,27 +737,29 @@ class TablesTest {
                 }
             }
         }
-        val htmlRenderer = HtmlRenderer.builder()
-            .attributeProviderFactory(factory)
-            .extensions(extensions)
-            .build()
+        val htmlRenderer =
+            HtmlRenderer
+                .builder()
+                .attributeProviderFactory(factory)
+                .extensions(extensions)
+                .build()
         val rendered = htmlRenderer.render(parser.parse("Abc|Def\n---|---\n1|2"))
         assertEquals(
             "<table test=\"block\">\n" +
-                    "<thead test=\"head\">\n" +
-                    "<tr test=\"row\">\n" +
-                    "<th test=\"cell\">Abc</th>\n" +
-                    "<th test=\"cell\">Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody test=\"body\">\n" +
-                    "<tr test=\"row\">\n" +
-                    "<td test=\"cell\">1</td>\n" +
-                    "<td test=\"cell\">2</td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n",
-            rendered
+                "<thead test=\"head\">\n" +
+                "<tr test=\"row\">\n" +
+                "<th test=\"cell\">Abc</th>\n" +
+                "<th test=\"cell\">Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody test=\"body\">\n" +
+                "<tr test=\"row\">\n" +
+                "<td test=\"cell\">1</td>\n" +
+                "<td test=\"cell\">2</td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n",
+            rendered,
         )
     }
 
@@ -767,45 +772,52 @@ class TablesTest {
                 }
             }
         }
-        val htmlRenderer = HtmlRenderer.builder()
-            .attributeProviderFactory(factory)
-            .extensions(extensions)
-            .build()
+        val htmlRenderer =
+            HtmlRenderer
+                .builder()
+                .attributeProviderFactory(factory)
+                .extensions(extensions)
+                .build()
         val rendered = htmlRenderer.render(parser.parse("Abc|Def\n-----|---\n1|2"))
         assertEquals(
             "<table>\n" +
-                    "<thead>\n" +
-                    "<tr>\n" +
-                    "<th width=\"5em\">Abc</th>\n" +
-                    "<th width=\"3em\">Def</th>\n" +
-                    "</tr>\n" +
-                    "</thead>\n" +
-                    "<tbody>\n" +
-                    "<tr>\n" +
-                    "<td>1</td>\n" +
-                    "<td>2</td>\n" +
-                    "</tr>\n" +
-                    "</tbody>\n" +
-                    "</table>\n",
-            rendered
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th width=\"5em\">Abc</th>\n" +
+                "<th width=\"3em\">Def</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<td>1</td>\n" +
+                "<td>2</td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>\n",
+            rendered,
         )
     }
 
     @Test
     fun sourceSpans() {
-        val sourceParser = Parser.builder()
-            .extensions(extensions)
-            .includeSourceSpans(IncludeSourceSpans.BLOCKS_AND_INLINES)
-            .build()
+        val sourceParser =
+            Parser
+                .builder()
+                .extensions(extensions)
+                .includeSourceSpans(IncludeSourceSpans.BLOCKS_AND_INLINES)
+                .build()
         val document = sourceParser.parse("Abc|Def\n---|---\n|1|2\n 3|four|\n|||\n")
 
         val block = document.firstChild as TableBlock
         assertEquals(
             listOf(
-                SourceSpan.of(0, 0, 0, 7), SourceSpan.of(1, 0, 8, 7),
-                SourceSpan.of(2, 0, 16, 4), SourceSpan.of(3, 0, 21, 8), SourceSpan.of(4, 0, 30, 3)
+                SourceSpan.of(0, 0, 0, 7),
+                SourceSpan.of(1, 0, 8, 7),
+                SourceSpan.of(2, 0, 16, 4),
+                SourceSpan.of(3, 0, 21, 8),
+                SourceSpan.of(4, 0, 30, 3),
             ),
-            block.getSourceSpans()
+            block.getSourceSpans(),
         )
 
         val head = block.firstChild as TableHead
@@ -823,7 +835,7 @@ class TablesTest {
         val body = block.lastChild as TableBody
         assertEquals(
             listOf(SourceSpan.of(2, 0, 16, 4), SourceSpan.of(3, 0, 21, 8), SourceSpan.of(4, 0, 30, 3)),
-            body.getSourceSpans()
+            body.getSourceSpans(),
         )
 
         val bodyRow1 = body.firstChild as TableRow
@@ -854,17 +866,20 @@ class TablesTest {
 
     @Test
     fun sourceSpansWhenInterrupting() {
-        val sourceParser = Parser.builder()
-            .extensions(extensions)
-            .includeSourceSpans(IncludeSourceSpans.BLOCKS_AND_INLINES)
-            .build()
-        val document = sourceParser.parse(
-            "a\n" +
+        val sourceParser =
+            Parser
+                .builder()
+                .extensions(extensions)
+                .includeSourceSpans(IncludeSourceSpans.BLOCKS_AND_INLINES)
+                .build()
+        val document =
+            sourceParser.parse(
+                "a\n" +
                     "bc\n" +
                     "|de|\n" +
                     "|---|\n" +
-                    "|fg|"
-        )
+                    "|fg|",
+            )
 
         val paragraph = document.firstChild as Paragraph
         val text = paragraph.firstChild as Text
@@ -876,9 +891,9 @@ class TablesTest {
         assertEquals(
             listOf(
                 SourceSpan.of(0, 0, 0, 1),
-                SourceSpan.of(1, 0, 2, 2)
+                SourceSpan.of(1, 0, 2, 2),
             ),
-            paragraph.getSourceSpans()
+            paragraph.getSourceSpans(),
         )
 
         val table = document.lastChild as TableBlock
@@ -886,9 +901,9 @@ class TablesTest {
             listOf(
                 SourceSpan.of(2, 0, 5, 4),
                 SourceSpan.of(3, 0, 10, 5),
-                SourceSpan.of(4, 0, 16, 4)
+                SourceSpan.of(4, 0, 16, 4),
             ),
-            table.getSourceSpans()
+            table.getSourceSpans(),
         )
     }
 }

@@ -1,0 +1,11 @@
+root = true
+
+[*]
+insert_final_newline = true
+end_of_line = lf
+charset = utf-8
+
+[*.{kt,kts}]
+ktlint_standard_no-wildcard-imports = disabled
+ktlint_standard_max-line-length = disabled
+ktlint_standard_backing-property-naming = disabled

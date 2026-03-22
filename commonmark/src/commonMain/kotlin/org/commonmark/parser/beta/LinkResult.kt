@@ -12,12 +12,14 @@ public interface LinkResult {
     public companion object {
         public fun none(): LinkResult? = null
 
-        public fun wrapTextIn(node: Node, position: Position): LinkResult {
-            return LinkResultImpl(LinkResultImpl.Type.WRAP, node, position)
-        }
+        public fun wrapTextIn(
+            node: Node,
+            position: Position,
+        ): LinkResult = LinkResultImpl(LinkResultImpl.Type.WRAP, node, position)
 
-        public fun replaceWith(node: Node, position: Position): LinkResult {
-            return LinkResultImpl(LinkResultImpl.Type.REPLACE, node, position)
-        }
+        public fun replaceWith(
+            node: Node,
+            position: Position,
+        ): LinkResult = LinkResultImpl(LinkResultImpl.Type.REPLACE, node, position)
     }
 }

@@ -9,7 +9,6 @@ import org.commonmark.parser.delimiter.DelimiterProcessor
 import org.commonmark.parser.delimiter.DelimiterRun
 
 internal class ImageAttributesDelimiterProcessor : DelimiterProcessor {
-
     // Only allow a defined set of attributes to be used.
     companion object {
         private val SUPPORTED_ATTRIBUTES = setOf("width", "height")
@@ -21,7 +20,10 @@ internal class ImageAttributesDelimiterProcessor : DelimiterProcessor {
 
     override val minLength: Int get() = 1
 
-    override fun process(openingRun: DelimiterRun, closingRun: DelimiterRun): Int {
+    override fun process(
+        openingRun: DelimiterRun,
+        closingRun: DelimiterRun,
+    ): Int {
         if (openingRun.length != 1) {
             return 0
         }

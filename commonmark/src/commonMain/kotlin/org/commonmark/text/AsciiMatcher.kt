@@ -3,7 +3,9 @@ package org.commonmark.text
 /**
  * Char matcher that can match ASCII characters efficiently.
  */
-public class AsciiMatcher private constructor(builder: Builder) : CharMatcher {
+public class AsciiMatcher private constructor(
+    builder: Builder,
+) : CharMatcher {
     private val lo: Long = builder.lo
     private val hi: Long = builder.hi
 
@@ -25,8 +27,10 @@ public class AsciiMatcher private constructor(builder: Builder) : CharMatcher {
         public fun builder(matcher: AsciiMatcher): Builder = Builder(matcher.lo, matcher.hi)
     }
 
-    public class Builder internal constructor(internal var lo: Long, internal var hi: Long) {
-
+    public class Builder internal constructor(
+        internal var lo: Long,
+        internal var hi: Long,
+    ) {
         public fun c(c: Char): Builder {
             val code = c.code
             require(code <= 127) { "Can only match ASCII characters" }
@@ -52,7 +56,10 @@ public class AsciiMatcher private constructor(builder: Builder) : CharMatcher {
             return this
         }
 
-        public fun range(from: Char, toInclusive: Char): Builder {
+        public fun range(
+            from: Char,
+            toInclusive: Char,
+        ): Builder {
             var c = from
             while (c <= toInclusive) {
                 c(c)

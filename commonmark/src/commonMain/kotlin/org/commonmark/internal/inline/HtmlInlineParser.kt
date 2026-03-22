@@ -13,7 +13,6 @@ import org.commonmark.text.AsciiMatcher
  * Attempt to parse inline HTML.
  */
 internal class HtmlInlineParser : InlineContentParser {
-
     override fun tryParse(inlineParserState: InlineParserState): ParsedInline? {
         val scanner = inlineParserState.scanner()
         val start = scanner.position()
@@ -62,23 +61,60 @@ internal class HtmlInlineParser : InlineContentParser {
     }
 
     companion object {
-        private val asciiLetter: AsciiMatcher = AsciiMatcher.builder().range('A', 'Z').range('a', 'z').build()
+        private val asciiLetter: AsciiMatcher =
+            AsciiMatcher
+                .builder()
+                .range('A', 'Z')
+                .range('a', 'z')
+                .build()
 
         // spec: A tag name consists of an ASCII letter followed by zero or more ASCII letters, digits, or hyphens (-).
         private val tagNameStart: AsciiMatcher = asciiLetter
-        private val tagNameContinue: AsciiMatcher = tagNameStart.newBuilder().range('0', '9').c('-').build()
+        private val tagNameContinue: AsciiMatcher =
+            tagNameStart
+                .newBuilder()
+                .range('0', '9')
+                .c('-')
+                .build()
 
         // spec: An attribute name consists of an ASCII letter, _, or :, followed by zero or more ASCII letters, digits,
         // _, ., :, or -. (Note: This is the XML specification restricted to ASCII. HTML5 is laxer.)
-        private val attributeStart: AsciiMatcher = asciiLetter.newBuilder().c('_').c(':').build()
-        private val attributeContinue: AsciiMatcher = attributeStart.newBuilder().range('0', '9').c('.').c('-').build()
-        // spec: An unquoted attribute value is a nonempty string of characters not including whitespace, ", ', =, <, >, or `.
-        private val attributeValueEnd: AsciiMatcher = AsciiMatcher.builder()
-            .c(' ').c('\t').c('\n').c('\u000B').c('\u000C').c('\r')
-            .c('"').c('\'').c('=').c('<').c('>').c('`')
-            .build()
+        private val attributeStart: AsciiMatcher =
+            asciiLetter
+                .newBuilder()
+                .c('_')
+                .c(':')
+                .build()
+        private val attributeContinue: AsciiMatcher =
+            attributeStart
+                .newBuilder()
+                .range('0', '9')
+                .c('.')
+                .c('-')
+                .build()
 
-        private fun htmlInline(start: Position, scanner: Scanner): ParsedInline {
+        // spec: An unquoted attribute value is a nonempty string of characters not including whitespace, ", ', =, <, >, or `.
+        private val attributeValueEnd: AsciiMatcher =
+            AsciiMatcher
+                .builder()
+                .c(' ')
+                .c('\t')
+                .c('\n')
+                .c('\u000B')
+                .c('\u000C')
+                .c('\r')
+                .c('"')
+                .c('\'')
+                .c('=')
+                .c('<')
+                .c('>')
+                .c('`')
+                .build()
+
+        private fun htmlInline(
+            start: Position,
+            scanner: Scanner,
+        ): ParsedInline {
             val text = scanner.getSource(start, scanner.position()).getContent()
             val node = HtmlInline()
             node.literal = text

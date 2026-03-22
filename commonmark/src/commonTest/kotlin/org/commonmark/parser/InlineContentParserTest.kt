@@ -11,7 +11,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class InlineContentParserTest {
-
     @Test
     fun customInlineContentParser() {
         val parser = Parser.builder().customInlineContentParserFactory(DollarInlineParser.Factory()).build()
@@ -46,10 +45,12 @@ class InlineContentParserTest {
         assertEquals("notimage", (image.next!!.next!!.next as Text).literal)
     }
 
-    private class DollarInline(val literal: String, val index: Int) : CustomNode()
+    private class DollarInline(
+        val literal: String,
+        val index: Int,
+    ) : CustomNode()
 
     private class DollarInlineParser : InlineContentParser {
-
         private var index = 0
 
         override fun tryParse(inlineParserState: InlineParserState): ParsedInline? {
@@ -69,16 +70,13 @@ class InlineContentParserTest {
         class Factory : InlineContentParserFactory {
             override val triggerCharacters: Set<Char> = setOf('$')
 
-            override fun create(): InlineContentParser {
-                return DollarInlineParser()
-            }
+            override fun create(): InlineContentParser = DollarInlineParser()
         }
     }
 
     private class BangInline : CustomNode()
 
     private class BangInlineParser : InlineContentParser {
-
         override fun tryParse(inlineParserState: InlineParserState): ParsedInline? {
             val scanner = inlineParserState.scanner()
             scanner.next()
@@ -88,9 +86,7 @@ class InlineContentParserTest {
         class Factory : InlineContentParserFactory {
             override val triggerCharacters: Set<Char> = setOf('!')
 
-            override fun create(): InlineContentParser {
-                return BangInlineParser()
-            }
+            override fun create(): InlineContentParser = BangInlineParser()
         }
     }
 }

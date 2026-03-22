@@ -22,10 +22,13 @@ public class SourceSpans private constructor() {
             if (last.lineIndex == first.lineIndex &&
                 last.inputIndex + last.length == first.inputIndex
             ) {
-                spans[spans.size - 1] = SourceSpan.of(
-                    last.lineIndex, last.columnIndex, last.inputIndex,
-                    last.length + first.length
-                )
+                spans[spans.size - 1] =
+                    SourceSpan.of(
+                        last.lineIndex,
+                        last.columnIndex,
+                        last.inputIndex,
+                        last.length + first.length,
+                    )
                 for (i in 1 until other.size) {
                     spans.add(other[i])
                 }

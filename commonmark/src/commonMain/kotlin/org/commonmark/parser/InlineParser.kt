@@ -10,5 +10,8 @@ public interface InlineParser {
      * @param lines the source content to parse as inline
      * @param node the node to append resulting nodes to (as children)
      */
-    public fun parse(lines: SourceLines, node: Node)
+    public fun parse(
+        lines: SourceLines,
+        node: Node,
+    )
 }

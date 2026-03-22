@@ -8,7 +8,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class SourceSpansTest {
-
     @Test
     fun paragraph() {
         assertSpans("foo\n", Paragraph::class, SourceSpan.of(0, 0, 0, 3))
@@ -56,43 +55,75 @@ class SourceSpansTest {
         assertSpans("\t  foo\n", IndentedCodeBlock::class, SourceSpan.of(0, 0, 0, 6))
         assertSpans("    foo\n     bar\n", IndentedCodeBlock::class, SourceSpan.of(0, 0, 0, 7), SourceSpan.of(1, 0, 8, 8))
         assertSpans("    foo\n\tbar\n", IndentedCodeBlock::class, SourceSpan.of(0, 0, 0, 7), SourceSpan.of(1, 0, 8, 4))
-        assertSpans("    foo\n    \n     \n", IndentedCodeBlock::class, SourceSpan.of(0, 0, 0, 7), SourceSpan.of(1, 0, 8, 4), SourceSpan.of(2, 0, 13, 5))
+        assertSpans(
+            "    foo\n    \n     \n",
+            IndentedCodeBlock::class,
+            SourceSpan.of(0, 0, 0, 7),
+            SourceSpan.of(1, 0, 8, 4),
+            SourceSpan.of(2, 0, 13, 5),
+        )
         assertSpans(">     foo\n", IndentedCodeBlock::class, SourceSpan.of(0, 2, 2, 7))
     }
 
     @Test
     fun fencedCodeBlock() {
         assertSpans(
-            "```\nfoo\n```\n", FencedCodeBlock::class,
-            SourceSpan.of(0, 0, 0, 3), SourceSpan.of(1, 0, 4, 3), SourceSpan.of(2, 0, 8, 3)
+            "```\nfoo\n```\n",
+            FencedCodeBlock::class,
+            SourceSpan.of(0, 0, 0, 3),
+            SourceSpan.of(1, 0, 4, 3),
+            SourceSpan.of(2, 0, 8, 3),
         )
         assertSpans(
-            "```\n foo\n```\n", FencedCodeBlock::class,
-            SourceSpan.of(0, 0, 0, 3), SourceSpan.of(1, 0, 4, 4), SourceSpan.of(2, 0, 9, 3)
+            "```\n foo\n```\n",
+            FencedCodeBlock::class,
+            SourceSpan.of(0, 0, 0, 3),
+            SourceSpan.of(1, 0, 4, 4),
+            SourceSpan.of(2, 0, 9, 3),
         )
         assertSpans(
-            "```\nfoo\nbar\n```\n", FencedCodeBlock::class,
-            SourceSpan.of(0, 0, 0, 3), SourceSpan.of(1, 0, 4, 3), SourceSpan.of(2, 0, 8, 3), SourceSpan.of(3, 0, 12, 3)
+            "```\nfoo\nbar\n```\n",
+            FencedCodeBlock::class,
+            SourceSpan.of(0, 0, 0, 3),
+            SourceSpan.of(1, 0, 4, 3),
+            SourceSpan.of(2, 0, 8, 3),
+            SourceSpan.of(3, 0, 12, 3),
         )
         assertSpans(
-            "   ```\n   foo\n   ```\n", FencedCodeBlock::class,
-            SourceSpan.of(0, 0, 0, 6), SourceSpan.of(1, 0, 7, 6), SourceSpan.of(2, 0, 14, 6)
+            "   ```\n   foo\n   ```\n",
+            FencedCodeBlock::class,
+            SourceSpan.of(0, 0, 0, 6),
+            SourceSpan.of(1, 0, 7, 6),
+            SourceSpan.of(2, 0, 14, 6),
         )
         assertSpans(
-            " ```\n foo\nfoo\n```\n", FencedCodeBlock::class,
-            SourceSpan.of(0, 0, 0, 4), SourceSpan.of(1, 0, 5, 4), SourceSpan.of(2, 0, 10, 3), SourceSpan.of(3, 0, 14, 3)
+            " ```\n foo\nfoo\n```\n",
+            FencedCodeBlock::class,
+            SourceSpan.of(0, 0, 0, 4),
+            SourceSpan.of(1, 0, 5, 4),
+            SourceSpan.of(2, 0, 10, 3),
+            SourceSpan.of(3, 0, 14, 3),
         )
         assertSpans(
-            "```info\nfoo\n```\n", FencedCodeBlock::class,
-            SourceSpan.of(0, 0, 0, 7), SourceSpan.of(1, 0, 8, 3), SourceSpan.of(2, 0, 12, 3)
+            "```info\nfoo\n```\n",
+            FencedCodeBlock::class,
+            SourceSpan.of(0, 0, 0, 7),
+            SourceSpan.of(1, 0, 8, 3),
+            SourceSpan.of(2, 0, 12, 3),
         )
         assertSpans(
-            "* ```\n  foo\n  ```\n", FencedCodeBlock::class,
-            SourceSpan.of(0, 2, 2, 3), SourceSpan.of(1, 2, 8, 3), SourceSpan.of(2, 2, 14, 3)
+            "* ```\n  foo\n  ```\n",
+            FencedCodeBlock::class,
+            SourceSpan.of(0, 2, 2, 3),
+            SourceSpan.of(1, 2, 8, 3),
+            SourceSpan.of(2, 2, 14, 3),
         )
         assertSpans(
-            "> ```\n> foo\n> ```\n", FencedCodeBlock::class,
-            SourceSpan.of(0, 2, 2, 3), SourceSpan.of(1, 2, 8, 3), SourceSpan.of(2, 2, 14, 3)
+            "> ```\n> foo\n> ```\n",
+            FencedCodeBlock::class,
+            SourceSpan.of(0, 2, 2, 3),
+            SourceSpan.of(1, 2, 8, 3),
+            SourceSpan.of(2, 2, 14, 3),
         )
 
         val document = PARSER.parse("```\nfoo\n```\nbar\n")
@@ -104,10 +135,11 @@ class SourceSpansTest {
     fun htmlBlock() {
         assertSpans("<div>\n", HtmlBlock::class, SourceSpan.of(0, 0, 0, 5))
         assertSpans(
-            " <div>\n foo\n </div>\n", HtmlBlock::class,
+            " <div>\n foo\n </div>\n",
+            HtmlBlock::class,
             SourceSpan.of(0, 0, 0, 6),
             SourceSpan.of(1, 0, 7, 4),
-            SourceSpan.of(2, 0, 12, 7)
+            SourceSpan.of(2, 0, 12, 7),
         )
         assertSpans("* <div>\n", HtmlBlock::class, SourceSpan.of(0, 2, 2, 5))
     }
@@ -121,7 +153,13 @@ class SourceSpansTest {
         assertSpans("   > foo\n  > bar\n", BlockQuote::class, SourceSpan.of(0, 0, 0, 8), SourceSpan.of(1, 0, 9, 7))
         // Lazy continuations
         assertSpans("> foo\nbar\n", BlockQuote::class, SourceSpan.of(0, 0, 0, 5), SourceSpan.of(1, 0, 6, 3))
-        assertSpans("> foo\nbar\n> baz\n", BlockQuote::class, SourceSpan.of(0, 0, 0, 5), SourceSpan.of(1, 0, 6, 3), SourceSpan.of(2, 0, 10, 5))
+        assertSpans(
+            "> foo\nbar\n> baz\n",
+            BlockQuote::class,
+            SourceSpan.of(0, 0, 0, 5),
+            SourceSpan.of(1, 0, 6, 3),
+            SourceSpan.of(2, 0, 10, 5),
+        )
         assertSpans("> > foo\nbar\n", BlockQuote::class, SourceSpan.of(0, 0, 0, 7), SourceSpan.of(1, 0, 8, 3))
     }
 
@@ -138,7 +176,13 @@ class SourceSpansTest {
         // Lazy continuations
         assertSpans("* foo\nbar\nbaz", ListBlock::class, SourceSpan.of(0, 0, 0, 5), SourceSpan.of(1, 0, 6, 3), SourceSpan.of(2, 0, 10, 3))
         assertSpans("* foo\nbar\n* baz", ListBlock::class, SourceSpan.of(0, 0, 0, 5), SourceSpan.of(1, 0, 6, 3), SourceSpan.of(2, 0, 10, 5))
-        assertSpans("* foo\n  * bar\nbaz", ListBlock::class, SourceSpan.of(0, 0, 0, 5), SourceSpan.of(1, 0, 6, 7), SourceSpan.of(2, 0, 14, 3))
+        assertSpans(
+            "* foo\n  * bar\nbaz",
+            ListBlock::class,
+            SourceSpan.of(0, 0, 0, 5),
+            SourceSpan.of(1, 0, 6, 7),
+            SourceSpan.of(2, 0, 14, 3),
+        )
 
         val document = PARSER.parse("* foo\n  * bar\n")
         val listBlock = document.firstChild!!.firstChild!!.lastChild as ListBlock
@@ -315,9 +359,10 @@ class SourceSpansTest {
     fun inlineBackticks() {
         assertInlineSpans("see `code`", Code::class, SourceSpan.of(0, 4, 4, 6))
         assertInlineSpans(
-            "`multi\nline`", Code::class,
+            "`multi\nline`",
+            Code::class,
             SourceSpan.of(0, 0, 0, 6),
-            SourceSpan.of(1, 0, 7, 5)
+            SourceSpan.of(1, 0, 7, 5),
         )
         assertInlineSpans("text ```", Text::class, SourceSpan.of(0, 0, 0, 8))
     }
@@ -380,21 +425,26 @@ class SourceSpansTest {
     fun differentLineTerminators() {
         val input = "foo\nbar\rbaz\r\nqux\r\n\r\n> *hi*"
         assertSpans(
-            input, Paragraph::class,
+            input,
+            Paragraph::class,
             SourceSpan.of(0, 0, 0, 3),
             SourceSpan.of(1, 0, 4, 3),
             SourceSpan.of(2, 0, 8, 3),
-            SourceSpan.of(3, 0, 13, 3)
+            SourceSpan.of(3, 0, 13, 3),
         )
         assertSpans(
-            input, BlockQuote::class,
-            SourceSpan.of(5, 0, 20, 6)
+            input,
+            BlockQuote::class,
+            SourceSpan.of(5, 0, 20, 6),
         )
 
         assertInlineSpans(input, Emphasis::class, SourceSpan.of(5, 2, 22, 4))
     }
 
-    private fun assertVisualize(source: String, expected: String) {
+    private fun assertVisualize(
+        source: String,
+        expected: String,
+    ) {
         val doc = PARSER.parse(source)
         assertEquals(expected, SourceSpanRenderer.renderWithLineColumn(doc, source))
         assertEquals(expected, SourceSpanRenderer.renderWithInputIndex(doc, source))
@@ -404,20 +454,35 @@ class SourceSpansTest {
         private val PARSER = Parser.builder().includeSourceSpans(IncludeSourceSpans.BLOCKS).build()
         private val INLINES_PARSER = Parser.builder().includeSourceSpans(IncludeSourceSpans.BLOCKS_AND_INLINES).build()
 
-        private fun assertSpans(input: String, nodeClass: KClass<out Node>, vararg expectedSourceSpans: SourceSpan) {
+        private fun assertSpans(
+            input: String,
+            nodeClass: KClass<out Node>,
+            vararg expectedSourceSpans: SourceSpan,
+        ) {
             assertSpansFromDocument(PARSER.parse(input), nodeClass, *expectedSourceSpans)
         }
 
-        private fun assertInlineSpans(input: String, nodeClass: KClass<out Node>, vararg expectedSourceSpans: SourceSpan) {
+        private fun assertInlineSpans(
+            input: String,
+            nodeClass: KClass<out Node>,
+            vararg expectedSourceSpans: SourceSpan,
+        ) {
             assertSpansFromDocument(INLINES_PARSER.parse(input), nodeClass, *expectedSourceSpans)
         }
 
-        private fun assertSpansFromDocument(rootNode: Node, nodeClass: KClass<out Node>, vararg expectedSourceSpans: SourceSpan) {
+        private fun assertSpansFromDocument(
+            rootNode: Node,
+            nodeClass: KClass<out Node>,
+            vararg expectedSourceSpans: SourceSpan,
+        ) {
             val node = findNode(rootNode, nodeClass)
             assertEquals(expectedSourceSpans.toList(), node.getSourceSpans())
         }
 
-        private fun findNode(rootNode: Node, nodeClass: KClass<out Node>): Node {
+        private fun findNode(
+            rootNode: Node,
+            nodeClass: KClass<out Node>,
+        ): Node {
             val nodes = ArrayDeque<Node>()
             nodes.addLast(rootNode)
             while (nodes.isNotEmpty()) {

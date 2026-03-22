@@ -7,9 +7,12 @@ import org.commonmark.node.SourceSpan
  */
 public class SourceLine private constructor(
     public val content: CharSequence,
-    public val sourceSpan: SourceSpan?
+    public val sourceSpan: SourceSpan?,
 ) {
-    public fun substring(beginIndex: Int, endIndex: Int): SourceLine {
+    public fun substring(
+        beginIndex: Int,
+        endIndex: Int,
+    ): SourceLine {
         val newContent = content.subSequence(beginIndex, endIndex)
         var newSourceSpan: SourceSpan? = null
         if (sourceSpan != null) {
@@ -24,8 +27,9 @@ public class SourceLine private constructor(
     }
 
     public companion object {
-        public fun of(content: CharSequence, sourceSpan: SourceSpan?): SourceLine {
-            return SourceLine(content, sourceSpan)
-        }
+        public fun of(
+            content: CharSequence,
+            sourceSpan: SourceSpan?,
+        ): SourceLine = SourceLine(content, sourceSpan)
     }
 }

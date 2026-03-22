@@ -3,8 +3,9 @@ package org.commonmark.ext.ins.internal
 import org.commonmark.node.Node
 import org.commonmark.renderer.text.TextContentNodeRendererContext
 
-internal class InsTextContentNodeRenderer(private val context: TextContentNodeRendererContext) : InsNodeRenderer() {
-
+internal class InsTextContentNodeRenderer(
+    private val context: TextContentNodeRendererContext,
+) : InsNodeRenderer() {
     override fun render(node: Node) {
         renderChildren(node)
     }

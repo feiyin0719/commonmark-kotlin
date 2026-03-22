@@ -11,15 +11,15 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class AbstractVisitorTest {
-
     @Test
     fun replacingNodeInVisitorShouldNotDestroyVisitOrder() {
-        val visitor = object : AbstractVisitor() {
-            override fun visit(text: Text) {
-                text.insertAfter(Code(text.literal))
-                text.unlink()
+        val visitor =
+            object : AbstractVisitor() {
+                override fun visit(text: Text) {
+                    text.insertAfter(Code(text.literal))
+                    text.unlink()
+                }
             }
-        }
 
         val paragraph = Paragraph()
         paragraph.appendChild(Text("foo"))
@@ -34,7 +34,10 @@ class AbstractVisitorTest {
     }
 
     companion object {
-        private fun assertCode(expectedLiteral: String, node: Node?) {
+        private fun assertCode(
+            expectedLiteral: String,
+            node: Node?,
+        ) {
             assertTrue(node is Code)
             assertEquals(expectedLiteral, node.literal)
         }

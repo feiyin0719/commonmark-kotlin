@@ -12,8 +12,9 @@ import org.commonmark.parser.PostProcessor
  * Post-processor that walks the AST to find [Text] nodes that are not inside [Link] nodes, and
  * wraps detected URLs and email addresses in [Link] nodes.
  */
-internal class AutolinkPostProcessor(linkTypes: Set<AutolinkType>) : PostProcessor {
-
+internal class AutolinkPostProcessor(
+    linkTypes: Set<AutolinkType>,
+) : PostProcessor {
     private val linkExtractor: LinkExtractor
 
     init {
@@ -83,8 +84,11 @@ internal class AutolinkPostProcessor(linkTypes: Set<AutolinkType>) : PostProcess
     }
 
     companion object {
-
-        private fun createTextNode(literal: String, span: Span, sourceSpan: SourceSpan?): Text {
+        private fun createTextNode(
+            literal: String,
+            span: Span,
+            sourceSpan: SourceSpan?,
+        ): Text {
             val beginIndex = span.beginIndex
             val endIndex = span.endIndex
             val text = literal.substring(beginIndex, endIndex)
@@ -95,15 +99,20 @@ internal class AutolinkPostProcessor(linkTypes: Set<AutolinkType>) : PostProcess
             return textNode
         }
 
-        private fun getDestination(linkSpan: LinkSpan, linkText: String): String {
-            return when (linkSpan.type) {
+        private fun getDestination(
+            linkSpan: LinkSpan,
+            linkText: String,
+        ): String =
+            when (linkSpan.type) {
                 LinkType.EMAIL -> "mailto:$linkText"
                 LinkType.WWW -> "http://$linkText"
                 LinkType.URL -> linkText
             }
-        }
 
-        private fun insertNode(node: Node, insertAfterNode: Node): Node {
+        private fun insertNode(
+            node: Node,
+            insertAfterNode: Node,
+        ): Node {
             insertAfterNode.insertAfter(node)
             return node
         }

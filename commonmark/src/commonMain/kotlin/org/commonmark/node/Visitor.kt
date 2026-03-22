@@ -2,26 +2,48 @@ package org.commonmark.node
 
 public interface Visitor {
     public fun visit(blockQuote: BlockQuote)
+
     public fun visit(bulletList: BulletList)
+
     public fun visit(code: Code)
+
     public fun visit(document: Document)
+
     public fun visit(emphasis: Emphasis)
+
     public fun visit(fencedCodeBlock: FencedCodeBlock)
+
     public fun visit(hardLineBreak: HardLineBreak)
+
     public fun visit(heading: Heading)
+
     public fun visit(thematicBreak: ThematicBreak)
+
     public fun visit(htmlInline: HtmlInline)
+
     public fun visit(htmlBlock: HtmlBlock)
+
     public fun visit(image: Image)
+
     public fun visit(indentedCodeBlock: IndentedCodeBlock)
+
     public fun visit(link: Link)
+
     public fun visit(listItem: ListItem)
+
     public fun visit(orderedList: OrderedList)
+
     public fun visit(paragraph: Paragraph)
+
     public fun visit(softLineBreak: SoftLineBreak)
+
     public fun visit(strongEmphasis: StrongEmphasis)
+
     public fun visit(text: Text)
+
     public fun visit(linkReferenceDefinition: LinkReferenceDefinition)
+
     public fun visit(customBlock: CustomBlock)
+
     public fun visit(customNode: CustomNode)
 }

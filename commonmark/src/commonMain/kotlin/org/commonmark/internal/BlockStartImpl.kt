@@ -4,7 +4,7 @@ import org.commonmark.parser.block.BlockParser
 import org.commonmark.parser.block.BlockStart
 
 internal class BlockStartImpl(
-    val blockParsers: List<BlockParser>
+    val blockParsers: List<BlockParser>,
 ) : BlockStart() {
     var newIndex: Int = -1
         private set

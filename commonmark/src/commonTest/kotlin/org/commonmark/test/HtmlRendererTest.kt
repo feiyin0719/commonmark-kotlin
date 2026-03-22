@@ -20,7 +20,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class HtmlRendererTest {
-
     @Test
     fun htmlAllowingShouldNotEscapeInlineHtml() {
         val rendered = htmlAllowingRenderer().render(parse("paragraph with <span id='foo' class=\"bar\">inline &amp; html</span>"))
@@ -56,7 +55,10 @@ class HtmlRendererTest {
     fun characterReferencesWithoutSemicolonsShouldNotBeParsedShouldBeEscaped() {
         val input = "[example](&#x6A&#x61&#x76&#x61&#x73&#x63&#x72&#x69&#x70&#x74&#x3A&#x61&#x6C&#x65&#x72&#x74&#x28&#x27&#x58&#x53&#x53&#x27&#x29)"
         val rendered = defaultRenderer().render(parse(input))
-        assertEquals("<p><a href=\"&amp;#x6A&amp;#x61&amp;#x76&amp;#x61&amp;#x73&amp;#x63&amp;#x72&amp;#x69&amp;#x70&amp;#x74&amp;#x3A&amp;#x61&amp;#x6C&amp;#x65&amp;#x72&amp;#x74&amp;#x28&amp;#x27&amp;#x58&amp;#x53&amp;#x53&amp;#x27&amp;#x29\">example</a></p>\n", rendered)
+        assertEquals(
+            "<p><a href=\"&amp;#x6A&amp;#x61&amp;#x76&amp;#x61&amp;#x73&amp;#x63&amp;#x72&amp;#x69&amp;#x70&amp;#x74&amp;#x3A&amp;#x61&amp;#x6C&amp;#x65&amp;#x72&amp;#x74&amp;#x28&amp;#x27&amp;#x58&amp;#x53&amp;#x53&amp;#x27&amp;#x29\">example</a></p>\n",
+            rendered,
+        )
     }
 
     @Test
@@ -155,9 +157,15 @@ class HtmlRendererTest {
         assertEquals("<p><a href=\"foo%25a_\">a</a></p>\n", percentEncodingRenderer().render(parse("[a](foo%a_)")))
         assertEquals("<p><a href=\"foo%25xx\">a</a></p>\n", percentEncodingRenderer().render(parse("[a](foo%xx)")))
         // Reserved characters are preserved, except for '[' and ']'
-        assertEquals("<p><a href=\"!*'();:@&amp;=+\$,/?#%5B%5D\">a</a></p>\n", percentEncodingRenderer().render(parse("[a](!*'();:@&=+\$,/?#[])")))
+        assertEquals(
+            "<p><a href=\"!*'();:@&amp;=+\$,/?#%5B%5D\">a</a></p>\n",
+            percentEncodingRenderer().render(parse("[a](!*'();:@&=+\$,/?#[])")),
+        )
         // Unreserved characters are preserved
-        assertEquals("<p><a href=\"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.~\">a</a></p>\n", percentEncodingRenderer().render(parse("[a](ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.~)")))
+        assertEquals(
+            "<p><a href=\"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.~\">a</a></p>\n",
+            percentEncodingRenderer().render(parse("[a](ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.~)")),
+        )
         // Other characters are percent-encoded (LATIN SMALL LETTER A WITH DIAERESIS)
         assertEquals("<p><a href=\"%C3%A4\">a</a></p>\n", percentEncodingRenderer().render(parse("[a](\u00E4)")))
         // Other characters are percent-encoded (MUSICAL SYMBOL G CLEF, surrogate pair in UTF-16)
@@ -166,18 +174,19 @@ class HtmlRendererTest {
 
     @Test
     fun attributeProviderForCodeBlock() {
-        val custom = AttributeProviderFactory { _ ->
-            AttributeProvider { node, tagName, attributes ->
-                if (node is FencedCodeBlock && tagName == "code") {
-                    // Remove the default attribute for info
-                    attributes.remove("class")
-                    // Put info in custom attribute instead
-                    attributes["data-custom"] = node.info ?: ""
-                } else if (node is FencedCodeBlock && tagName == "pre") {
-                    attributes["data-code-block"] = "fenced"
+        val custom =
+            AttributeProviderFactory { _ ->
+                AttributeProvider { node, tagName, attributes ->
+                    if (node is FencedCodeBlock && tagName == "code") {
+                        // Remove the default attribute for info
+                        attributes.remove("class")
+                        // Put info in custom attribute instead
+                        attributes["data-custom"] = node.info ?: ""
+                    } else if (node is FencedCodeBlock && tagName == "pre") {
+                        attributes["data-code-block"] = "fenced"
+                    }
                 }
             }
-        }
 
         val renderer = HtmlRenderer.builder().attributeProviderFactory(custom).build()
         val rendered = renderer.render(parse("```info\ncontent\n```"))
@@ -189,14 +198,15 @@ class HtmlRendererTest {
 
     @Test
     fun attributeProviderForImage() {
-        val custom = AttributeProviderFactory { _ ->
-            AttributeProvider { node, _, attributes ->
-                if (node is Image) {
-                    attributes.remove("alt")
-                    attributes["test"] = "hey"
+        val custom =
+            AttributeProviderFactory { _ ->
+                AttributeProvider { node, _, attributes ->
+                    if (node is Image) {
+                        attributes.remove("alt")
+                        attributes["test"] = "hey"
+                    }
                 }
             }
-        }
 
         val renderer = HtmlRenderer.builder().attributeProviderFactory(custom).build()
         val rendered = renderer.render(parse("![foo](/url)\n"))
@@ -205,15 +215,21 @@ class HtmlRendererTest {
 
     @Test
     fun attributeProviderFactoryNewInstanceForEachRender() {
-        val factory = AttributeProviderFactory { _ ->
-            object : AttributeProvider {
-                var i = 0
-                override fun setAttributes(node: Node, tagName: String, attributes: MutableMap<String, String?>) {
-                    attributes["key"] = "$i"
-                    i++
+        val factory =
+            AttributeProviderFactory { _ ->
+                object : AttributeProvider {
+                    var i = 0
+
+                    override fun setAttributes(
+                        node: Node,
+                        tagName: String,
+                        attributes: MutableMap<String, String?>,
+                    ) {
+                        attributes["key"] = "$i"
+                        i++
+                    }
                 }
             }
-        }
 
         val renderer = HtmlRenderer.builder().attributeProviderFactory(factory).build()
         val rendered = renderer.render(parse("text node"))
@@ -223,15 +239,16 @@ class HtmlRendererTest {
 
     @Test
     fun overrideNodeRender() {
-        val nodeRendererFactory = HtmlNodeRendererFactory { context ->
-            object : NodeRenderer {
-                override fun getNodeTypes(): Set<KClass<out Node>> = setOf(Link::class)
+        val nodeRendererFactory =
+            HtmlNodeRendererFactory { context ->
+                object : NodeRenderer {
+                    override fun getNodeTypes(): Set<KClass<out Node>> = setOf(Link::class)
 
-                override fun render(node: Node) {
-                    context.getWriter().text("test")
+                    override fun render(node: Node) {
+                        context.getWriter().text("test")
+                    }
                 }
             }
-        }
 
         val renderer = HtmlRenderer.builder().nodeRendererFactory(nodeRendererFactory).build()
         val rendered = renderer.render(parse("foo [bar](/url)"))
@@ -260,7 +277,10 @@ class HtmlRendererTest {
 
     @Test
     fun imageAltTextWithInlines() {
-        assertEquals("<p><img src=\"/url\" alt=\"foo bar link\" /></p>\n", defaultRenderer().render(parse("![_foo_ **bar** [link](/url)](/url)\n")))
+        assertEquals(
+            "<p><img src=\"/url\" alt=\"foo bar link\" /></p>\n",
+            defaultRenderer().render(parse("![_foo_ **bar** [link](/url)](/url)\n")),
+        )
     }
 
     @Test
@@ -297,7 +317,11 @@ class HtmlRendererTest {
         private fun htmlAllowingRenderer(): HtmlRenderer = HtmlRenderer.builder().escapeHtml(false).build()
 
         private fun sanitizeUrlsRenderer(): HtmlRenderer =
-            HtmlRenderer.builder().sanitizeUrls(true).urlSanitizer(DefaultUrlSanitizer()).build()
+            HtmlRenderer
+                .builder()
+                .sanitizeUrls(true)
+                .urlSanitizer(DefaultUrlSanitizer())
+                .build()
 
         private fun rawUrlsRenderer(): HtmlRenderer = HtmlRenderer.builder().sanitizeUrls(false).build()
 

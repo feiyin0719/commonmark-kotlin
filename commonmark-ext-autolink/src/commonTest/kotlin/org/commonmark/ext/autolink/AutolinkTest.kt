@@ -10,24 +10,26 @@ import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 
 class AutolinkTest {
-
     private val extensions = setOf(AutolinkExtension.create())
     private val parser = Parser.builder().extensions(extensions).build()
     private val renderer = HtmlRenderer.builder().extensions(extensions).build()
 
-    private val noWwwExtensions = setOf(
-        AutolinkExtension.builder()
-            .linkTypes(AutolinkType.URL, AutolinkType.EMAIL)
-            .build()
-    )
+    private val noWwwExtensions =
+        setOf(
+            AutolinkExtension
+                .builder()
+                .linkTypes(AutolinkType.URL, AutolinkType.EMAIL)
+                .build(),
+        )
     private val noWwwParser = Parser.builder().extensions(noWwwExtensions).build()
     private val noWwwRenderer = HtmlRenderer.builder().extensions(noWwwExtensions).build()
 
-    private fun render(source: String): String {
-        return renderer.render(parser.parse(source))
-    }
+    private fun render(source: String): String = renderer.render(parser.parse(source))
 
-    private fun assertRendering(source: String, expected: String) {
+    private fun assertRendering(
+        source: String,
+        expected: String,
+    ) {
         assertEquals(expected, render(source))
     }
 
@@ -35,7 +37,7 @@ class AutolinkTest {
     fun oneTextNode() {
         assertRendering(
             "foo http://one.org/ bar http://two.org/",
-            "<p>foo <a href=\"http://one.org/\">http://one.org/</a> bar <a href=\"http://two.org/\">http://two.org/</a></p>\n"
+            "<p>foo <a href=\"http://one.org/\">http://one.org/</a> bar <a href=\"http://two.org/\">http://two.org/</a></p>\n",
         )
     }
 
@@ -43,7 +45,7 @@ class AutolinkTest {
     fun textNodeAndOthers() {
         assertRendering(
             "foo http://one.org/ bar `code` baz http://two.org/",
-            "<p>foo <a href=\"http://one.org/\">http://one.org/</a> bar <code>code</code> baz <a href=\"http://two.org/\">http://two.org/</a></p>\n"
+            "<p>foo <a href=\"http://one.org/\">http://one.org/</a> bar <code>code</code> baz <a href=\"http://two.org/\">http://two.org/</a></p>\n",
         )
     }
 
@@ -52,8 +54,8 @@ class AutolinkTest {
         assertRendering(
             "http://example.com/one. Example 2 (see http://example.com/two). Example 3: http://example.com/foo_(bar)",
             "<p><a href=\"http://example.com/one\">http://example.com/one</a>. " +
-                    "Example 2 (see <a href=\"http://example.com/two\">http://example.com/two</a>). " +
-                    "Example 3: <a href=\"http://example.com/foo_(bar)\">http://example.com/foo_(bar)</a></p>\n"
+                "Example 2 (see <a href=\"http://example.com/two\">http://example.com/two</a>). " +
+                "Example 3: <a href=\"http://example.com/foo_(bar)\">http://example.com/foo_(bar)</a></p>\n",
         )
     }
 
@@ -61,7 +63,7 @@ class AutolinkTest {
     fun emailUsesMailto() {
         assertRendering(
             "foo@example.com",
-            "<p><a href=\"mailto:foo@example.com\">foo@example.com</a></p>\n"
+            "<p><a href=\"mailto:foo@example.com\">foo@example.com</a></p>\n",
         )
     }
 
@@ -74,7 +76,7 @@ class AutolinkTest {
     fun dontLinkTextWithinLinks() {
         assertRendering(
             "<http://example.com>",
-            "<p><a href=\"http://example.com\">http://example.com</a></p>\n"
+            "<p><a href=\"http://example.com\">http://example.com</a></p>\n",
         )
     }
 
@@ -82,7 +84,7 @@ class AutolinkTest {
     fun wwwLinks() {
         assertRendering(
             "www.example.com",
-            "<p><a href=\"http://www.example.com\">www.example.com</a></p>\n"
+            "<p><a href=\"http://www.example.com\">www.example.com</a></p>\n",
         )
     }
 
@@ -94,16 +96,19 @@ class AutolinkTest {
 
     @Test
     fun sourceSpans() {
-        val parser = Parser.builder()
-            .extensions(extensions)
-            .includeSourceSpans(IncludeSourceSpans.BLOCKS_AND_INLINES)
-            .build()
-        val document = parser.parse(
-            "abc\n" +
+        val parser =
+            Parser
+                .builder()
+                .extensions(extensions)
+                .includeSourceSpans(IncludeSourceSpans.BLOCKS_AND_INLINES)
+                .build()
+        val document =
+            parser.parse(
+                "abc\n" +
                     "http://example.com/one\n" +
                     "def http://example.com/two\n" +
-                    "ghi http://example.com/three jkl"
-        )
+                    "ghi http://example.com/three jkl",
+            )
 
         val paragraph = document.firstChild as Paragraph
         val abc = paragraph.firstChild as Text

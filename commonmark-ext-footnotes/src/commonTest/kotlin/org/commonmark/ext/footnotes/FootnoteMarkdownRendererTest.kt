@@ -7,7 +7,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class FootnoteMarkdownRendererTest {
-
     private val extensions = setOf(FootnotesExtension.builder().inlineFootnotes(true).build())
     private val parser = Parser.builder().extensions(extensions).build()
     private val renderer = MarkdownRenderer.builder().extensions(extensions).build()

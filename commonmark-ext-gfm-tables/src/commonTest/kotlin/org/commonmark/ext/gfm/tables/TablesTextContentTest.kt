@@ -8,29 +8,45 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class TablesTextContentTest {
-
     private val extensions: Set<Extension> = setOf(TablesExtension.create())
     private val parser: Parser = Parser.builder().extensions(extensions).build()
 
     private val compactRenderer: TextContentRenderer = TextContentRenderer.builder().extensions(extensions).build()
-    private val separateRenderer: TextContentRenderer = TextContentRenderer.builder().extensions(extensions)
-        .lineBreakRendering(LineBreakRendering.SEPARATE_BLOCKS).build()
-    private val strippedRenderer: TextContentRenderer = TextContentRenderer.builder().extensions(extensions)
-        .lineBreakRendering(LineBreakRendering.STRIP).build()
+    private val separateRenderer: TextContentRenderer =
+        TextContentRenderer
+            .builder()
+            .extensions(extensions)
+            .lineBreakRendering(LineBreakRendering.SEPARATE_BLOCKS)
+            .build()
+    private val strippedRenderer: TextContentRenderer =
+        TextContentRenderer
+            .builder()
+            .extensions(extensions)
+            .lineBreakRendering(LineBreakRendering.STRIP)
+            .build()
 
-    private fun assertCompact(source: String, expected: String) {
+    private fun assertCompact(
+        source: String,
+        expected: String,
+    ) {
         val doc = parser.parse(source)
         val actualRendering = compactRenderer.render(doc)
         assertEquals(expected, actualRendering, "Compact rendering mismatch for source:\n$source")
     }
 
-    private fun assertSeparate(source: String, expected: String) {
+    private fun assertSeparate(
+        source: String,
+        expected: String,
+    ) {
         val doc = parser.parse(source)
         val actualRendering = separateRenderer.render(doc)
         assertEquals(expected, actualRendering, "Separate rendering mismatch for source:\n$source")
     }
 
-    private fun assertStripped(source: String, expected: String) {
+    private fun assertStripped(
+        source: String,
+        expected: String,
+    ) {
         val doc = parser.parse(source)
         val actualRendering = strippedRenderer.render(doc)
         assertEquals(expected, actualRendering, "Stripped rendering mismatch for source:\n$source")

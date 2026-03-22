@@ -8,8 +8,9 @@ import org.commonmark.parser.block.BlockStart
 import org.commonmark.parser.block.MatchedBlockParser
 import org.commonmark.parser.block.ParserState
 
-internal class ThematicBreakParser(literal: String) : AbstractBlockParser() {
-
+internal class ThematicBreakParser(
+    literal: String,
+) : AbstractBlockParser() {
     override val block: ThematicBreak = ThematicBreak().apply { this.literal = literal }
 
     override fun tryContinue(parserState: ParserState): BlockContinue? {
@@ -18,8 +19,10 @@ internal class ThematicBreakParser(literal: String) : AbstractBlockParser() {
     }
 
     class Factory : AbstractBlockParserFactory() {
-
-        override fun tryStart(state: ParserState, matchedBlockParser: MatchedBlockParser): BlockStart? {
+        override fun tryStart(
+            state: ParserState,
+            matchedBlockParser: MatchedBlockParser,
+        ): BlockStart? {
             if (state.indent >= 4) {
                 return BlockStart.none()
             }
@@ -37,26 +40,43 @@ internal class ThematicBreakParser(literal: String) : AbstractBlockParser() {
     companion object {
         // spec: A line consisting of 0-3 spaces of indentation, followed by a sequence of three or more matching -, _, or *
         // characters, each followed optionally by any number of spaces, forms a thematic break.
-        private fun isThematicBreak(line: CharSequence, index: Int): Boolean {
+        private fun isThematicBreak(
+            line: CharSequence,
+            index: Int,
+        ): Boolean {
             var dashes = 0
             var underscores = 0
             var asterisks = 0
             val length = line.length
             for (i in index until length) {
                 when (line[i]) {
-                    '-' -> dashes++
-                    '_' -> underscores++
-                    '*' -> asterisks++
+                    '-' -> {
+                        dashes++
+                    }
+
+                    '_' -> {
+                        underscores++
+                    }
+
+                    '*' -> {
+                        asterisks++
+                    }
+
                     ' ', '\t' -> {
                         // Allowed, even between markers
                     }
-                    else -> return false
+
+                    else -> {
+                        return false
+                    }
                 }
             }
 
-            return ((dashes >= 3 && underscores == 0 && asterisks == 0) ||
+            return (
+                (dashes >= 3 && underscores == 0 && asterisks == 0) ||
                     (underscores >= 3 && dashes == 0 && asterisks == 0) ||
-                    (asterisks >= 3 && dashes == 0 && underscores == 0))
+                    (asterisks >= 3 && dashes == 0 && underscores == 0)
+            )
         }
     }
 }

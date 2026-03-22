@@ -5,8 +5,9 @@ package org.commonmark.ext.heading.anchor
  *
  * Use [builder] to create an instance.
  */
-public class IdGenerator private constructor(builder: Builder) {
-
+public class IdGenerator private constructor(
+    builder: Builder,
+) {
     // Use Unicode character classes to match word characters across all platforms.
     // Java uses Pattern.UNICODE_CHARACTER_CLASS to make \w match Unicode; in Kotlin we use explicit Unicode categories:
     // \p{L} (letters), \p{N} (numbers), \p{Pc} (connector punctuation like _ and ‿), \p{M} (combining marks)
@@ -80,9 +81,7 @@ public class IdGenerator private constructor(builder: Builder) {
         internal var prefix: String = ""
         internal var suffix: String = ""
 
-        public fun build(): IdGenerator {
-            return IdGenerator(this)
-        }
+        public fun build(): IdGenerator = IdGenerator(this)
 
         /**
          * @param defaultId the default identifier to use in case the provided text is empty or only contains unusable characters

@@ -20,9 +20,8 @@ internal class DocumentParser(
     private val delimiterProcessors: List<DelimiterProcessor>,
     private val linkProcessors: List<LinkProcessor>,
     private val linkMarkers: Set<Char>,
-    private val includeSourceSpans: IncludeSourceSpans
+    private val includeSourceSpans: IncludeSourceSpans,
 ) : ParserState {
-
     private var _line: SourceLine? = null
 
     override val line: SourceLine
@@ -101,7 +100,10 @@ internal class DocumentParser(
      * Analyze a line of text and update the document appropriately. We parse markdown text by calling this on each
      * line of input, then finalizing the document.
      */
-    private fun parseLine(ln: String, inputIndex: Int) {
+    private fun parseLine(
+        ln: String,
+        inputIndex: Int,
+    ) {
         setLine(ln, inputIndex)
 
         // For each containing block, try to parse the associated line start.
@@ -228,7 +230,10 @@ internal class DocumentParser(
         }
     }
 
-    private fun setLine(ln: String, inputIndex: Int) {
+    private fun setLine(
+        ln: String,
+        inputIndex: Int,
+    ) {
         lineIndex++
         _index = 0
         _column = 0
@@ -378,9 +383,14 @@ internal class DocumentParser(
      * Walk through a block & children recursively, parsing string content into inline content where appropriate.
      */
     private fun processInlines() {
-        val context = InlineParserContextImpl(
-            inlineContentParserFactories, delimiterProcessors, linkProcessors, linkMarkers, definitions
-        )
+        val context =
+            InlineParserContextImpl(
+                inlineContentParserFactories,
+                delimiterProcessors,
+                linkProcessors,
+                linkMarkers,
+                definitions,
+            )
         val inlineParser = inlineParserFactory.create(context)
 
         for (blockParser in allBlockParsers) {
@@ -405,11 +415,12 @@ internal class DocumentParser(
         openBlockParsers.add(openBlockParser)
     }
 
-    private fun deactivateBlockParser(): OpenBlockParser {
-        return openBlockParsers.removeAt(openBlockParsers.size - 1)
-    }
+    private fun deactivateBlockParser(): OpenBlockParser = openBlockParsers.removeAt(openBlockParsers.size - 1)
 
-    private fun replaceParagraphLines(lines: Int, paragraphParser: ParagraphParser): List<SourceSpan> {
+    private fun replaceParagraphLines(
+        lines: Int,
+        paragraphParser: ParagraphParser,
+    ): List<SourceSpan> {
         // Remove lines from paragraph as the new block is using them.
         // If all lines are used, this also unlinks the Paragraph block.
         val sourceSpans = paragraphParser.removeLines(lines)
@@ -462,36 +473,37 @@ internal class DocumentParser(
 
     private class OpenBlockParser(
         val blockParser: BlockParser,
-        var sourceIndex: Int
+        var sourceIndex: Int,
     )
 
     companion object {
+        private val CORE_FACTORY_TYPES: Set<KClass<out Block>> =
+            linkedSetOf(
+                BlockQuote::class,
+                Heading::class,
+                FencedCodeBlock::class,
+                HtmlBlock::class,
+                ThematicBreak::class,
+                ListBlock::class,
+                IndentedCodeBlock::class,
+            )
 
-        private val CORE_FACTORY_TYPES: Set<KClass<out Block>> = linkedSetOf(
-            BlockQuote::class,
-            Heading::class,
-            FencedCodeBlock::class,
-            HtmlBlock::class,
-            ThematicBreak::class,
-            ListBlock::class,
-            IndentedCodeBlock::class
-        )
-
-        private val NODES_TO_CORE_FACTORIES: Map<KClass<out Block>, BlockParserFactory> = mapOf(
-            BlockQuote::class to BlockQuoteParser.Factory(),
-            Heading::class to HeadingParser.Factory(),
-            FencedCodeBlock::class to FencedCodeBlockParser.Factory(),
-            HtmlBlock::class to HtmlBlockParser.Factory(),
-            ThematicBreak::class to ThematicBreakParser.Factory(),
-            ListBlock::class to ListBlockParser.Factory(),
-            IndentedCodeBlock::class to IndentedCodeBlockParser.Factory()
-        )
+        private val NODES_TO_CORE_FACTORIES: Map<KClass<out Block>, BlockParserFactory> =
+            mapOf(
+                BlockQuote::class to BlockQuoteParser.Factory(),
+                Heading::class to HeadingParser.Factory(),
+                FencedCodeBlock::class to FencedCodeBlockParser.Factory(),
+                HtmlBlock::class to HtmlBlockParser.Factory(),
+                ThematicBreak::class to ThematicBreakParser.Factory(),
+                ListBlock::class to ListBlockParser.Factory(),
+                IndentedCodeBlock::class to IndentedCodeBlockParser.Factory(),
+            )
 
         fun getDefaultBlockParserTypes(): Set<KClass<out Block>> = CORE_FACTORY_TYPES
 
         fun calculateBlockParserFactories(
             customBlockParserFactories: List<BlockParserFactory>,
-            enabledBlockTypes: Set<KClass<out Block>>
+            enabledBlockTypes: Set<KClass<out Block>>,
         ): List<BlockParserFactory> {
             val list = mutableListOf<BlockParserFactory>()
             // By having the custom factories come first, extensions are able to change behavior of core syntax.
@@ -506,7 +518,7 @@ internal class DocumentParser(
             for (enabledBlockType in enabledBlockTypes) {
                 if (!NODES_TO_CORE_FACTORIES.containsKey(enabledBlockType)) {
                     throw IllegalArgumentException(
-                        "Can't enable block type $enabledBlockType, possible options are: ${NODES_TO_CORE_FACTORIES.keys}"
+                        "Can't enable block type $enabledBlockType, possible options are: ${NODES_TO_CORE_FACTORIES.keys}",
                     )
                 }
             }
@@ -515,12 +527,11 @@ internal class DocumentParser(
         /**
          * Prepares the input line replacing `\0`
          */
-        private fun prepareLine(line: String): String {
-            return if (line.indexOf('\u0000') == -1) {
+        private fun prepareLine(line: String): String =
+            if (line.indexOf('\u0000') == -1) {
                 line
             } else {
                 line.replace('\u0000', '\uFFFD')
             }
-        }
     }
 }

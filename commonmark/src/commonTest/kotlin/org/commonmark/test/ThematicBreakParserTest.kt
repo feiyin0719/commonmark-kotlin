@@ -6,7 +6,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ThematicBreakParserTest {
-
     private val parser = Parser.builder().build()
 
     @Test
@@ -17,7 +16,10 @@ class ThematicBreakParserTest {
         assertLiteral("***", "> ***")
     }
 
-    private fun assertLiteral(expected: String, input: String) {
+    private fun assertLiteral(
+        expected: String,
+        input: String,
+    ) {
         val tb = parser.parse(input).find<ThematicBreak>()
         assertEquals(expected, tb.literal)
     }

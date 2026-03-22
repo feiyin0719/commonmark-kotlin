@@ -15,17 +15,15 @@ import org.commonmark.renderer.html.HtmlRenderer
 public class ImageAttributesExtension private constructor() :
     Parser.ParserExtension,
     HtmlRenderer.HtmlRendererExtension {
+        public companion object {
+            public fun create(): Extension = ImageAttributesExtension()
+        }
 
-    public companion object {
-        @JvmStatic
-        public fun create(): Extension = ImageAttributesExtension()
-    }
+        override fun extend(parserBuilder: Parser.Builder) {
+            parserBuilder.customDelimiterProcessor(ImageAttributesDelimiterProcessor())
+        }
 
-    override fun extend(parserBuilder: Parser.Builder) {
-        parserBuilder.customDelimiterProcessor(ImageAttributesDelimiterProcessor())
+        override fun extend(rendererBuilder: HtmlRenderer.Builder) {
+            rendererBuilder.attributeProviderFactory { ImageAttributesAttributeProvider.create() }
+        }
     }
-
-    override fun extend(rendererBuilder: HtmlRenderer.Builder) {
-        rendererBuilder.attributeProviderFactory { ImageAttributesAttributeProvider.create() }
-    }
-}

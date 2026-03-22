@@ -14,8 +14,9 @@ import org.commonmark.text.Characters
 /**
  * Parser for a single [FootnoteDefinition] block.
  */
-internal class FootnoteBlockParser(label: String) : AbstractBlockParser() {
-
+internal class FootnoteBlockParser(
+    label: String,
+) : AbstractBlockParser() {
     private val footnoteBlock = FootnoteDefinition(label)
 
     override val block: Block
@@ -49,8 +50,10 @@ internal class FootnoteBlockParser(label: String) : AbstractBlockParser() {
     }
 
     class Factory : BlockParserFactory {
-
-        override fun tryStart(state: ParserState, matchedBlockParser: MatchedBlockParser): BlockStart? {
+        override fun tryStart(
+            state: ParserState,
+            matchedBlockParser: MatchedBlockParser,
+        ): BlockStart? {
             if (state.indent >= 4) {
                 return BlockStart.none()
             }
@@ -81,7 +84,10 @@ internal class FootnoteBlockParser(label: String) : AbstractBlockParser() {
                             return BlockStart.none()
                         }
                     }
-                    ' ', '\r', '\n', '\u0000', '\t' -> return BlockStart.none()
+
+                    ' ', '\r', '\n', '\u0000', '\t' -> {
+                        return BlockStart.none()
+                    }
                 }
                 i++
             }

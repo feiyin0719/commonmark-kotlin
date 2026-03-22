@@ -7,15 +7,19 @@ import org.commonmark.node.SourceSpans
 import org.commonmark.parser.delimiter.DelimiterProcessor
 import org.commonmark.parser.delimiter.DelimiterRun
 
-internal class StrikethroughDelimiterProcessor(private val requireTwoTildes: Boolean = false) : DelimiterProcessor {
-
+internal class StrikethroughDelimiterProcessor(
+    private val requireTwoTildes: Boolean = false,
+) : DelimiterProcessor {
     override val openingCharacter: Char get() = '~'
 
     override val closingCharacter: Char get() = '~'
 
     override val minLength: Int get() = if (requireTwoTildes) 2 else 1
 
-    override fun process(openingRun: DelimiterRun, closingRun: DelimiterRun): Int {
+    override fun process(
+        openingRun: DelimiterRun,
+        closingRun: DelimiterRun,
+    ): Int {
         if (openingRun.length == closingRun.length && openingRun.length <= 2) {
             // GitHub only accepts either one or two delimiters, but not a mix or more than that.
             val opener = openingRun.opener

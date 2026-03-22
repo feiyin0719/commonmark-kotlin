@@ -20,7 +20,7 @@ internal class Bracket private constructor(
     /** Previous bracket. */
     val previous: Bracket?,
     /** Previous delimiter (emphasis, etc) before this bracket. */
-    val previousDelimiter: Delimiter?
+    val previousDelimiter: Delimiter?,
 ) {
     /** Whether this bracket is allowed to form a link/image (also known as "active"). */
     var allowed: Boolean = true
@@ -34,10 +34,8 @@ internal class Bracket private constructor(
             bracketPosition: Position,
             contentPosition: Position,
             previous: Bracket?,
-            previousDelimiter: Delimiter?
-        ): Bracket {
-            return Bracket(null, null, bracketNode, bracketPosition, contentPosition, previous, previousDelimiter)
-        }
+            previousDelimiter: Delimiter?,
+        ): Bracket = Bracket(null, null, bracketNode, bracketPosition, contentPosition, previous, previousDelimiter)
 
         fun withMarker(
             markerNode: Text,
@@ -46,9 +44,7 @@ internal class Bracket private constructor(
             bracketPosition: Position,
             contentPosition: Position,
             previous: Bracket?,
-            previousDelimiter: Delimiter?
-        ): Bracket {
-            return Bracket(markerNode, markerPosition, bracketNode, bracketPosition, contentPosition, previous, previousDelimiter)
-        }
+            previousDelimiter: Delimiter?,
+        ): Bracket = Bracket(markerNode, markerPosition, bracketNode, bracketPosition, contentPosition, previous, previousDelimiter)
     }
 }

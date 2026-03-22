@@ -7,18 +7,18 @@ import org.commonmark.parser.beta.Position
 internal class LinkResultImpl(
     val type: Type,
     val node: Node,
-    val position: Position
+    val position: Position,
 ) : LinkResult {
-    var includeMarker: Boolean = false
+    var markerIncluded: Boolean = false
         private set
 
     override fun includeMarker(): LinkResult {
-        includeMarker = true
+        markerIncluded = true
         return this
     }
 
     enum class Type {
         WRAP,
-        REPLACE
+        REPLACE,
     }
 }

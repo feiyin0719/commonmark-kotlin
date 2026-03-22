@@ -8,7 +8,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class LinkProcessorTest {
-
     @Test
     fun testLinkMarkerShouldNotBeIncludedByDefault() {
         // If a link marker is registered but is not processed, the built-in link processor shouldn't consume it.

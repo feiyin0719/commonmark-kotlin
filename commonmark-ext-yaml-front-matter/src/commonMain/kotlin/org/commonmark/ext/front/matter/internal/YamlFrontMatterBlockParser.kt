@@ -9,7 +9,6 @@ import org.commonmark.parser.SourceLine
 import org.commonmark.parser.block.*
 
 internal class YamlFrontMatterBlockParser : AbstractBlockParser() {
-
     private var inLiteral = false
     private var currentKey: String? = null
     private var currentValues = mutableListOf<String>()
@@ -73,7 +72,10 @@ internal class YamlFrontMatterBlockParser : AbstractBlockParser() {
     }
 
     class Factory : AbstractBlockParserFactory() {
-        override fun tryStart(state: ParserState, matchedBlockParser: MatchedBlockParser): BlockStart? {
+        override fun tryStart(
+            state: ParserState,
+            matchedBlockParser: MatchedBlockParser,
+        ): BlockStart? {
             val line = state.line.content
             val parentParser = matchedBlockParser.matchedBlockParser
             // check whether this line is the first line of whole document or not

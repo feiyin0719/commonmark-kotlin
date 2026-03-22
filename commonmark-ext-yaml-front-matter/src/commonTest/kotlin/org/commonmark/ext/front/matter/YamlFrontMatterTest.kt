@@ -9,16 +9,16 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class YamlFrontMatterTest {
-
     private val extensions: Set<Extension> = setOf(YamlFrontMatterExtension.create())
     private val parser: Parser = Parser.builder().extensions(extensions).build()
     private val renderer: HtmlRenderer = HtmlRenderer.builder().extensions(extensions).build()
 
-    private fun render(source: String): String {
-        return renderer.render(parser.parse(source))
-    }
+    private fun render(source: String): String = renderer.render(parser.parse(source))
 
-    private fun assertRendering(source: String, expected: String) {
+    private fun assertRendering(
+        source: String,
+        expected: String,
+    ) {
         val actualResult = render(source)
         val expectedFormatted = showTabs("$expected\n\n$source")
         val actualFormatted = showTabs("$actualResult\n\n$source")
@@ -27,7 +27,8 @@ class YamlFrontMatterTest {
 
     @Test
     fun simpleValue() {
-        val input = "---" +
+        val input =
+            "---" +
                 "\nhello: world" +
                 "\n..." +
                 "\n" +
@@ -46,7 +47,8 @@ class YamlFrontMatterTest {
 
     @Test
     fun emptyValue() {
-        val input = "---" +
+        val input =
+            "---" +
                 "\nkey:" +
                 "\n---" +
                 "\n" +
@@ -64,7 +66,8 @@ class YamlFrontMatterTest {
 
     @Test
     fun listValues() {
-        val input = "---" +
+        val input =
+            "---" +
                 "\nlist:" +
                 "\n  - value1" +
                 "\n  - value2" +
@@ -86,7 +89,8 @@ class YamlFrontMatterTest {
 
     @Test
     fun literalValue1() {
-        val input = "---" +
+        val input =
+            "---" +
                 "\nliteral: |" +
                 "\n  hello markdown!" +
                 "\n  literal thing..." +
@@ -107,7 +111,8 @@ class YamlFrontMatterTest {
 
     @Test
     fun literalValue2() {
-        val input = "---" +
+        val input =
+            "---" +
                 "\nliteral: |" +
                 "\n  - hello markdown!" +
                 "\n---" +
@@ -127,7 +132,8 @@ class YamlFrontMatterTest {
 
     @Test
     fun complexValues() {
-        val input = "---" +
+        val input =
+            "---" +
                 "\nsimple: value" +
                 "\nliteral: |" +
                 "\n  hello markdown!" +
@@ -162,7 +168,8 @@ class YamlFrontMatterTest {
 
     @Test
     fun empty() {
-        val input = "---\n" +
+        val input =
+            "---\n" +
                 "---\n" +
                 "test"
         val rendered = "<p>test</p>\n"
@@ -176,7 +183,8 @@ class YamlFrontMatterTest {
 
     @Test
     fun yamlInParagraph() {
-        val input = "# hello\n" +
+        val input =
+            "# hello\n" +
                 "\nhello markdown world!" +
                 "\n---" +
                 "\nhello: world" +
@@ -192,7 +200,8 @@ class YamlFrontMatterTest {
 
     @Test
     fun yamlOnSecondLine() {
-        val input = "hello\n" +
+        val input =
+            "hello\n" +
                 "\n---" +
                 "\nhello: world" +
                 "\n---"
@@ -207,7 +216,8 @@ class YamlFrontMatterTest {
 
     @Test
     fun nonMatchedStartTag() {
-        val input = "----\n" +
+        val input =
+            "----\n" +
                 "test"
         val rendered = "<hr />\n<p>test</p>\n"
 
@@ -220,7 +230,8 @@ class YamlFrontMatterTest {
 
     @Test
     fun inList() {
-        val input = "* ---\n" +
+        val input =
+            "* ---\n" +
                 "  ---\n" +
                 "test"
         val rendered = "<ul>\n<li>\n<hr />\n<hr />\n</li>\n</ul>\n<p>test</p>\n"
@@ -234,7 +245,8 @@ class YamlFrontMatterTest {
 
     @Test
     fun visitorIgnoresOtherCustomNodes() {
-        val input = "---" +
+        val input =
+            "---" +
                 "\nhello: world" +
                 "\n---" +
                 "\n"
@@ -252,7 +264,8 @@ class YamlFrontMatterTest {
 
     @Test
     fun nodesCanBeModified() {
-        val input = "---" +
+        val input =
+            "---" +
                 "\nhello: world" +
                 "\n---" +
                 "\n"
@@ -273,7 +286,8 @@ class YamlFrontMatterTest {
 
     @Test
     fun dotInKeys() {
-        val input = "---" +
+        val input =
+            "---" +
                 "\nms.author: author" +
                 "\n---" +
                 "\n"
@@ -288,7 +302,8 @@ class YamlFrontMatterTest {
 
     @Test
     fun singleQuotedLiterals() {
-        val input = "---" +
+        val input =
+            "---" +
                 "\nstring: 'It''s me'" +
                 "\nlist:" +
                 "\n  - 'I''m here'" +
@@ -304,7 +319,8 @@ class YamlFrontMatterTest {
 
     @Test
     fun doubleQuotedLiteral() {
-        val input = "---" +
+        val input =
+            "---" +
                 "\nstring: \"backslash: \\\\ quote: \\\"\"" +
                 "\nlist:" +
                 "\n  - \"hey\"" +
@@ -329,8 +345,6 @@ class YamlFrontMatterTest {
     private class TestNode : CustomNode()
 
     companion object {
-        private fun showTabs(s: String): String {
-            return s.replace("\t", "\u2192")
-        }
+        private fun showTabs(s: String): String = s.replace("\t", "\u2192")
     }
 }

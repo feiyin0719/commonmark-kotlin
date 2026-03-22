@@ -6,7 +6,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class FencedCodeBlockParserTest : CoreRenderingTestCase() {
-
     @Test
     fun backtickInfo() {
         val parser = Parser.builder().build()
@@ -20,7 +19,7 @@ class FencedCodeBlockParserTest : CoreRenderingTestCase() {
     fun backtickInfoDoesntAllowBacktick() {
         assertRendering(
             "```info ` test\ncode\n```",
-            "<p>```info ` test\ncode</p>\n<pre><code></code></pre>\n"
+            "<p>```info ` test\ncode</p>\n<pre><code></code></pre>\n",
         )
     }
 
@@ -28,7 +27,7 @@ class FencedCodeBlockParserTest : CoreRenderingTestCase() {
     fun backtickAndTildeCantBeMixed() {
         assertRendering(
             "``~`\ncode\n``~`",
-            "<p><code>~` code </code>~`</p>\n"
+            "<p><code>~` code </code>~`</p>\n",
         )
     }
 
@@ -36,7 +35,7 @@ class FencedCodeBlockParserTest : CoreRenderingTestCase() {
     fun closingCanHaveSpacesAfter() {
         assertRendering(
             "```\ncode\n```   ",
-            "<pre><code>code\n</code></pre>\n"
+            "<pre><code>code\n</code></pre>\n",
         )
     }
 
@@ -44,7 +43,7 @@ class FencedCodeBlockParserTest : CoreRenderingTestCase() {
     fun closingCanNotHaveNonSpaces() {
         assertRendering(
             "```\ncode\n``` a",
-            "<pre><code>code\n``` a\n</code></pre>\n"
+            "<pre><code>code\n``` a\n</code></pre>\n",
         )
     }
 
@@ -53,10 +52,10 @@ class FencedCodeBlockParserTest : CoreRenderingTestCase() {
         assertRendering(
             "```\nthis code\n\nshould not have BRs or paragraphs in it\nok\n```",
             "<pre><code>this code\n" +
-                    "\n" +
-                    "should not have BRs or paragraphs in it\n" +
-                    "ok\n" +
-                    "</code></pre>\n"
+                "\n" +
+                "should not have BRs or paragraphs in it\n" +
+                "ok\n" +
+                "</code></pre>\n",
         )
     }
 }

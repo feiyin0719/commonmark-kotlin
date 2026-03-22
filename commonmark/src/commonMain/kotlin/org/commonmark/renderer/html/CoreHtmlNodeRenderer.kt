@@ -8,13 +8,13 @@ import kotlin.reflect.KClass
  * The node renderer that renders all the core nodes (comes last in the order of node renderers).
  */
 public class CoreHtmlNodeRenderer(
-    protected val context: HtmlNodeRendererContext
-) : AbstractVisitor(), NodeRenderer {
-
+    protected val context: HtmlNodeRendererContext,
+) : AbstractVisitor(),
+    NodeRenderer {
     private val html: HtmlWriter = context.getWriter()
 
-    override fun getNodeTypes(): Set<KClass<out Node>> {
-        return setOf(
+    override fun getNodeTypes(): Set<KClass<out Node>> =
+        setOf(
             Document::class,
             Heading::class,
             Paragraph::class,
@@ -34,9 +34,8 @@ public class CoreHtmlNodeRenderer(
             Code::class,
             HtmlInline::class,
             SoftLineBreak::class,
-            HardLineBreak::class
+            HardLineBreak::class,
         )
-    }
 
     override fun render(node: Node) {
         node.accept(this)
@@ -57,9 +56,12 @@ public class CoreHtmlNodeRenderer(
     }
 
     override fun visit(paragraph: Paragraph) {
-        val omitP = isInTightList(paragraph) ||
-                (context.shouldOmitSingleParagraphP() && paragraph.parent is Document &&
-                        paragraph.previous == null && paragraph.next == null)
+        val omitP =
+            isInTightList(paragraph) ||
+                (
+                    context.shouldOmitSingleParagraphP() && paragraph.parent is Document &&
+                        paragraph.previous == null && paragraph.next == null
+                )
         if (!omitP) {
             html.line()
             html.tag("p", getAttrs(paragraph, "p"))
@@ -91,11 +93,12 @@ public class CoreHtmlNodeRenderer(
         val info = fencedCodeBlock.info
         if (info != null && info.isNotEmpty()) {
             val space = info.indexOf(" ")
-            val language: String = if (space == -1) {
-                info
-            } else {
-                info.substring(0, space)
-            }
+            val language: String =
+                if (space == -1) {
+                    info
+                } else {
+                    info.substring(0, space)
+                }
             attributes["class"] = "language-$language"
         }
         renderCodeBlock(literal, fencedCodeBlock, attributes)
@@ -227,7 +230,11 @@ public class CoreHtmlNodeRenderer(
         }
     }
 
-    private fun renderCodeBlock(literal: String, node: Node, attributes: Map<String, String?>) {
+    private fun renderCodeBlock(
+        literal: String,
+        node: Node,
+        attributes: Map<String, String?>,
+    ) {
         html.line()
         html.tag("pre", getAttrs(node, "pre"))
         html.tag("code", getAttrs(node, "code", attributes))
@@ -237,7 +244,11 @@ public class CoreHtmlNodeRenderer(
         html.line()
     }
 
-    private fun renderListBlock(listBlock: ListBlock, tagName: String, attributes: Map<String, String?>) {
+    private fun renderListBlock(
+        listBlock: ListBlock,
+        tagName: String,
+        attributes: Map<String, String?>,
+    ) {
         html.line()
         html.tag(tagName, attributes)
         html.line()
@@ -258,21 +269,21 @@ public class CoreHtmlNodeRenderer(
         return false
     }
 
-    private fun getAttrs(node: Node, tagName: String): Map<String, String?> {
-        return getAttrs(node, tagName, emptyMap())
-    }
+    private fun getAttrs(
+        node: Node,
+        tagName: String,
+    ): Map<String, String?> = getAttrs(node, tagName, emptyMap())
 
-    private fun getAttrs(node: Node, tagName: String, defaultAttributes: Map<String, String?>): Map<String, String?> {
-        return context.extendAttributes(node, tagName, defaultAttributes)
-    }
+    private fun getAttrs(
+        node: Node,
+        tagName: String,
+        defaultAttributes: Map<String, String?>,
+    ): Map<String, String?> = context.extendAttributes(node, tagName, defaultAttributes)
 
     private class AltTextVisitor : AbstractVisitor() {
-
         private val sb = StringBuilder()
 
-        fun getAltText(): String {
-            return sb.toString()
-        }
+        fun getAltText(): String = sb.toString()
 
         override fun visit(text: Text) {
             sb.append(text.literal)

@@ -5,5 +5,6 @@ package org.commonmark.parser.beta
  */
 public interface InlineContentParserFactory {
     public val triggerCharacters: Set<Char>
+
     public fun create(): InlineContentParser
 }

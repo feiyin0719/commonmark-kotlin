@@ -5,8 +5,9 @@ import org.commonmark.node.Node
 import org.commonmark.renderer.markdown.MarkdownNodeRendererContext
 import org.commonmark.renderer.markdown.MarkdownWriter
 
-internal class StrikethroughMarkdownNodeRenderer(private val context: MarkdownNodeRendererContext) : StrikethroughNodeRenderer() {
-
+internal class StrikethroughMarkdownNodeRenderer(
+    private val context: MarkdownNodeRendererContext,
+) : StrikethroughNodeRenderer() {
     private val writer: MarkdownWriter = context.getWriter()
 
     override fun render(node: Node) {

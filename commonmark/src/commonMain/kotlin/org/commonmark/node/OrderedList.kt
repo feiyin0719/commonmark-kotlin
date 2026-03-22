@@ -6,6 +6,5 @@ public class OrderedList : ListBlock() {
 
     override fun accept(visitor: Visitor): Unit = visitor.visit(this)
 
-    override fun toStringAttributes(): String =
-        "markerDelimiter=$markerDelimiter, markerStartNumber=$markerStartNumber"
+    override fun toStringAttributes(): String = "markerDelimiter=$markerDelimiter, markerStartNumber=$markerStartNumber"
 }

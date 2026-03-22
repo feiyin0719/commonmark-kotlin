@@ -5,7 +5,6 @@ package org.commonmark.node
  * for text content within blocks). The parent of a block is always another block.
  */
 public abstract class Block : Node() {
-
     /**
      * Returns the parent block, or null if this is the root.
      */

@@ -14,8 +14,9 @@ import org.commonmark.parser.block.BlockStart
 import org.commonmark.parser.block.MatchedBlockParser
 import org.commonmark.parser.block.ParserState
 
-internal class ListBlockParser(override val block: ListBlock) : AbstractBlockParser() {
-
+internal class ListBlockParser(
+    override val block: ListBlock,
+) : AbstractBlockParser() {
     private var hadBlankLine = false
     private var linesAfterBlank = 0
 
@@ -50,8 +51,10 @@ internal class ListBlockParser(override val block: ListBlock) : AbstractBlockPar
     }
 
     class Factory : AbstractBlockParserFactory() {
-
-        override fun tryStart(state: ParserState, matchedBlockParser: MatchedBlockParser): BlockStart? {
+        override fun tryStart(
+            state: ParserState,
+            matchedBlockParser: MatchedBlockParser,
+        ): BlockStart? {
             val matched = matchedBlockParser.matchedBlockParser
 
             if (state.indent >= Parsing.CODE_BLOCK_INDENT) {
@@ -60,8 +63,9 @@ internal class ListBlockParser(override val block: ListBlock) : AbstractBlockPar
             val markerIndex = state.nextNonSpaceIndex
             val markerColumn = state.column + state.indent
             val inParagraph = !matchedBlockParser.paragraphLines.isEmpty()
-            val listData = parseList(state.line.content, markerIndex, markerColumn, inParagraph)
-                ?: return BlockStart.none()
+            val listData =
+                parseList(state.line.content, markerIndex, markerColumn, inParagraph)
+                    ?: return BlockStart.none()
 
             val newColumn = listData.contentColumn
             val listItemParser = ListItemParser(state.indent, newColumn - state.column)
@@ -86,8 +90,10 @@ internal class ListBlockParser(override val block: ListBlock) : AbstractBlockPar
          * Parse a list marker and return data on the marker or null.
          */
         private fun parseList(
-            line: CharSequence, markerIndex: Int, markerColumn: Int,
-            inParagraph: Boolean
+            line: CharSequence,
+            markerIndex: Int,
+            markerColumn: Int,
+            inParagraph: Boolean,
         ): ListData? {
             val listMarker = parseListMarker(line, markerIndex) ?: return null
             val listBlock = listMarker.listBlock
@@ -133,7 +139,10 @@ internal class ListBlockParser(override val block: ListBlock) : AbstractBlockPar
             return ListData(listBlock, contentColumn)
         }
 
-        private fun parseListMarker(line: CharSequence, index: Int): ListMarkerData? {
+        private fun parseListMarker(
+            line: CharSequence,
+            index: Int,
+        ): ListMarkerData? {
             val c = line[index]
             return when (c) {
                 // spec: A bullet list marker is a -, +, or * character.
@@ -146,13 +155,19 @@ internal class ListBlockParser(override val block: ListBlock) : AbstractBlockPar
                         null
                     }
                 }
-                else -> parseOrderedList(line, index)
+
+                else -> {
+                    parseOrderedList(line, index)
+                }
             }
         }
 
         // spec: An ordered list marker is a sequence of 1-9 arabic digits (0-9), followed by either a `.` character or a
         // `)` character.
-        private fun parseOrderedList(line: CharSequence, index: Int): ListMarkerData? {
+        private fun parseOrderedList(
+            line: CharSequence,
+            index: Int,
+        ): ListMarkerData? {
             var digits = 0
             val length = line.length
             for (i in index until length) {
@@ -164,6 +179,7 @@ internal class ListBlockParser(override val block: ListBlock) : AbstractBlockPar
                             return null
                         }
                     }
+
                     '.', ')' -> {
                         return if (digits >= 1 && isSpaceTabOrEnd(line, i + 1)) {
                             val number = line.subSequence(index, i).toString()
@@ -175,13 +191,19 @@ internal class ListBlockParser(override val block: ListBlock) : AbstractBlockPar
                             null
                         }
                     }
-                    else -> return null
+
+                    else -> {
+                        return null
+                    }
                 }
             }
             return null
         }
 
-        private fun isSpaceTabOrEnd(line: CharSequence, index: Int): Boolean {
+        private fun isSpaceTabOrEnd(
+            line: CharSequence,
+            index: Int,
+        ): Boolean {
             if (index < line.length) {
                 return when (line[index]) {
                     ' ', '\t' -> true
@@ -197,7 +219,10 @@ internal class ListBlockParser(override val block: ListBlock) : AbstractBlockPar
          * with the same delimiter and bullet character. This is used
          * in agglomerating list items into lists.
          */
-        private fun listsMatch(a: ListBlock, b: ListBlock): Boolean {
+        private fun listsMatch(
+            a: ListBlock,
+            b: ListBlock,
+        ): Boolean {
             if (a is BulletList && b is BulletList) {
                 return a.marker == b.marker
             } else if (a is OrderedList && b is OrderedList) {
@@ -209,11 +234,11 @@ internal class ListBlockParser(override val block: ListBlock) : AbstractBlockPar
 
     private class ListData(
         val listBlock: ListBlock,
-        val contentColumn: Int
+        val contentColumn: Int,
     )
 
     private class ListMarkerData(
         val listBlock: ListBlock,
-        val indexAfterMarker: Int
+        val indexAfterMarker: Int,
     )
 }

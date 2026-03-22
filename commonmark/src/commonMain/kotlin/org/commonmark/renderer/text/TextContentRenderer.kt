@@ -9,8 +9,9 @@ import org.commonmark.renderer.Renderer
 /**
  * Renders nodes to plain text content with minimal markup-like additions.
  */
-public class TextContentRenderer private constructor(builder: Builder) : Renderer {
-
+public class TextContentRenderer private constructor(
+    builder: Builder,
+) : Renderer {
     private val lineBreakRendering: LineBreakRendering = builder.lineBreakRendering
     private val nodeRendererFactories: List<TextContentNodeRendererFactory>
 
@@ -22,7 +23,10 @@ public class TextContentRenderer private constructor(builder: Builder) : Rendere
         this.nodeRendererFactories = factories
     }
 
-    override fun render(node: Node, output: StringBuilder) {
+    override fun render(
+        node: Node,
+        output: StringBuilder,
+    ) {
         val context = RendererContext(TextContentWriter(output, lineBreakRendering))
         context.render(node)
     }
@@ -37,16 +41,13 @@ public class TextContentRenderer private constructor(builder: Builder) : Rendere
      * Builder for configuring a [TextContentRenderer]. See methods for default configuration.
      */
     public class Builder {
-
         internal var nodeRendererFactories: MutableList<TextContentNodeRendererFactory> = mutableListOf()
         internal var lineBreakRendering: LineBreakRendering = LineBreakRendering.COMPACT
 
         /**
          * @return the configured [TextContentRenderer]
          */
-        public fun build(): TextContentRenderer {
-            return TextContentRenderer(this)
-        }
+        public fun build(): TextContentRenderer = TextContentRenderer(this)
 
         /**
          * Configure how line breaks (newlines) are rendered, see [LineBreakRendering].
@@ -110,9 +111,8 @@ public class TextContentRenderer private constructor(builder: Builder) : Rendere
     }
 
     private inner class RendererContext(
-        private val textContentWriter: TextContentWriter
+        private val textContentWriter: TextContentWriter,
     ) : TextContentNodeRendererContext {
-
         private val nodeRendererMap = NodeRendererMap()
 
         init {
@@ -122,18 +122,12 @@ public class TextContentRenderer private constructor(builder: Builder) : Rendere
             }
         }
 
-        override fun lineBreakRendering(): LineBreakRendering {
-            return lineBreakRendering
-        }
+        override fun lineBreakRendering(): LineBreakRendering = lineBreakRendering
 
         @Suppress("DEPRECATION")
-        override fun stripNewlines(): Boolean {
-            return lineBreakRendering == LineBreakRendering.STRIP
-        }
+        override fun stripNewlines(): Boolean = lineBreakRendering == LineBreakRendering.STRIP
 
-        override fun getWriter(): TextContentWriter {
-            return textContentWriter
-        }
+        override fun getWriter(): TextContentWriter = textContentWriter
 
         override fun render(node: Node) {
             nodeRendererMap.render(node)
@@ -146,8 +140,6 @@ public class TextContentRenderer private constructor(builder: Builder) : Rendere
          *
          * @return a builder
          */
-        public fun builder(): Builder {
-            return Builder()
-        }
+        public fun builder(): Builder = Builder()
     }
 }

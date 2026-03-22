@@ -11,18 +11,21 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class InsTest {
-
     private val extensions: Set<Extension> = setOf(InsExtension.create())
     private val parser: Parser = Parser.builder().extensions(extensions).build()
     private val renderer: HtmlRenderer = HtmlRenderer.builder().extensions(extensions).build()
-    private val contentRenderer: TextContentRenderer = TextContentRenderer.builder()
-        .extensions(extensions).build()
+    private val contentRenderer: TextContentRenderer =
+        TextContentRenderer
+            .builder()
+            .extensions(extensions)
+            .build()
 
-    private fun render(source: String): String {
-        return renderer.render(parser.parse(source))
-    }
+    private fun render(source: String): String = renderer.render(parser.parse(source))
 
-    private fun assertRendering(source: String, expected: String) {
+    private fun assertRendering(
+        source: String,
+        expected: String,
+    ) {
         val actualResult = render(source)
         val expectedFormatted = showTabs("$expected\n\n$source")
         val actualFormatted = showTabs("$actualResult\n\n$source")
@@ -75,7 +78,7 @@ class InsTest {
     fun insWholeParagraphWithOtherDelimiters() {
         assertRendering(
             "++Paragraph with *emphasis* and __strong emphasis__++",
-            "<p><ins>Paragraph with <em>emphasis</em> and <strong>strong emphasis</strong></ins></p>\n"
+            "<p><ins>Paragraph with <em>emphasis</em> and <strong>strong emphasis</strong></ins></p>\n",
         )
     }
 
@@ -83,7 +86,7 @@ class InsTest {
     fun insideBlockQuote() {
         assertRendering(
             "> underline ++that++",
-            "<blockquote>\n<p>underline <ins>that</ins></p>\n</blockquote>\n"
+            "<blockquote>\n<p>underline <ins>that</ins></p>\n</blockquote>\n",
         )
     }
 
@@ -103,10 +106,12 @@ class InsTest {
 
     @Test
     fun sourceSpans() {
-        val sourceSpanParser = Parser.builder()
-            .extensions(extensions)
-            .includeSourceSpans(IncludeSourceSpans.BLOCKS_AND_INLINES)
-            .build()
+        val sourceSpanParser =
+            Parser
+                .builder()
+                .extensions(extensions)
+                .includeSourceSpans(IncludeSourceSpans.BLOCKS_AND_INLINES)
+                .build()
 
         val document = sourceSpanParser.parse("hey ++there++\n")
         val block = document.firstChild as Paragraph
@@ -115,8 +120,6 @@ class InsTest {
     }
 
     companion object {
-        private fun showTabs(s: String): String {
-            return s.replace("\t", "\u2192")
-        }
+        private fun showTabs(s: String): String = s.replace("\t", "\u2192")
     }
 }

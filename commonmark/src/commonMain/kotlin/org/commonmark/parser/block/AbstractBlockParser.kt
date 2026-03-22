@@ -7,7 +7,6 @@ import org.commonmark.parser.InlineParser
 import org.commonmark.parser.SourceLine
 
 public abstract class AbstractBlockParser : BlockParser {
-
     override val isContainer: Boolean get() = false
 
     override val canHaveLazyContinuationLines: Boolean get() = false

@@ -12,7 +12,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class LinkReferenceDefinitionNodeTest {
-
     @Test
     fun testDefinitionWithoutParagraph() {
         val document = parse("This is a paragraph with a [foo] link.\n\n[foo]: /url 'title'")
@@ -122,7 +121,10 @@ class LinkReferenceDefinitionNodeTest {
             return parser.parse(input)
         }
 
-        private fun assertDef(node: Node, label: String): LinkReferenceDefinition {
+        private fun assertDef(
+            node: Node,
+            label: String,
+        ): LinkReferenceDefinition {
             assertTrue(node is LinkReferenceDefinition)
             assertEquals(label, node.label)
             return node

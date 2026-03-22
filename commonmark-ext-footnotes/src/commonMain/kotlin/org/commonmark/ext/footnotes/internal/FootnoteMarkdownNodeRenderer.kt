@@ -9,13 +9,13 @@ import org.commonmark.renderer.markdown.MarkdownNodeRendererContext
 import org.commonmark.renderer.markdown.MarkdownWriter
 import kotlin.reflect.KClass
 
-internal class FootnoteMarkdownNodeRenderer(context: MarkdownNodeRendererContext) : NodeRenderer {
-
+internal class FootnoteMarkdownNodeRenderer(
+    context: MarkdownNodeRendererContext,
+) : NodeRenderer {
     private val writer: MarkdownWriter = context.getWriter()
     private val context: MarkdownNodeRendererContext = context
 
-    override fun getNodeTypes(): Set<KClass<out Node>> =
-        setOf(FootnoteReference::class, InlineFootnote::class, FootnoteDefinition::class)
+    override fun getNodeTypes(): Set<KClass<out Node>> = setOf(FootnoteReference::class, InlineFootnote::class, FootnoteDefinition::class)
 
     override fun render(node: Node) {
         if (node is FootnoteReference) {

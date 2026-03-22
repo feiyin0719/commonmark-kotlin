@@ -9,8 +9,9 @@ import org.commonmark.parser.delimiter.DelimiterRun
  * lengths. A given delimiter run is dispatched to the child with the largest acceptable minimum length. If no
  * child is applicable, the one with the largest minimum length is chosen.
  */
-internal class StaggeredDelimiterProcessor(private val delim: Char) : DelimiterProcessor {
-
+internal class StaggeredDelimiterProcessor(
+    private val delim: Char,
+) : DelimiterProcessor {
     override val openingCharacter: Char get() = delim
     override val closingCharacter: Char get() = delim
     override var minLength: Int = 0
@@ -33,7 +34,7 @@ internal class StaggeredDelimiterProcessor(private val delim: Char) : DelimiterP
                 break
             } else if (len == pLen) {
                 throw IllegalArgumentException(
-                    "Cannot add two delimiter processors for char '$delim' and minimum length $len; conflicting processors: $p, $dp"
+                    "Cannot add two delimiter processors for char '$delim' and minimum length $len; conflicting processors: $p, $dp",
                 )
             }
         }
@@ -52,7 +53,8 @@ internal class StaggeredDelimiterProcessor(private val delim: Char) : DelimiterP
         return processors.first()
     }
 
-    override fun process(openingRun: DelimiterRun, closingRun: DelimiterRun): Int {
-        return findProcessor(openingRun.length).process(openingRun, closingRun)
-    }
+    override fun process(
+        openingRun: DelimiterRun,
+        closingRun: DelimiterRun,
+    ): Int = findProcessor(openingRun.length).process(openingRun, closingRun)
 }

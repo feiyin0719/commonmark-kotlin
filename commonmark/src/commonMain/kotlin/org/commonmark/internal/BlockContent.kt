@@ -1,7 +1,6 @@
 package org.commonmark.internal
 
 internal class BlockContent {
-
     private val sb: StringBuilder
     private var lineCount: Int = 0
 

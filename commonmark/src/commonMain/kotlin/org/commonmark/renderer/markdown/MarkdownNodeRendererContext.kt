@@ -6,7 +6,6 @@ import org.commonmark.node.Node
  * Context that is passed to custom node renderers, see [MarkdownNodeRendererFactory.create].
  */
 public interface MarkdownNodeRendererContext {
-
     /**
      * @return the writer to use
      */

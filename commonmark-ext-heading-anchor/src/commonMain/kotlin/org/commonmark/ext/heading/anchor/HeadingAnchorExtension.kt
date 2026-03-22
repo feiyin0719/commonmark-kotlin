@@ -24,9 +24,9 @@ import org.commonmark.renderer.html.HtmlRenderer
  *
  * @see IdGenerator the IdGenerator class if just the ID generation part is needed
  */
-public class HeadingAnchorExtension private constructor(builder: Builder) :
-    HtmlRenderer.HtmlRendererExtension {
-
+public class HeadingAnchorExtension private constructor(
+    builder: Builder,
+) : HtmlRenderer.HtmlRendererExtension {
     private val defaultId: String = builder.defaultId
     private val idPrefix: String = builder.idPrefix
     private val idSuffix: String = builder.idSuffix
@@ -75,9 +75,7 @@ public class HeadingAnchorExtension private constructor(builder: Builder) :
         /**
          * @return a configured extension
          */
-        public fun build(): Extension {
-            return HeadingAnchorExtension(this)
-        }
+        public fun build(): Extension = HeadingAnchorExtension(this)
     }
 
     public companion object {

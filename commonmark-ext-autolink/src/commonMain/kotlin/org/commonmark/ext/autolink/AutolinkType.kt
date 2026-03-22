@@ -17,5 +17,5 @@ public enum class AutolinkType {
     /**
      * URL such as `www.example.com`.
      */
-    WWW
+    WWW,
 }

@@ -3,7 +3,6 @@ package org.commonmark.test
 import kotlin.test.Test
 
 class HeadingParserTest : CoreRenderingTestCase() {
-
     @Test
     fun atxHeadingStart() {
         assertRendering("# test", "<h1>test</h1>\n")

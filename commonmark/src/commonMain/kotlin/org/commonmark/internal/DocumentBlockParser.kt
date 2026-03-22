@@ -8,16 +8,13 @@ import org.commonmark.parser.block.BlockContinue
 import org.commonmark.parser.block.ParserState
 
 internal class DocumentBlockParser : AbstractBlockParser() {
-
     override val block: Document = Document()
 
     override val isContainer: Boolean get() = true
 
     override fun canContain(childBlock: Block): Boolean = true
 
-    override fun tryContinue(parserState: ParserState): BlockContinue? {
-        return BlockContinue.atIndex(parserState.index)
-    }
+    override fun tryContinue(parserState: ParserState): BlockContinue? = BlockContinue.atIndex(parserState.index)
 
     override fun addLine(line: SourceLine) {
     }

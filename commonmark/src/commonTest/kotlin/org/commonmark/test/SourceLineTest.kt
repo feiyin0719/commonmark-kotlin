@@ -7,7 +7,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class SourceLineTest {
-
     @Test
     fun testSubstring() {
         val line = SourceLine.of("abcd", SourceSpan.of(3, 10, 13, 4))
@@ -28,17 +27,21 @@ class SourceLineTest {
     @Test
     fun testSubstringBeginOutOfBounds() {
         val sourceLine = SourceLine.of("abcd", SourceSpan.of(3, 10, 13, 4))
-        assertFailsWith<StringIndexOutOfBoundsException> { sourceLine.substring(3, 2) }
+        assertFailsWith<IndexOutOfBoundsException> { sourceLine.substring(3, 2) }
     }
 
     @Test
     fun testSubstringEndOutOfBounds() {
         val sourceLine = SourceLine.of("abcd", SourceSpan.of(3, 10, 13, 4))
-        assertFailsWith<StringIndexOutOfBoundsException> { sourceLine.substring(0, 5) }
+        assertFailsWith<IndexOutOfBoundsException> { sourceLine.substring(0, 5) }
     }
 
     companion object {
-        private fun assertSourceLine(sourceLine: SourceLine, expectedContent: String, expectedSourceSpan: SourceSpan?) {
+        private fun assertSourceLine(
+            sourceLine: SourceLine,
+            expectedContent: String,
+            expectedSourceSpan: SourceSpan?,
+        ) {
             assertEquals(expectedContent, sourceLine.content.toString())
             assertEquals(expectedSourceSpan, sourceLine.sourceSpan)
         }

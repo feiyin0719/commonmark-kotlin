@@ -6,7 +6,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ListBlockParserTest {
-
     private val parser = Parser.builder().build()
 
     @Test
@@ -54,7 +53,11 @@ class ListBlockParserTest {
         assertListItemIndents("1.\tfoo", 0, 4)
     }
 
-    private fun assertListItemIndents(input: String, expectedMarkerIndent: Int, expectedContentIndent: Int) {
+    private fun assertListItemIndents(
+        input: String,
+        expectedMarkerIndent: Int,
+        expectedContentIndent: Int,
+    ) {
         val doc = parser.parse(input)
         val listItem = doc.find<ListItem>()
         assertEquals(expectedMarkerIndent, listItem.markerIndent, "markerIndent for input: $input")

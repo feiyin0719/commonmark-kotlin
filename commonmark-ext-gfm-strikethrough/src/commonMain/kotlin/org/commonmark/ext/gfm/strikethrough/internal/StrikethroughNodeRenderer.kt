@@ -6,6 +6,5 @@ import org.commonmark.renderer.NodeRenderer
 import kotlin.reflect.KClass
 
 internal abstract class StrikethroughNodeRenderer : NodeRenderer {
-
     override fun getNodeTypes(): Set<KClass<out Node>> = setOf(Strikethrough::class)
 }

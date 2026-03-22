@@ -6,7 +6,6 @@ import org.commonmark.node.Node
  * The context for text content rendering, passed to [TextContentNodeRendererFactory.create] and used by node renderers.
  */
 public interface TextContentNodeRendererContext {
-
     /**
      * Controls how line breaks should be rendered, see [LineBreakRendering].
      */

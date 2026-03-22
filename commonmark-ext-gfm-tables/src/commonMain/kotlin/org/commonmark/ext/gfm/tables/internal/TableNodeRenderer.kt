@@ -10,14 +10,14 @@ import org.commonmark.renderer.NodeRenderer
 import kotlin.reflect.KClass
 
 internal abstract class TableNodeRenderer : NodeRenderer {
-
-    override fun getNodeTypes(): Set<KClass<out Node>> = setOf(
-        TableBlock::class,
-        TableHead::class,
-        TableBody::class,
-        TableRow::class,
-        TableCell::class
-    )
+    override fun getNodeTypes(): Set<KClass<out Node>> =
+        setOf(
+            TableBlock::class,
+            TableHead::class,
+            TableBody::class,
+            TableRow::class,
+            TableCell::class,
+        )
 
     override fun render(node: Node) {
         when (node) {

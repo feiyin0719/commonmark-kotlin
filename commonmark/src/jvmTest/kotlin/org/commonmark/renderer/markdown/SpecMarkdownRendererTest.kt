@@ -17,13 +17,14 @@ import kotlin.test.fail
  *    If it's the same, then the expected elements were preserved in the Markdown rendering
  */
 class SpecMarkdownRendererTest {
-
     @Test
     fun testCoverage() {
-        val specContent = this::class.java.getResourceAsStream("/spec.txt")
-            ?.bufferedReader()
-            ?.readText()
-            ?: fail("Could not read spec.txt")
+        val specContent =
+            this::class.java
+                .getResourceAsStream("/spec.txt")
+                ?.bufferedReader()
+                ?.readText()
+                ?: fail("Could not read spec.txt")
 
         val examples = ExampleReader.readExamples(specContent)
         val passes = mutableListOf<org.commonmark.test.Example>()
@@ -70,13 +71,9 @@ class SpecMarkdownRendererTest {
         }
     }
 
-    private fun parse(source: String): Node {
-        return Parser.builder().build().parse(source)
-    }
+    private fun parse(source: String): Node = Parser.builder().build().parse(source)
 
-    private fun renderMarkdown(source: String): String {
-        return MARKDOWN_RENDERER.render(parse(source))
-    }
+    private fun renderMarkdown(source: String): String = MARKDOWN_RENDERER.render(parse(source))
 
     private fun renderHtml(source: String): String {
         // The spec uses "rightwards arrow" to show tabs
@@ -85,6 +82,7 @@ class SpecMarkdownRendererTest {
 
     companion object {
         val MARKDOWN_RENDERER: MarkdownRenderer = MarkdownRenderer.builder().build()
+
         // The spec says URL-escaping is optional, but the examples assume that it's enabled.
         val HTML_RENDERER: HtmlRenderer = HtmlRenderer.builder().percentEncodeUrls(true).build()
     }

@@ -4,5 +4,5 @@ import org.commonmark.node.CustomNode
 
 public class YamlFrontMatterNode(
     public var key: String,
-    public var values: List<String>
+    public var values: List<String>,
 ) : CustomNode()

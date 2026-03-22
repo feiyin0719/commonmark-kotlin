@@ -5,7 +5,6 @@ import org.commonmark.renderer.NodeRenderer
 import kotlin.reflect.KClass
 
 internal class NodeRendererMap {
-
     private val nodeRenderers: MutableList<NodeRenderer> = mutableListOf()
     private val renderers: MutableMap<KClass<out Node>, NodeRenderer> = HashMap(32)
 
@@ -33,7 +32,10 @@ internal class NodeRendererMap {
         nodeRenderers.forEach { it.afterRoot(node) }
     }
 
-    private fun <K, V> MutableMap<K, V>.putIfAbsent(key: K, value: V) {
+    private fun <K, V> MutableMap<K, V>.putIfAbsent(
+        key: K,
+        value: V,
+    ) {
         if (!this.containsKey(key)) {
             this[key] = value
         }

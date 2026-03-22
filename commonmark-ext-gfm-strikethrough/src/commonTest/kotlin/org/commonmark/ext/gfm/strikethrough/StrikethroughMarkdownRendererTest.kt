@@ -7,7 +7,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class StrikethroughMarkdownRendererTest {
-
     private val extensions: Set<Extension> = setOf(StrikethroughExtension.create())
     private val parser: Parser = Parser.builder().extensions(extensions).build()
     private val renderer: MarkdownRenderer = MarkdownRenderer.builder().extensions(extensions).build()
@@ -21,9 +20,7 @@ class StrikethroughMarkdownRendererTest {
         assertRoundTrip("\\~foo\\~\n")
     }
 
-    private fun render(source: String): String {
-        return renderer.render(parser.parse(source))
-    }
+    private fun render(source: String): String = renderer.render(parser.parse(source))
 
     private fun assertRoundTrip(input: String) {
         val rendered = render(input)

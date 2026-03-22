@@ -9,7 +9,6 @@ import kotlin.reflect.KClass
  * Named TestNodes to avoid conflict with [org.commonmark.node.Nodes] in the main source.
  */
 object TestNodes {
-
     /**
      * Get all direct children of the given parent node.
      */
@@ -31,7 +30,10 @@ object TestNodes {
      * @return The first matching node, or null if not found
      */
     @Suppress("UNCHECKED_CAST")
-    fun <T : Node> tryFind(parent: Node, nodeClass: KClass<T>): T? {
+    fun <T : Node> tryFind(
+        parent: Node,
+        nodeClass: KClass<T>,
+    ): T? {
         var node = parent.firstChild
         while (node != null) {
             val next = node.next
@@ -51,10 +53,12 @@ object TestNodes {
      * Recursively try to find a node with the given type within the children of the specified node.
      * Throws if node could not be found.
      */
-    fun <T : Node> find(parent: Node, nodeClass: KClass<T>): T {
-        return tryFind(parent, nodeClass)
+    fun <T : Node> find(
+        parent: Node,
+        nodeClass: KClass<T>,
+    ): T =
+        tryFind(parent, nodeClass)
             ?: error("Could not find a ${nodeClass.simpleName} node in $parent")
-    }
 }
 
 /**

@@ -21,7 +21,6 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class BlockParserFactoryTest {
-
     @Test
     fun customBlockParserFactory() {
         val parser = Parser.builder().customBlockParserFactory(DashBlockParser.Factory()).build()
@@ -37,10 +36,12 @@ class BlockParserFactoryTest {
     @Test
     @Suppress("DEPRECATION")
     fun replaceActiveBlockParser() {
-        val parser = Parser.builder()
-            .customBlockParserFactory(StarHeadingBlockParser.Factory())
-            .includeSourceSpans(IncludeSourceSpans.BLOCKS_AND_INLINES)
-            .build()
+        val parser =
+            Parser
+                .builder()
+                .customBlockParserFactory(StarHeadingBlockParser.Factory())
+                .includeSourceSpans(IncludeSourceSpans.BLOCKS_AND_INLINES)
+                .build()
 
         val doc = parser.parse("a\nbc\n***\n")
 
@@ -59,9 +60,9 @@ class BlockParserFactoryTest {
             listOf(
                 SourceSpan.of(0, 0, 0, 1),
                 SourceSpan.of(1, 0, 2, 2),
-                SourceSpan.of(2, 0, 5, 3)
+                SourceSpan.of(2, 0, 5, 3),
             ),
-            heading.getSourceSpans()
+            heading.getSourceSpans(),
         )
         assertEquals(listOf(SourceSpan.of(0, 0, 0, 1)), a.getSourceSpans())
         assertEquals(listOf(SourceSpan.of(1, 0, 2, 2)), bc.getSourceSpans())
@@ -70,7 +71,6 @@ class BlockParserFactoryTest {
     private class DashBlock : CustomBlock()
 
     private class DashBlockParser : AbstractBlockParser() {
-
         private val dash = DashBlock()
 
         override val block: Block get() = dash
@@ -78,7 +78,10 @@ class BlockParserFactoryTest {
         override fun tryContinue(parserState: ParserState): BlockContinue? = null
 
         class Factory : AbstractBlockParserFactory() {
-            override fun tryStart(state: ParserState, matchedBlockParser: MatchedBlockParser): BlockStart? {
+            override fun tryStart(
+                state: ParserState,
+                matchedBlockParser: MatchedBlockParser,
+            ): BlockStart? {
                 if (state.line.content.toString() == "---") {
                     return BlockStart.of(DashBlockParser())
                 }
@@ -89,8 +92,9 @@ class BlockParserFactoryTest {
 
     private class StarHeading : CustomBlock()
 
-    private class StarHeadingBlockParser(private val content: SourceLines) : AbstractBlockParser() {
-
+    private class StarHeadingBlockParser(
+        private val content: SourceLines,
+    ) : AbstractBlockParser() {
         private val heading = StarHeading()
 
         override val block: Block get() = heading
@@ -103,10 +107,17 @@ class BlockParserFactoryTest {
 
         class Factory : AbstractBlockParserFactory() {
             @Suppress("DEPRECATION")
-            override fun tryStart(state: ParserState, matchedBlockParser: MatchedBlockParser): BlockStart? {
+            override fun tryStart(
+                state: ParserState,
+                matchedBlockParser: MatchedBlockParser,
+            ): BlockStart? {
                 val lines = matchedBlockParser.paragraphLines
-                if (state.line.content.toString().startsWith("***")) {
-                    return BlockStart.of(StarHeadingBlockParser(lines))
+                if (state.line.content
+                        .toString()
+                        .startsWith("***")
+                ) {
+                    return BlockStart
+                        .of(StarHeadingBlockParser(lines))
                         .replaceActiveBlockParser()
                 } else {
                     return null

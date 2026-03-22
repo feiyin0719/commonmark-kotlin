@@ -1,6 +1,8 @@
 package org.commonmark.node
 
-public class StrongEmphasis : Node(), Delimited {
+public class StrongEmphasis :
+    Node(),
+    Delimited {
     public var delimiter: String? = null
 
     override val openingDelimiter: String?

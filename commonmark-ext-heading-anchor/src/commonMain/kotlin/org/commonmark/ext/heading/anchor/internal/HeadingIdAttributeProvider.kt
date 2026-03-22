@@ -11,28 +11,35 @@ import org.commonmark.renderer.html.AttributeProvider
 internal class HeadingIdAttributeProvider private constructor(
     defaultId: String,
     prefix: String,
-    suffix: String
+    suffix: String,
 ) : AttributeProvider {
+    private val idGenerator: IdGenerator =
+        IdGenerator
+            .builder()
+            .defaultId(defaultId)
+            .prefix(prefix)
+            .suffix(suffix)
+            .build()
 
-    private val idGenerator: IdGenerator = IdGenerator.builder()
-        .defaultId(defaultId)
-        .prefix(prefix)
-        .suffix(suffix)
-        .build()
-
-    override fun setAttributes(node: Node, tagName: String, attributes: MutableMap<String, String?>) {
+    override fun setAttributes(
+        node: Node,
+        tagName: String,
+        attributes: MutableMap<String, String?>,
+    ) {
         if (node is Heading) {
             val wordList = mutableListOf<String>()
 
-            node.accept(object : AbstractVisitor() {
-                override fun visit(text: Text) {
-                    wordList.add(text.literal)
-                }
+            node.accept(
+                object : AbstractVisitor() {
+                    override fun visit(text: Text) {
+                        wordList.add(text.literal)
+                    }
 
-                override fun visit(code: Code) {
-                    wordList.add(code.literal)
-                }
-            })
+                    override fun visit(code: Code) {
+                        wordList.add(code.literal)
+                    }
+                },
+            )
 
             val finalString = wordList.joinToString("").trim().lowercase()
             attributes["id"] = idGenerator.generateId(finalString)
@@ -40,8 +47,10 @@ internal class HeadingIdAttributeProvider private constructor(
     }
 
     companion object {
-        fun create(defaultId: String, prefix: String, suffix: String): HeadingIdAttributeProvider {
-            return HeadingIdAttributeProvider(defaultId, prefix, suffix)
-        }
+        fun create(
+            defaultId: String,
+            prefix: String,
+            suffix: String,
+        ): HeadingIdAttributeProvider = HeadingIdAttributeProvider(defaultId, prefix, suffix)
     }
 }

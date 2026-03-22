@@ -6,8 +6,9 @@ import org.commonmark.node.Delimited
 /**
  * An ins node containing text and other inline nodes as children.
  */
-public class Ins : CustomNode(), Delimited {
-
+public class Ins :
+    CustomNode(),
+    Delimited {
     override val openingDelimiter: String = "++"
 
     override val closingDelimiter: String = "++"

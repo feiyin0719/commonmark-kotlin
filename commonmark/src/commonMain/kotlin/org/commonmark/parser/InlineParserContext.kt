@@ -18,5 +18,8 @@ public interface InlineParserContext {
     @Deprecated("use getDefinition with LinkReferenceDefinition instead")
     public fun getLinkReferenceDefinition(label: String): LinkReferenceDefinition?
 
-    public fun <D : Any> getDefinition(type: KClass<D>, label: String): D?
+    public fun <D : Any> getDefinition(
+        type: KClass<D>,
+        label: String,
+    ): D?
 }

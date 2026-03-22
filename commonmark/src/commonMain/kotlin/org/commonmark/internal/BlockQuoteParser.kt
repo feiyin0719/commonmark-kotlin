@@ -12,7 +12,6 @@ import org.commonmark.parser.block.ParserState
 import org.commonmark.text.Characters
 
 internal class BlockQuoteParser : AbstractBlockParser() {
-
     override val block: BlockQuote = BlockQuote()
 
     override val isContainer: Boolean get() = true
@@ -34,7 +33,10 @@ internal class BlockQuoteParser : AbstractBlockParser() {
     }
 
     class Factory : AbstractBlockParserFactory() {
-        override fun tryStart(state: ParserState, matchedBlockParser: MatchedBlockParser): BlockStart? {
+        override fun tryStart(
+            state: ParserState,
+            matchedBlockParser: MatchedBlockParser,
+        ): BlockStart? {
             val nextNonSpace = state.nextNonSpaceIndex
             if (isMarker(state, nextNonSpace)) {
                 var newColumn = state.column + state.indent + 1
@@ -50,7 +52,10 @@ internal class BlockQuoteParser : AbstractBlockParser() {
     }
 
     companion object {
-        private fun isMarker(state: ParserState, index: Int): Boolean {
+        private fun isMarker(
+            state: ParserState,
+            index: Int,
+        ): Boolean {
             val line = state.line.content
             return state.indent < Parsing.CODE_BLOCK_INDENT && index < line.length && line[index] == '>'
         }

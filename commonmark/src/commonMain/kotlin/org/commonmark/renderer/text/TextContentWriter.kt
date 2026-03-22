@@ -5,9 +5,8 @@ package org.commonmark.renderer.text
  */
 public class TextContentWriter(
     private val buffer: StringBuilder,
-    private val lineBreakRendering: LineBreakRendering = LineBreakRendering.COMPACT
+    private val lineBreakRendering: LineBreakRendering = LineBreakRendering.COMPACT,
 ) {
-
     private val prefixes: ArrayDeque<String> = ArrayDeque()
     private val tight: ArrayDeque<Boolean> = ArrayDeque()
 
@@ -32,11 +31,12 @@ public class TextContentWriter(
     }
 
     public fun block() {
-        blockSeparator = when {
-            lineBreakRendering == LineBreakRendering.STRIP -> " "
-            lineBreakRendering == LineBreakRendering.COMPACT || isTight() -> "\n"
-            else -> "\n\n"
-        }
+        blockSeparator =
+            when {
+                lineBreakRendering == LineBreakRendering.STRIP -> " "
+                lineBreakRendering == LineBreakRendering.COMPACT || isTight() -> "\n"
+                else -> "\n\n"
+            }
     }
 
     public fun resetBlock() {
@@ -102,9 +102,7 @@ public class TextContentWriter(
         this.tight.removeLast()
     }
 
-    private fun isTight(): Boolean {
-        return tight.isNotEmpty() && tight.last()
-    }
+    private fun isTight(): Boolean = tight.isNotEmpty() && tight.last()
 
     private fun writePrefixes() {
         for (prefix in prefixes) {

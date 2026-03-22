@@ -16,13 +16,14 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class DelimiterProcessorTest : CoreRenderingTestCase() {
-
     @Test
     fun delimiterProcessorWithInvalidDelimiterUse() {
-        val parser = Parser.builder()
-            .customDelimiterProcessor(CustomDelimiterProcessor(':', 0))
-            .customDelimiterProcessor(CustomDelimiterProcessor(';', -1))
-            .build()
+        val parser =
+            Parser
+                .builder()
+                .customDelimiterProcessor(CustomDelimiterProcessor(':', 0))
+                .customDelimiterProcessor(CustomDelimiterProcessor(';', -1))
+                .build()
         assertEquals("<p>:test:</p>\n", RENDERER.render(parser.parse(":test:")))
         assertEquals("<p>;test;</p>\n", RENDERER.render(parser.parse(";test;")))
     }
@@ -44,10 +45,12 @@ class DelimiterProcessorTest : CoreRenderingTestCase() {
 
     @Test
     fun multipleDelimitersWithDifferentLengths() {
-        val parser = Parser.builder()
-            .customDelimiterProcessor(OneDelimiterProcessor())
-            .customDelimiterProcessor(TwoDelimiterProcessor())
-            .build()
+        val parser =
+            Parser
+                .builder()
+                .customDelimiterProcessor(OneDelimiterProcessor())
+                .customDelimiterProcessor(TwoDelimiterProcessor())
+                .build()
         assertEquals("<p>(1)one(/1) (2)two(/2)</p>\n", RENDERER.render(parser.parse("+one+ ++two++")))
         assertEquals("<p>(1)(2)both(/2)(/1)</p>\n", RENDERER.render(parser.parse("+++both+++")))
     }
@@ -55,7 +58,8 @@ class DelimiterProcessorTest : CoreRenderingTestCase() {
     @Test
     fun multipleDelimitersWithSameLengthConflict() {
         assertFailsWith<IllegalArgumentException> {
-            Parser.builder()
+            Parser
+                .builder()
                 .customDelimiterProcessor(OneDelimiterProcessor())
                 .customDelimiterProcessor(OneDelimiterProcessor())
                 .build()
@@ -69,15 +73,16 @@ class DelimiterProcessorTest : CoreRenderingTestCase() {
 
     private class CustomDelimiterProcessor(
         private val delimiterChar: Char,
-        private val delimiterUse: Int
+        private val delimiterUse: Int,
     ) : DelimiterProcessor {
         override val openingCharacter: Char get() = delimiterChar
         override val closingCharacter: Char get() = delimiterChar
         override val minLength: Int get() = 1
 
-        override fun process(openingRun: DelimiterRun, closingRun: DelimiterRun): Int {
-            return delimiterUse
-        }
+        override fun process(
+            openingRun: DelimiterRun,
+            closingRun: DelimiterRun,
+        ): Int = delimiterUse
     }
 
     private class AsymmetricDelimiterProcessor : DelimiterProcessor {
@@ -85,7 +90,10 @@ class DelimiterProcessorTest : CoreRenderingTestCase() {
         override val closingCharacter: Char get() = '}'
         override val minLength: Int get() = 1
 
-        override fun process(openingRun: DelimiterRun, closingRun: DelimiterRun): Int {
+        override fun process(
+            openingRun: DelimiterRun,
+            closingRun: DelimiterRun,
+        ): Int {
             val content = UpperCaseNode()
             val start = openingRun.opener
             val end = closingRun.closer
@@ -103,7 +111,7 @@ class DelimiterProcessorTest : CoreRenderingTestCase() {
     private class UpperCaseNode : CustomNode()
 
     private class UpperCaseNodeRenderer(
-        private val context: HtmlNodeRendererContext
+        private val context: HtmlNodeRendererContext,
     ) : NodeRenderer {
         override fun getNodeTypes(): Set<KClass<out Node>> = setOf(UpperCaseNode::class)
 
@@ -125,7 +133,10 @@ class DelimiterProcessorTest : CoreRenderingTestCase() {
         override val closingCharacter: Char get() = '+'
         override val minLength: Int get() = 1
 
-        override fun process(openingRun: DelimiterRun, closingRun: DelimiterRun): Int {
+        override fun process(
+            openingRun: DelimiterRun,
+            closingRun: DelimiterRun,
+        ): Int {
             openingRun.opener.insertAfter(Text("(1)"))
             closingRun.closer.insertBefore(Text("(/1)"))
             return 1
@@ -137,7 +148,10 @@ class DelimiterProcessorTest : CoreRenderingTestCase() {
         override val closingCharacter: Char get() = '+'
         override val minLength: Int get() = 2
 
-        override fun process(openingRun: DelimiterRun, closingRun: DelimiterRun): Int {
+        override fun process(
+            openingRun: DelimiterRun,
+            closingRun: DelimiterRun,
+        ): Int {
             openingRun.opener.insertAfter(Text("(2)"))
             closingRun.closer.insertBefore(Text("(/2)"))
             return 2
@@ -146,8 +160,10 @@ class DelimiterProcessorTest : CoreRenderingTestCase() {
 
     companion object {
         private val PARSER = Parser.builder().customDelimiterProcessor(AsymmetricDelimiterProcessor()).build()
-        private val RENDERER = HtmlRenderer.builder()
-            .nodeRendererFactory(HtmlNodeRendererFactory { context -> UpperCaseNodeRenderer(context) })
-            .build()
+        private val RENDERER =
+            HtmlRenderer
+                .builder()
+                .nodeRendererFactory(HtmlNodeRendererFactory { context -> UpperCaseNodeRenderer(context) })
+                .build()
     }
 }

@@ -4,8 +4,9 @@ import org.commonmark.node.Node
 import org.commonmark.renderer.markdown.MarkdownNodeRendererContext
 import org.commonmark.renderer.markdown.MarkdownWriter
 
-internal class InsMarkdownNodeRenderer(private val context: MarkdownNodeRendererContext) : InsNodeRenderer() {
-
+internal class InsMarkdownNodeRenderer(
+    private val context: MarkdownNodeRendererContext,
+) : InsNodeRenderer() {
     private val writer: MarkdownWriter = context.getWriter()
 
     override fun render(node: Node) {

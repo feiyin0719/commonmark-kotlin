@@ -3,7 +3,6 @@ package org.commonmark.internal.util
 import org.commonmark.parser.beta.Scanner
 
 internal object LinkScanner {
-
     /**
      * Attempt to scan the contents of a link label (inside the brackets), stopping after the content or returning false.
      * The stopped position can be either the closing `]`, or the end of the line if the label continues on
@@ -18,12 +17,20 @@ internal object LinkScanner {
                         scanner.next()
                     }
                 }
-                ']' -> return true
-                '[' ->
+
+                ']' -> {
+                    return true
+                }
+
+                '[' -> {
                     // spec: Unescaped square bracket characters are not allowed inside the opening and closing
                     // square brackets of link labels.
                     return false
-                else -> scanner.next()
+                }
+
+                else -> {
+                    scanner.next()
+                }
             }
         }
         return true
@@ -46,12 +53,19 @@ internal object LinkScanner {
                             scanner.next()
                         }
                     }
-                    '\n', '<' -> return false
+
+                    '\n', '<' -> {
+                        return false
+                    }
+
                     '>' -> {
                         scanner.next()
                         return true
                     }
-                    else -> scanner.next()
+
+                    else -> {
+                        scanner.next()
+                    }
                 }
             }
             return false
@@ -84,7 +98,10 @@ internal object LinkScanner {
         return true
     }
 
-    fun scanLinkTitleContent(scanner: Scanner, endDelimiter: Char): Boolean {
+    fun scanLinkTitleContent(
+        scanner: Scanner,
+        endDelimiter: Char,
+    ): Boolean {
         while (scanner.hasNext()) {
             val c = scanner.peek()
             if (c == '\\') {
@@ -113,13 +130,17 @@ internal object LinkScanner {
         while (scanner.hasNext()) {
             val c = scanner.peek()
             when (c) {
-                ' ' -> return !empty
+                ' ' -> {
+                    return !empty
+                }
+
                 '\\' -> {
                     scanner.next()
                     if (isEscapable(scanner.peek())) {
                         scanner.next()
                     }
                 }
+
                 '(' -> {
                     parens++
                     // Limit to 32 nested parens for pathological cases
@@ -128,6 +149,7 @@ internal object LinkScanner {
                     }
                     scanner.next()
                 }
+
                 ')' -> {
                     if (parens == 0) {
                         return true
@@ -136,6 +158,7 @@ internal object LinkScanner {
                     }
                     scanner.next()
                 }
+
                 else -> {
                     // or control character
                     if (c.isISOControl()) {
@@ -149,15 +172,14 @@ internal object LinkScanner {
         return true
     }
 
-    private fun isEscapable(c: Char): Boolean {
-        return when (c) {
+    private fun isEscapable(c: Char): Boolean =
+        when (c) {
             '!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/',
-            ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`', '{', '|', '}', '~' -> true
+            ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`', '{', '|', '}', '~',
+            -> true
+
             else -> false
         }
-    }
 }
 
-private fun Char.isISOControl(): Boolean {
-    return this.code in 0..0x1F || this.code in 0x7F..0x9F
-}
+private fun Char.isISOControl(): Boolean = this.code in 0..0x1F || this.code in 0x7F..0x9F

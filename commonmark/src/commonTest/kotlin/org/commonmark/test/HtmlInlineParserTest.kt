@@ -3,7 +3,6 @@ package org.commonmark.test
 import kotlin.test.Test
 
 class HtmlInlineParserTest : CoreRenderingTestCase() {
-
     @Test
     fun comment() {
         assertRendering("inline <!---->", "<p>inline <!----></p>\n")

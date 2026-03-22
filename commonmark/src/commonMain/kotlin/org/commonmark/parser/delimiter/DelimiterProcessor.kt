@@ -15,5 +15,8 @@ public interface DelimiterProcessor {
      *
      * @return how many delimiters were used; must not be greater than length of either opener or closer
      */
-    public fun process(openingRun: DelimiterRun, closingRun: DelimiterRun): Int
+    public fun process(
+        openingRun: DelimiterRun,
+        closingRun: DelimiterRun,
+    ): Int
 }

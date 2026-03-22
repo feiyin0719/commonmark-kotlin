@@ -7,25 +7,23 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class TaskListItemsTest {
-
     private val extensions: Set<Extension> = setOf(TaskListItemsExtension.create())
     private val parser: Parser = Parser.builder().extensions(extensions).build()
     private val renderer: HtmlRenderer = HtmlRenderer.builder().extensions(extensions).build()
 
-    private fun render(source: String): String {
-        return renderer.render(parser.parse(source))
-    }
+    private fun render(source: String): String = renderer.render(parser.parse(source))
 
-    private fun assertRendering(source: String, expected: String) {
+    private fun assertRendering(
+        source: String,
+        expected: String,
+    ) {
         val actual = render(source)
         val expectedWithSource = showTabs("$expected\n\n$source")
         val actualWithSource = showTabs("$actual\n\n$source")
         assertEquals(expectedWithSource, actualWithSource)
     }
 
-    private fun showTabs(s: String): String {
-        return s.replace("\t", "\u2192")
-    }
+    private fun showTabs(s: String): String = s.replace("\t", "\u2192")
 
     companion object {
         private const val HTML_CHECKED = "<input type=\"checkbox\" disabled=\"\" checked=\"\">"
@@ -36,66 +34,66 @@ class TaskListItemsTest {
     fun baseCase() {
         assertRendering(
             "- [x] this is *done*\n",
-            "<ul>\n<li>$HTML_CHECKED this is <em>done</em></li>\n</ul>\n"
+            "<ul>\n<li>$HTML_CHECKED this is <em>done</em></li>\n</ul>\n",
         )
 
         assertRendering(
             "- [ ] do this\n",
-            "<ul>\n<li>$HTML_UNCHECKED do this</li>\n</ul>\n"
+            "<ul>\n<li>$HTML_UNCHECKED do this</li>\n</ul>\n",
         )
 
         assertRendering(
             "- [x] foo\n" +
-                    "  - [ ] bar\n" +
-                    "  - [x] baz\n" +
-                    "- [ ] bim",
+                "  - [ ] bar\n" +
+                "  - [x] baz\n" +
+                "- [ ] bim",
             "<ul>\n" +
-                    "<li>$HTML_CHECKED foo\n" +
-                    "<ul>\n" +
-                    "<li>$HTML_UNCHECKED bar</li>\n" +
-                    "<li>$HTML_CHECKED baz</li>\n" +
-                    "</ul>\n" +
-                    "</li>\n" +
-                    "<li>$HTML_UNCHECKED bim</li>\n" +
-                    "</ul>\n"
+                "<li>$HTML_CHECKED foo\n" +
+                "<ul>\n" +
+                "<li>$HTML_UNCHECKED bar</li>\n" +
+                "<li>$HTML_CHECKED baz</li>\n" +
+                "</ul>\n" +
+                "</li>\n" +
+                "<li>$HTML_UNCHECKED bim</li>\n" +
+                "</ul>\n",
         )
 
         assertRendering(
             "*   [ ]   do this\n*   [ ]   and this",
-            "<ul>\n<li>$HTML_UNCHECKED do this</li>\n<li>$HTML_UNCHECKED and this</li>\n</ul>\n"
+            "<ul>\n<li>$HTML_UNCHECKED do this</li>\n<li>$HTML_UNCHECKED and this</li>\n</ul>\n",
         )
 
         assertRendering(
             "+ [x] one\n" +
-                    "  - [ ] two\n" +
-                    "    * [x] three\n",
+                "  - [ ] two\n" +
+                "    * [x] three\n",
             "<ul>\n" +
-                    "<li>$HTML_CHECKED one\n" +
-                    "<ul>\n" +
-                    "<li>$HTML_UNCHECKED two\n" +
-                    "<ul>\n" +
-                    "<li>$HTML_CHECKED three</li>\n" +
-                    "</ul>\n" +
-                    "</li>\n" +
-                    "</ul>\n" +
-                    "</li>\n" +
-                    "</ul>\n"
+                "<li>$HTML_CHECKED one\n" +
+                "<ul>\n" +
+                "<li>$HTML_UNCHECKED two\n" +
+                "<ul>\n" +
+                "<li>$HTML_CHECKED three</li>\n" +
+                "</ul>\n" +
+                "</li>\n" +
+                "</ul>\n" +
+                "</li>\n" +
+                "</ul>\n",
         )
 
         assertRendering(
             "TODO list\n" +
-                    "---------\n" +
-                    "- [ ] first task\n" +
-                    "- [x] second task\n" +
-                    "- [ ] third task\n\n" +
-                    "Let me know when you are finished",
+                "---------\n" +
+                "- [ ] first task\n" +
+                "- [x] second task\n" +
+                "- [ ] third task\n\n" +
+                "Let me know when you are finished",
             "<h2>TODO list</h2>\n" +
-                    "<ul>\n" +
-                    "<li>$HTML_UNCHECKED first task</li>\n" +
-                    "<li>$HTML_CHECKED second task</li>\n" +
-                    "<li>$HTML_UNCHECKED third task</li>\n" +
-                    "</ul>\n" +
-                    "<p>Let me know when you are finished</p>\n"
+                "<ul>\n" +
+                "<li>$HTML_UNCHECKED first task</li>\n" +
+                "<li>$HTML_CHECKED second task</li>\n" +
+                "<li>$HTML_UNCHECKED third task</li>\n" +
+                "</ul>\n" +
+                "<p>Let me know when you are finished</p>\n",
         )
     }
 
@@ -112,8 +110,8 @@ class TaskListItemsTest {
         assertRendering("* [] neither is this\n", "<ul>\n<li>[] neither is this</li>\n</ul>\n")
         assertRendering(
             "* [  ] nor this\n" +
-                    "* [XX] nor this\n",
-            "<ul>\n<li>[  ] nor this</li>\n<li>[XX] nor this</li>\n</ul>\n"
+                "* [XX] nor this\n",
+            "<ul>\n<li>[  ] nor this</li>\n<li>[XX] nor this</li>\n</ul>\n",
         )
         assertRendering("+ [x]] is not a task\n", "<ul>\n<li>[x]] is not a task</li>\n</ul>\n")
         assertRendering("- [x isn't\n", "<ul>\n<li>[x isn't</li>\n</ul>\n")

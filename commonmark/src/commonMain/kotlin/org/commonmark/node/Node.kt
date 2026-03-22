@@ -6,7 +6,6 @@ package org.commonmark.node
  * A node can have multiple children, and a parent (except for the root node).
  */
 public abstract class Node {
-
     private var _parent: Node? = null
     private var _firstChild: Node? = null
     private var _lastChild: Node? = null
@@ -18,23 +17,33 @@ public abstract class Node {
 
     public var next: Node?
         get() = _next
-        internal set(value) { _next = value }
+        internal set(value) {
+            _next = value
+        }
 
     public var previous: Node?
         get() = _prev
-        internal set(value) { _prev = value }
+        internal set(value) {
+            _prev = value
+        }
 
     public var firstChild: Node?
         get() = _firstChild
-        internal set(value) { _firstChild = value }
+        internal set(value) {
+            _firstChild = value
+        }
 
     public var lastChild: Node?
         get() = _lastChild
-        internal set(value) { _lastChild = value }
+        internal set(value) {
+            _lastChild = value
+        }
 
     public open var parent: Node?
         get() = _parent
-        protected set(value) { _parent = value }
+        protected set(value) {
+            _parent = value
+        }
 
     internal fun setParentNode(parent: Node?) {
         this._parent = parent
@@ -110,9 +119,7 @@ public abstract class Node {
         }
     }
 
-    public fun getSourceSpans(): List<SourceSpan> {
-        return sourceSpans?.toList() ?: emptyList()
-    }
+    public fun getSourceSpans(): List<SourceSpan> = sourceSpans?.toList() ?: emptyList()
 
     public fun setSourceSpans(sourceSpans: List<SourceSpan>) {
         if (sourceSpans.isEmpty()) {
@@ -129,9 +136,7 @@ public abstract class Node {
         this.sourceSpans!!.add(sourceSpan)
     }
 
-    override fun toString(): String {
-        return "${this::class.simpleName}{${toStringAttributes()}}"
-    }
+    override fun toString(): String = "${this::class.simpleName}{${toStringAttributes()}}"
 
     protected open fun toStringAttributes(): String = ""
 }

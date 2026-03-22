@@ -15,8 +15,11 @@ import org.commonmark.parser.beta.Scanner
  * and `^[foo]` into an [InlineFootnote].
  */
 internal class FootnoteLinkProcessor : LinkProcessor {
-    override fun process(linkInfo: LinkInfo, scanner: Scanner, context: InlineParserContext): LinkResult? {
-
+    override fun process(
+        linkInfo: LinkInfo,
+        scanner: Scanner,
+        context: InlineParserContext,
+    ): LinkResult? {
         if (linkInfo.marker != null && linkInfo.marker!!.literal == "^") {
             // An inline footnote like ^[footnote text]. Note that we only get the marker here if the option is enabled
             // on the extension.

@@ -18,7 +18,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class MarkdownRendererTest {
-
     // Leaf blocks
 
     @Test
@@ -319,19 +318,19 @@ class MarkdownRendererTest {
 
     @Test
     fun overrideNodeRender() {
-        val nodeRendererFactory = object : MarkdownNodeRendererFactory {
-            override fun create(context: MarkdownNodeRendererContext): NodeRenderer {
-                return object : NodeRenderer {
-                    override fun getNodeTypes(): Set<KClass<out Node>> = setOf(Heading::class)
+        val nodeRendererFactory =
+            object : MarkdownNodeRendererFactory {
+                override fun create(context: MarkdownNodeRendererContext): NodeRenderer =
+                    object : NodeRenderer {
+                        override fun getNodeTypes(): Set<KClass<out Node>> = setOf(Heading::class)
 
-                    override fun render(node: Node) {
-                        context.getWriter().raw("# Custom heading")
+                        override fun render(node: Node) {
+                            context.getWriter().raw("# Custom heading")
+                        }
                     }
-                }
-            }
 
-            override fun getSpecialCharacters(): Set<Char> = emptySet()
-        }
+                override fun getSpecialCharacters(): Set<Char> = emptySet()
+            }
 
         val renderer = MarkdownRenderer.builder().nodeRendererFactory(nodeRendererFactory).build()
         val rendered = renderer.render(parse("# Hello"))
@@ -348,18 +347,18 @@ class MarkdownRendererTest {
         return render(parsed)
     }
 
-    private fun parse(source: String): Node {
-        return Parser.builder().build().parse(source)
-    }
+    private fun parse(source: String): Node = Parser.builder().build().parse(source)
 
-    private fun render(node: Node): String {
-        return MarkdownRenderer.builder().build().render(node)
-    }
+    private fun render(node: Node): String = MarkdownRenderer.builder().build().render(node)
 
     companion object {
         private fun showTabs(s: String): String = s.replace("\t", "\u2192")
 
-        fun assertRendering(source: String, expectedRendering: String, actualRendering: String) {
+        fun assertRendering(
+            source: String,
+            expectedRendering: String,
+            actualRendering: String,
+        ) {
             val expected = showTabs("$expectedRendering\n\n$source")
             val actual = showTabs("$actualRendering\n\n$source")
             assertEquals(expected, actual)

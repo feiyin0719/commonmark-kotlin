@@ -9,7 +9,7 @@ internal data class Example(
     val info: String,
     val exampleNumber: Int,
     val source: String,
-    val html: String
+    val html: String,
 ) {
     override fun toString(): String = "File \"$filename\" section \"$section\" example $exampleNumber"
 }

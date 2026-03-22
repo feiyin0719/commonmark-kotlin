@@ -14,7 +14,6 @@ import kotlin.test.assertEquals
  * The two classes are merged here since the base class was trivial.
  */
 abstract class CoreRenderingTestCase {
-
     private val parser: Parser = Parser.builder().build()
     private val htmlRenderer: HtmlRenderer = HtmlRenderer.builder().build()
 
@@ -23,7 +22,10 @@ abstract class CoreRenderingTestCase {
         return htmlRenderer.render(node)
     }
 
-    protected fun assertRendering(source: String, expectedResult: String) {
+    protected fun assertRendering(
+        source: String,
+        expectedResult: String,
+    ) {
         val actualResult = render(source)
         // Include source in both expected and actual for better assertion error messages,
         // and replace tabs with a visible arrow character for easier comparison.

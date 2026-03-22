@@ -4,8 +4,9 @@ import org.commonmark.node.Node
 import org.commonmark.renderer.text.TextContentNodeRendererContext
 import org.commonmark.renderer.text.TextContentWriter
 
-internal class StrikethroughTextContentNodeRenderer(private val context: TextContentNodeRendererContext) : StrikethroughNodeRenderer() {
-
+internal class StrikethroughTextContentNodeRenderer(
+    private val context: TextContentNodeRendererContext,
+) : StrikethroughNodeRenderer() {
     private val textContent: TextContentWriter = context.getWriter()
 
     override fun render(node: Node) {

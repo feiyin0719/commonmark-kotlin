@@ -21,19 +21,17 @@ import org.commonmark.renderer.text.TextContentRenderer
  *
  * The parsed strikethrough text regions are turned into [Strikethrough] nodes.
  */
-public class StrikethroughExtension private constructor(builder: Builder) :
-    Parser.ParserExtension,
+public class StrikethroughExtension private constructor(
+    builder: Builder,
+) : Parser.ParserExtension,
     HtmlRenderer.HtmlRendererExtension,
     TextContentRenderer.TextContentRendererExtension,
     MarkdownRenderer.MarkdownRendererExtension {
-
     private val requireTwoTildes: Boolean = builder.requireTwoTildes
 
     public companion object {
-        @JvmStatic
         public fun create(): Extension = builder().build()
 
-        @JvmStatic
         public fun builder(): Builder = Builder()
     }
 
@@ -50,12 +48,13 @@ public class StrikethroughExtension private constructor(builder: Builder) :
     }
 
     override fun extend(rendererBuilder: MarkdownRenderer.Builder) {
-        rendererBuilder.nodeRendererFactory(object : MarkdownNodeRendererFactory {
-            override fun create(context: MarkdownNodeRendererContext): NodeRenderer =
-                StrikethroughMarkdownNodeRenderer(context)
+        rendererBuilder.nodeRendererFactory(
+            object : MarkdownNodeRendererFactory {
+                override fun create(context: MarkdownNodeRendererContext): NodeRenderer = StrikethroughMarkdownNodeRenderer(context)
 
-            override fun getSpecialCharacters(): Set<Char> = setOf('~')
-        })
+                override fun getSpecialCharacters(): Set<Char> = setOf('~')
+            },
+        )
     }
 
     public class Builder {

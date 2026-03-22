@@ -6,7 +6,6 @@ import org.commonmark.node.SourceSpan
  * A set of lines ([SourceLine]) from the input source.
  */
 public class SourceLines private constructor() {
-
     private val _lines = mutableListOf<SourceLine>()
     public val lines: MutableList<SourceLine> get() = _lines
 

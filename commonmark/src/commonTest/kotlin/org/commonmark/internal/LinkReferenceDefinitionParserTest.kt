@@ -8,7 +8,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class LinkReferenceDefinitionParserTest {
-
     private val parser = LinkReferenceDefinitionParser()
 
     @Test
@@ -185,7 +184,11 @@ class LinkReferenceDefinitionParserTest {
             assertState(input, State.PARAGRAPH, input)
         }
 
-        private fun assertState(input: String, state: State, paragraphContent: String) {
+        private fun assertState(
+            input: String,
+            state: State,
+            paragraphContent: String,
+        ) {
             val parser = LinkReferenceDefinitionParser()
             // TODO: Should we check things with source spans here?
             parser.parse(SourceLine.of(input, null))
@@ -193,13 +196,21 @@ class LinkReferenceDefinitionParserTest {
             assertParagraphLines(paragraphContent, parser)
         }
 
-        private fun assertDef(def: LinkReferenceDefinition, label: String, destination: String, title: String?) {
+        private fun assertDef(
+            def: LinkReferenceDefinition,
+            label: String,
+            destination: String,
+            title: String?,
+        ) {
             assertEquals(label, def.label)
             assertEquals(destination, def.destination)
             assertEquals(title, def.title)
         }
 
-        private fun assertParagraphLines(expectedContent: String, parser: LinkReferenceDefinitionParser) {
+        private fun assertParagraphLines(
+            expectedContent: String,
+            parser: LinkReferenceDefinitionParser,
+        ) {
             val actual = parser.paragraphLines.getContent()
             assertEquals(expectedContent, actual)
         }
