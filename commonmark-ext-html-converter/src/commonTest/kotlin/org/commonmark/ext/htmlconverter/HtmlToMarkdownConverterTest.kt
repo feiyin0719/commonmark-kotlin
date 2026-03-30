@@ -162,7 +162,8 @@ class HtmlToMarkdownConverterTest {
 
     @Test
     fun convertComplexDocument() {
-        val html = """
+        val html =
+            """
             <h1>Title</h1>
             <p>A paragraph with <strong>bold</strong> and <em>italic</em> text.</p>
             <ul>
@@ -172,7 +173,7 @@ class HtmlToMarkdownConverterTest {
             <blockquote>
                 <p>A quote</p>
             </blockquote>
-        """.trimIndent()
+            """.trimIndent()
         val result = HtmlToMarkdownConverter.convert(html)
         // Verify it contains the key elements
         assertContains(result, "# Title")

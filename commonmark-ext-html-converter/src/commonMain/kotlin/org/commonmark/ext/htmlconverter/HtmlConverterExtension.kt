@@ -34,25 +34,25 @@ public class HtmlConverterExtension private constructor() :
     HtmlRenderer.HtmlRendererExtension,
     TextContentRenderer.TextContentRendererExtension,
     MarkdownRenderer.MarkdownRendererExtension {
-    public companion object {
-        public fun create(): Extension = HtmlConverterExtension()
-    }
+        public companion object {
+            public fun create(): Extension = HtmlConverterExtension()
+        }
 
-    override fun extend(rendererBuilder: HtmlRenderer.Builder) {
-        rendererBuilder.nodeRendererFactory { context -> HtmlConverterHtmlNodeRenderer(context) }
-    }
+        override fun extend(rendererBuilder: HtmlRenderer.Builder) {
+            rendererBuilder.nodeRendererFactory { context -> HtmlConverterHtmlNodeRenderer(context) }
+        }
 
-    override fun extend(rendererBuilder: TextContentRenderer.Builder) {
-        rendererBuilder.nodeRendererFactory { context -> HtmlConverterTextContentNodeRenderer(context) }
-    }
+        override fun extend(rendererBuilder: TextContentRenderer.Builder) {
+            rendererBuilder.nodeRendererFactory { context -> HtmlConverterTextContentNodeRenderer(context) }
+        }
 
-    override fun extend(rendererBuilder: MarkdownRenderer.Builder) {
-        rendererBuilder.nodeRendererFactory(
-            object : MarkdownNodeRendererFactory {
-                override fun create(context: MarkdownNodeRendererContext): NodeRenderer = HtmlConverterMarkdownNodeRenderer(context)
+        override fun extend(rendererBuilder: MarkdownRenderer.Builder) {
+            rendererBuilder.nodeRendererFactory(
+                object : MarkdownNodeRendererFactory {
+                    override fun create(context: MarkdownNodeRendererContext): NodeRenderer = HtmlConverterMarkdownNodeRenderer(context)
 
-                override fun getSpecialCharacters(): Set<Char> = emptySet()
-            },
-        )
+                    override fun getSpecialCharacters(): Set<Char> = emptySet()
+                },
+            )
+        }
     }
-}

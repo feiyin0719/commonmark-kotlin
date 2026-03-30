@@ -343,20 +343,53 @@ private class DocumentBuilder {
         tagName: String,
     ): Boolean =
         when (tagName) {
-            "h1", "h2", "h3", "h4", "h5", "h6" -> ctx.node is Heading
-            "p" -> ctx.node is Paragraph && ctx.type == ContextType.INLINE
-            "strong", "b" -> ctx.node is StrongEmphasis
-            "em", "i" -> ctx.node is Emphasis
-            "a" -> ctx.node is Link
-            "blockquote" -> ctx.node is BlockQuote
-            "ul" -> ctx.node is BulletList
-            "ol" -> ctx.node is OrderedList
-            "li" -> ctx.node is ListItem
-            "div", "section", "article", "main", "header", "footer", "nav", "aside" ->
-                ctx.type == ContextType.BLOCK && ctx.node !is Document && ctx.node !is BlockQuote && ctx.node !is ListItem
+            "h1", "h2", "h3", "h4", "h5", "h6" -> {
+                ctx.node is Heading
+            }
 
-            "span" -> ctx.type == ContextType.INLINE && ctx.node !is Heading && ctx.node !is Paragraph && ctx.node !is Emphasis && ctx.node !is StrongEmphasis && ctx.node !is Link
-            else -> false
+            "p" -> {
+                ctx.node is Paragraph && ctx.type == ContextType.INLINE
+            }
+
+            "strong", "b" -> {
+                ctx.node is StrongEmphasis
+            }
+
+            "em", "i" -> {
+                ctx.node is Emphasis
+            }
+
+            "a" -> {
+                ctx.node is Link
+            }
+
+            "blockquote" -> {
+                ctx.node is BlockQuote
+            }
+
+            "ul" -> {
+                ctx.node is BulletList
+            }
+
+            "ol" -> {
+                ctx.node is OrderedList
+            }
+
+            "li" -> {
+                ctx.node is ListItem
+            }
+
+            "div", "section", "article", "main", "header", "footer", "nav", "aside" -> {
+                ctx.type == ContextType.BLOCK && ctx.node !is Document && ctx.node !is BlockQuote && ctx.node !is ListItem
+            }
+
+            "span" -> {
+                ctx.type == ContextType.INLINE && ctx.node !is Heading && ctx.node !is Paragraph && ctx.node !is Emphasis && ctx.node !is StrongEmphasis && ctx.node !is Link
+            }
+
+            else -> {
+                false
+            }
         }
 
     private fun flushInlineText() {
@@ -415,25 +448,46 @@ private class SimpleMarkdownRenderer(
     fun render(node: Node) {
         when (node) {
             is Document -> renderChildren(node)
+
             is Heading -> renderHeading(node)
+
             is Paragraph -> renderParagraph(node)
+
             is BlockQuote -> renderBlockQuote(node)
+
             is BulletList -> renderBulletList(node)
+
             is OrderedList -> renderOrderedList(node)
-            is ListItem -> renderChildren(node) // list items rendered by parent list
+
+            is ListItem -> renderChildren(node)
+
+            // list items rendered by parent list
             is FencedCodeBlock -> renderFencedCodeBlock(node)
+
             is IndentedCodeBlock -> renderIndentedCodeBlock(node)
+
             is ThematicBreak -> renderThematicBreak(node)
+
             is Text -> sb.append(node.literal)
+
             is Code -> renderCode(node)
+
             is Emphasis -> renderEmphasis(node)
+
             is StrongEmphasis -> renderStrongEmphasis(node)
+
             is Link -> renderLink(node)
+
             is Image -> renderImage(node)
+
             is SoftLineBreak -> sb.append('\n')
+
             is HardLineBreak -> sb.append("  \n")
+
             is HtmlBlock -> sb.append(node.literal ?: "")
+
             is HtmlInline -> sb.append(node.literal ?: "")
+
             else -> renderChildren(node)
         }
     }

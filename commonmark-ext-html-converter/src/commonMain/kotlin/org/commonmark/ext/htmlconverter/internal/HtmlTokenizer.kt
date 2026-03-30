@@ -142,8 +142,20 @@ internal class HtmlTokenizer(
     companion object {
         val VOID_ELEMENTS =
             setOf(
-                "area", "base", "br", "col", "embed", "hr", "img", "input",
-                "link", "meta", "param", "source", "track", "wbr",
+                "area",
+                "base",
+                "br",
+                "col",
+                "embed",
+                "hr",
+                "img",
+                "input",
+                "link",
+                "meta",
+                "param",
+                "source",
+                "track",
+                "wbr",
             )
 
         fun decodeHtmlEntities(text: String): String {
@@ -172,32 +184,110 @@ internal class HtmlTokenizer(
 
         private fun decodeEntity(entity: String): String? =
             when (entity) {
-                "&amp;" -> "&"
-                "&lt;" -> "<"
-                "&gt;" -> ">"
-                "&quot;" -> "\""
-                "&apos;" -> "'"
-                "&#39;" -> "'"
-                "&nbsp;" -> "\u00A0"
-                "&ndash;" -> "\u2013"
-                "&mdash;" -> "\u2014"
-                "&lsquo;" -> "\u2018"
-                "&rsquo;" -> "\u2019"
-                "&ldquo;" -> "\u201C"
-                "&rdquo;" -> "\u201D"
-                "&bull;" -> "\u2022"
-                "&hellip;" -> "\u2026"
-                "&copy;" -> "\u00A9"
-                "&reg;" -> "\u00AE"
-                "&trade;" -> "\u2122"
-                "&times;" -> "\u00D7"
-                "&divide;" -> "\u00F7"
-                "&deg;" -> "\u00B0"
-                "&para;" -> "\u00B6"
-                "&sect;" -> "\u00A7"
-                "&#10;" -> "\n"
-                "&#13;" -> "\r"
-                "&#9;" -> "\t"
+                "&amp;" -> {
+                    "&"
+                }
+
+                "&lt;" -> {
+                    "<"
+                }
+
+                "&gt;" -> {
+                    ">"
+                }
+
+                "&quot;" -> {
+                    "\""
+                }
+
+                "&apos;" -> {
+                    "'"
+                }
+
+                "&#39;" -> {
+                    "'"
+                }
+
+                "&nbsp;" -> {
+                    "\u00A0"
+                }
+
+                "&ndash;" -> {
+                    "\u2013"
+                }
+
+                "&mdash;" -> {
+                    "\u2014"
+                }
+
+                "&lsquo;" -> {
+                    "\u2018"
+                }
+
+                "&rsquo;" -> {
+                    "\u2019"
+                }
+
+                "&ldquo;" -> {
+                    "\u201C"
+                }
+
+                "&rdquo;" -> {
+                    "\u201D"
+                }
+
+                "&bull;" -> {
+                    "\u2022"
+                }
+
+                "&hellip;" -> {
+                    "\u2026"
+                }
+
+                "&copy;" -> {
+                    "\u00A9"
+                }
+
+                "&reg;" -> {
+                    "\u00AE"
+                }
+
+                "&trade;" -> {
+                    "\u2122"
+                }
+
+                "&times;" -> {
+                    "\u00D7"
+                }
+
+                "&divide;" -> {
+                    "\u00F7"
+                }
+
+                "&deg;" -> {
+                    "\u00B0"
+                }
+
+                "&para;" -> {
+                    "\u00B6"
+                }
+
+                "&sect;" -> {
+                    "\u00A7"
+                }
+
+                "&#10;" -> {
+                    "\n"
+                }
+
+                "&#13;" -> {
+                    "\r"
+                }
+
+                "&#9;" -> {
+                    "\t"
+                }
+
                 else -> {
                     if (entity.startsWith("&#x") && entity.endsWith(";")) {
                         val hex = entity.substring(3, entity.length - 1)
@@ -214,7 +304,9 @@ internal class HtmlTokenizer(
 }
 
 internal sealed class HtmlToken {
-    data class Text(val content: String) : HtmlToken()
+    data class Text(
+        val content: String,
+    ) : HtmlToken()
 
     data class OpenTag(
         val name: String,
@@ -222,5 +314,7 @@ internal sealed class HtmlToken {
         val selfClosing: Boolean = false,
     ) : HtmlToken()
 
-    data class CloseTag(val name: String) : HtmlToken()
+    data class CloseTag(
+        val name: String,
+    ) : HtmlToken()
 }
