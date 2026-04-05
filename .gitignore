@@ -30,3 +30,9 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# Build outputs
+commonmark/bin/
+
+# Kotlin JS store
+kotlin-js-store/
