@@ -3,6 +3,7 @@ package org.commonmark.ext.footnotes
 import org.commonmark.node.*
 import org.commonmark.parser.IncludeSourceSpans
 import org.commonmark.parser.Parser
+import kotlin.reflect.KClass
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -353,7 +354,7 @@ class FootnotesTest {
     @Suppress("UNCHECKED_CAST")
     private fun <T : Node> findAllRecursive(
         parent: Node,
-        type: kotlin.reflect.KClass<T>,
+        type: KClass<T>,
         nodes: MutableList<T>,
     ) {
         var node = parent.firstChild
